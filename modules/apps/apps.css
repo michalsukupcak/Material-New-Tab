@@ -1,0 +1,22 @@
+div#module_apps {}
+div#module_apps div.mdl-cell {
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px;
+    margin-bottom: 0;
+    margin-top: 0;
+    text-align: center;
+    transition: .2s ease;
+    vertical-align: middle;
+}
+div#module_apps div.mdl-cell:hover {
+    background: #E5E5E5;
+    font-weight: bold;
+}
+div#module_apps div.mdl-cell img {
+    height: 36px;
+    max-width: 100%;
+}
+div#module_apps div.mdl-cell div {
+
+}

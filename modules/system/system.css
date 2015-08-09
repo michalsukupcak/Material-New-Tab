@@ -1,0 +1,31 @@
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* Datetime */
+div#module_system_clockTime {
+    font-size: 4em;
+    text-align: center;
+    margin: 30px 0 0 0;
+}
+div#module_system_clockDate {
+    text-align: center;
+    font-size: 1.4em;
+    margin: 30px 0 30px 0;
+}
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* System information */
+div.module_system_wrapper {
+    margin: 0 0 10px 0;
+}
+div.module_system_wrapper h5 {
+    margin: 20px 0 10px 0;
+}
+div.module_system_wrapper div.module_system_detail {
+    padding: 0 10px;
+}
+div.module_system_wrapper div.module_system_detail ul {
+    margin: 2px 0 0 -20px;
+}
+div#module_system_wrapper div.module_system_detail ul li {
+    margin: 0;
+    padding: 0;
+}

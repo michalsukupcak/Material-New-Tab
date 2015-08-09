@@ -1,0 +1,24 @@
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* Search */
+div#module_search {
+    margin: 30px 0 10px 0;
+    width: 100%;
+}
+div#module_search div {
+    background: white;
+    border-radius: 2px;
+    margin: auto;
+    width: 700px;
+}
+div#module_search div input {
+    border: none;
+    box-sizing: border-box;
+    color: #666;
+    font-size: 1.2em;
+    padding: 15px 30px;
+    width: 645px;
+}
+div#module_search div button {
+    color: #999;
+    width: 50px;
+}
