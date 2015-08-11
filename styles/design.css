@@ -28,40 +28,36 @@ div#loading div strong {
 
 /* ------------------------------------------------------------------------------------------------------------------ */
 /* MDL Card */
-div.mdl-card {
+div.homeCard {
     margin: 0 0 20px 0;
-}
-div.mdl-card.card-wide {
     width: 100%;
 }
-div.mdl-card.card-wide div.mdl-card__supporting-text {
-    height: 550px;
-    overflow: auto;
-}
-div.mdl-card div.mdl-card__title {
-    background: #607D8B;
+div.homeCard div.homeCardTitle {
+    background: #3F51B5;
     box-shadow: 0px 0px 4px 1px #999;
     color: white;
     /*border-bottom: 1px solid #DDD;
     color: #666;*/
     vertical-align: middle;
 }
-div.mdl-card div.mdl-card__title i {
+div.homeCard div.homeCardTitle i {
     padding-right: 10px;
     padding-top: 1px;
     vertical-align: middle;
 }
-div.mdl-card div.mdl-card__title span {
+div.homeCard div.homeCardTitle span {
     vertical-align: middle;
 }
-div.mdl-card div.mdl-card__actions {
+div.homeCard div.homeCardContent {
+    overflow: auto;
+}
+div.homeCard div.homeCardActions {
     text-align: right;
 }
 
 /* ------------------------------------------------------------------------------------------------------------------ */
 /* iFrame */
 iframe {
-    margin: 20px 0 0 0;
     width: 100%;
 }
 

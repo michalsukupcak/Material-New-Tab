@@ -12,7 +12,8 @@
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
         <!--<link href="./styles/material.min.css" rel="stylesheet" type="text/css">-->
         <!--<link href="https://storage.googleapis.com/code.getmdl.io/1.0.2/material.blue-yellow.min.css" rel="stylesheet" type="text/css">-->
-        <link href="https://storage.googleapis.com/code.getmdl.io/1.0.2/material.blue_grey-yellow.min.css" rel="stylesheet" type="text/css">
+        <!--<link href="https://storage.googleapis.com/code.getmdl.io/1.0.2/material.blue_grey-yellow.min.css" rel="stylesheet" type="text/css">-->
+        <link href="https://storage.googleapis.com/code.getmdl.io/1.0.2/material.indigo-yellow.min.css" rel="stylesheet" type="text/css">
         <link href="./styles/design.css" rel="stylesheet" type="text/css">
         <link href="./styles/spinner.css" rel="stylesheet" type="text/css">
 
@@ -90,6 +91,7 @@
 
                         <!-- ------------------------------------ -->
                         <!-- MODULE: Search -->
+                        <!--
                         <div id="module_search">
                             <div class="mdl-shadow--2dp">
                                 <input type="text" placeholder="Google Search">
@@ -98,17 +100,18 @@
                                 </button>
                             </div>
                         </div>
+                        -->
 
                         <div class="mdl-grid">
                             <div class="mdl-cell mdl-cell--3-col">
 
                                 <!-- ------------------------------------ -->
                                 <!-- MODULE: Overview -->
-                                <div class="mdl-card mdl-shadow--2dp card-wide">
-                                    <div class="mdl-card__title">
+                                <div class="mdl-card mdl-shadow--2dp homeCard">
+                                    <div class="mdl-card__title homeCardTitle">
                                         <h2 class="mdl-card__title-text"><i class="material-icons">computer</i> <span>System</span></h2>
                                     </div>
-                                    <div class="mdl-card__supporting-text">
+                                    <div class="mdl-card__supporting-text homeCardContent">
                                         <div id="module_system_clockTime"></div>
                                         <div id="module_system_clockDate"></div>
                                         <div class="module_system_wrapper">
@@ -118,7 +121,7 @@
                                             <div id="module_system_memory" class="module_system_detail">[Computing memory usage ...]</div>
                                         </div>
                                     </div>
-                                    <div class="mdl-card__actions mdl-card--border">
+                                    <div class="mdl-card__actions mdl-card--border homeCardActions">
                                         <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect text-right">
                                             &nbsp;
                                         </a>
@@ -130,14 +133,14 @@
 
                                 <!-- ------------------------------------ -->
                                 <!-- MODULE: Bookmarks -->
-                                <div class="mdl-card mdl-shadow--2dp card-wide">
-                                    <div class="mdl-card__title">
+                                <div class="mdl-card mdl-shadow--2dp homeCard">
+                                    <div class="mdl-card__title homeCardTitle">
                                         <h2 class="mdl-card__title-text"><i class="material-icons">star</i> <span>Bookmarks</span></h2>
                                     </div>
-                                    <div class="mdl-card__supporting-text">
+                                    <div class="mdl-card__supporting-text homeCardContent">
                                         <div id="module_bookmarks"></div>
                                     </div>
-                                    <div class="mdl-card__actions mdl-card--border">
+                                    <div class="mdl-card__actions mdl-card--border homeCardActions">
                                         <a id="module_bookmarks_openAll" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect text-right">
                                             Manage bookmarks
                                         </a>
@@ -149,14 +152,14 @@
 
                                 <!-- ------------------------------------ -->
                                 <!-- MODULE: Apps -->
-                                <div class="mdl-card mdl-shadow--2dp card-wide">
-                                    <div class="mdl-card__title">
+                                <div class="mdl-card mdl-shadow--2dp homeCard">
+                                    <div class="mdl-card__title homeCardTitle">
                                         <h2 class="mdl-card__title-text"><i class="material-icons">apps</i> <span>Apps</span></h2>
                                     </div>
-                                    <div class="mdl-card__supporting-text">
+                                    <div class="mdl-card__supporting-text homeCardContent">
                                         <div id="module_apps" class="mdl-grid"></div>
                                     </div>
-                                    <div class="mdl-card__actions mdl-card--border">
+                                    <div class="mdl-card__actions mdl-card--border homeCardActions">
                                         <a id="module_apps_openAll" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect text-right">
                                             Manage apps
                                         </a>
@@ -168,14 +171,14 @@
 
                                 <!-- ------------------------------------ -->
                                 <!-- MODULE: Agenda -->
-                                <div class="mdl-card mdl-shadow--2dp card-wide">
-                                    <div class="mdl-card__title">
+                                <div class="mdl-card mdl-shadow--2dp homeCard">
+                                    <div class="mdl-card__title homeCardTitle">
                                         <h2 class="mdl-card__title-text"><i class="material-icons">event</i> <span>Agenda</span></h2>
                                     </div>
-                                    <div class="mdl-card__supporting-text">
+                                    <div class="mdl-card__supporting-text homeCardContent">
                                         [Work in progress]
                                     </div>
-                                    <div class="mdl-card__actions mdl-card--border">
+                                    <div class="mdl-card__actions mdl-card--border homeCardActions">
                                         <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect text-right">
                                             &nbsp;
                                         </a>
