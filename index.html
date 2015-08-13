@@ -7,13 +7,16 @@
         <title>New Tab</title>
 
         <!-- ------------------------------------------------------------------------------------------------------- -->
-        <!-- CSS Styles -->
+        <!-- Libraries -->
         <link href="http://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet" type="text/css">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
         <!--<link href="./styles/material.min.css" rel="stylesheet" type="text/css">-->
         <!--<link href="https://storage.googleapis.com/code.getmdl.io/1.0.2/material.blue-yellow.min.css" rel="stylesheet" type="text/css">-->
         <!--<link href="https://storage.googleapis.com/code.getmdl.io/1.0.2/material.blue_grey-yellow.min.css" rel="stylesheet" type="text/css">-->
         <link href="https://storage.googleapis.com/code.getmdl.io/1.0.2/material.indigo-yellow.min.css" rel="stylesheet" type="text/css">
+
+        <!-- ------------------------------------------------------------------------------------------------------- -->
+        <!-- Styles -->
         <link href="./styles/design.css" rel="stylesheet" type="text/css">
         <link href="./styles/spinner.css" rel="stylesheet" type="text/css">
 
@@ -106,7 +109,7 @@
                             <div class="mdl-cell mdl-cell--3-col">
 
                                 <!-- ------------------------------------ -->
-                                <!-- MODULE: Overview -->
+                                <!-- MODULE: System -->
                                 <div class="mdl-card mdl-shadow--2dp homeCard">
                                     <div class="mdl-card__title homeCardTitle">
                                         <h2 class="mdl-card__title-text"><i class="material-icons">computer</i> <span>System</span></h2>
@@ -118,7 +121,7 @@
                                             <h5>CPU</h5>
                                             <div id="module_system_cpu" class="module_system_detail">[Computing CPU usage ...]</div>
                                             <h5>Memory</h5>
-                                            <div id="module_system_memory" class="module_system_detail">[Computing memory usage ...]</div>
+                                            <div id="module_system_memoryDiv" class="module_system_detail">[Computing memory usage ...]</div>
                                         </div>
                                     </div>
                                     <div class="mdl-card__actions mdl-card--border homeCardActions">
@@ -220,15 +223,19 @@
         </div>
 
         <!-- ------------------------------------------------------------------------------------------------------- -->
-        <!-- Javascripts -->
-        <script src="./scripts/material.min.js" type="text/javascript"></script>
+        <!-- Libraries -->
+        <script src="./libs/chart-js/Chart.min.js" type="text/javascript"></script>
+        <script src="./libs/mdl/material.min.js" type="text/javascript"></script>
+
+        <!-- ------------------------------------------------------------------------------------------------------- -->
+        <!-- Scripts -->
         <script src="./scripts/app.js" type="text/javascript"></script>
 
         <!-- ------------------------------------------------------------------------------------------------------- -->
-        <!-- Modules JS -->
+        <!-- Modules -->
         <script src="./modules/apps/apps.js" type="text/javascript"></script>
         <script src="./modules/bookmarks/bookmarks.js" type="text/javascript"></script>
-        <script src="modules/system/system.js" type="text/javascript"></script>
+        <script src="./modules/system/system.js" type="text/javascript"></script>
         <script src="./modules/drawer/drawer.js" type="text/javascript"></script>
         <script src="./modules/search/search.js" type="text/javascript"></script>
 

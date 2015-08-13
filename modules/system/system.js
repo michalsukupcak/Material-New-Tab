@@ -54,16 +54,14 @@ window.setInterval(module_system_cpuInterval, 2500);
 /**
  * System module - Memory usage computation.
  */
-var module_system_memoryDiv = document.getElementById('module_system_memory');
+var module_system_memoryDiv = document.getElementById('module_system_memoryDiv');
 var module_system_memoryInterval = function () {
     chrome.system.memory.getInfo(function (memory) {
-        var used = (memory.capacity - memory.availableCapacity) / 1024 / 1024 / 1024;
-        var total = (memory.capacity) / 1024 / 1024 / 1024;
-        var div = document.createElement('div');
-        var strong = document.createElement('strong');
-        strong.appendChild(document.createTextNode(used.toFixed(1) + ' GiB (' + ((used/total).toFixed(2) * 100) + '%) of ' + total.toFixed(1) + ' GiB'));
-        div.appendChild(strong);
-        module_system_memoryDiv.innerHTML = div.innerHTML;
+        console.log(memory.availableCapacity);
+        var used = ((memory.capacity - memory.availableCapacity) / 1024 / 1024 / 1024).toFixed(2);
+        var total = (memory.capacity / 1024 / 1024 / 1024).toFixed(2);
+        var percentage = (used/total).toFixed(2) * 100;
+        module_system_memoryDiv.innerHTML = used + ' GiB (' + percentage + '%) of ' + total + ' GiB';
     });
 };
 module_system_memoryInterval();
