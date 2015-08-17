@@ -5,6 +5,7 @@
   "chrome_url_overrides": {
     "newtab": "index.html"
   },
+  "content_security_policy": "script-src 'self' https://www.google.com/; object-src 'self'",
   "permissions": [
     "bookmarks",
     "chrome://favicon/",

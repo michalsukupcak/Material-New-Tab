@@ -1,0 +1,12 @@
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* Datetime */
+div#module_agenda_clockTime {
+    font-size: 4em;
+    text-align: center;
+    margin: 30px 0 0 0;
+}
+div#module_agenda_clockDate {
+    text-align: center;
+    font-size: 1.4em;
+    margin: 30px 0 30px 0;
+}

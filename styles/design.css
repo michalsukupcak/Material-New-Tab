@@ -6,9 +6,19 @@ body {
     height: 100%;
 }
 
+header#header {
+    color: white;
+}
+header#header a {
+    color: white;
+}
+header#header div.mdl-layout__drawer-button i {
+    color: white;
+}
+
 /* ------------------------------------------------------------------------------------------------------------------ */
-/* MDL Card */
-div#loading {
+/* Loading overlay */
+div#loadingOverlay {
     background: #EEE;
     color: #666;
     height: 100%;
@@ -20,7 +30,7 @@ div#loading {
     transition: .2s ease;
     z-index: 9999999999999999999999999999999999999999999999;
 }
-div#loading div strong {
+div#loadingOverlay div strong {
     display: block;
     font-size: 1.8em;
     padding: 0 0 10px 0;
@@ -33,7 +43,7 @@ div.homeCard {
     width: 100%;
 }
 div.homeCard div.homeCardTitle {
-    background: #3F51B5;
+    background: #00BCD4;
     box-shadow: 0px 0px 4px 1px #999;
     color: white;
     /*border-bottom: 1px solid #DDD;

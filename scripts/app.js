@@ -1,47 +1,102 @@
-/* ------------------------------------------------------------------------------------------------------------------ */
-/**
- * On extension load, hide div#loading.
- */
-var readyStateCheckInterval = setInterval(function() {
-    if (document.readyState === "complete") {
-        hideLoading();
-        setHeights();
+(function (document) {
+    'use strict';
+
+    /**
+     * Main App object.
+     *
+     * @type {{checkReadyState: Function, hideLoading: Function, setElementHeights: Function}}
+     */
+    var app = {
+
+        /**
+         *
+         */
+        iframeHeight: 0,
+
+        /**
+         * Checks document ready state. Once ready, removes loading overlay and sets element heights.
+         */
+        checkReadyState: function () {
+            var interval = setInterval(function() {
+                if (document.readyState === 'complete') {
+                    console.log('Material New Tab Page is loaded.');
+                    app.removeLoadingOverlay();
+                    app.setElementHeights();
+                    app.setTabContentLoaders();
+                    clearInterval(interval);
+                }
+            });
+        },
+
+        /**
+         * Removes loading overlay.
+         */
+        removeLoadingOverlay: function () {
+            var loading = document.getElementById('loadingOverlay');
+            loading.style.opacity = 0;
+            setTimeout(function () {
+                loading.style.display = 'none';
+            }, 200);
+        },
+
+        /**
+         * Sets heights to <iframe> and <div class="homeCard"> elements.
+         */
+        setElementHeights: function() {
+
+            // Get heights
+            var windowHeight = window.innerHeight;
+            var headerHeight = document.getElementById('header').clientHeight;
+
+            // Cards
+            var homeCardTitleHeight = document.getElementsByClassName('homeCardTitle')[0].clientHeight;
+            var homeCardActionsHeight = document.getElementsByClassName('homeCardActions')[0].clientHeight;
+            var homeCardHeight = windowHeight - headerHeight - 16 - 16 - homeCardTitleHeight - 32 - homeCardActionsHeight - 16 - 6;
+            var homeCards = document.getElementsByClassName('homeCard');
+            for (var i = 0; i < homeCards.length; i++) {
+                homeCards[i].getElementsByClassName('homeCardContent')[0].style.height = homeCardHeight + 'px';
+            }
+
+            // Iframes
+            this.iframeHeight = windowHeight - headerHeight - 16 - 16 - 2; // mdl-grid margin + padding
+
+        },
+
+        /**
+         *
+         */
+        setTabContentLoaders: function () {
+            var tabs = document.getElementsByClassName('tab');
+            for (var i = 0; i < tabs.length; i++) {
+                var tab = tabs[i];
+                tab.addEventListener('click', function () {
+                    var id = this.getAttribute('href').match(/#tab-([a-zA-Z0-9]+)/)[1];
+                    if (id != 'home') {
+                        var div = document.getElementById('iframe-' + id);
+                        if (div.childNodes[0] == null) {
+                            var src = div.getAttribute('data-src');
+                            var iframe = document.createElement('iframe');
+                            iframe.setAttribute('src', src);
+                            iframe.height = app.iframeHeight;
+                            div.appendChild(iframe);
+                        }
+                    }
+                });
+            }
+        }
+
+    };
+
+    /**
+     * Start application.
+     */
+    app.checkReadyState();
+
+    /**
+     * On window resize, reset element heights.
+     */
+    window.onresize = function () {
+        app.setElementHeights();
     }
-}, 10);
 
-function hideLoading() {
-    var loading = document.getElementById('loading');
-    clearInterval(readyStateCheckInterval);
-    loading.style.opacity = 0;
-    setTimeout(function () {
-        loading.style.display = 'none';
-    }, 200);
-}
-
-function setHeights() {
-
-    // Get heights
-    var windowHeight = window.innerHeight;
-    var headerHeight = document.getElementById('header').clientHeight;
-
-    // Cards
-    var homeCardTitleHeight = document.getElementsByClassName('homeCardTitle')[0].clientHeight;
-    var homeCardActionsHeight = document.getElementsByClassName('homeCardActions')[0].clientHeight;
-    var homeCardHeight = windowHeight - headerHeight - 16 - 16 - homeCardTitleHeight - 32 - homeCardActionsHeight - 16 - 6;
-    var homeCards = document.getElementsByClassName('homeCard');
-    for (var i = 0; i < homeCards.length; i++) {
-        homeCards[i].getElementsByClassName('homeCardContent')[0].style.height = homeCardHeight + 'px';
-    }
-
-    // Iframes
-    var iframeHeight = windowHeight - headerHeight - 16 - 16; // mdl-grid margin + padding
-    var iframes = document.getElementsByClassName('iframe');
-    for (var i = 0; i < iframes.length; i++) {
-        iframes[i].height = iframeHeight;
-    }
-
-}
-
-window.onresize = function () {
-    setHeights();
-}
+})(document);
