@@ -27,13 +27,11 @@
         <link href="./modules/agenda/agenda.css" rel="stylesheet" type="text/css">
         <link href="./modules/apps/apps.css" rel="stylesheet" type="text/css">
         <link href="./modules/bookmarks/bookmarks.css" rel="stylesheet" type="text/css">
-        <link href="./modules/drawer/drawer.css" rel="stylesheet" type="text/css">
         <link href="./modules/news/news.css" rel="stylesheet" type="text/css">
-        <link href="./modules/search/search.css" rel="stylesheet" type="text/css">
 
         <!-- ------------------------------------------------------------------------------------------------------- -->
         <!-- Module HTML imports -->
-
+        <!-- ... -->
 
     </head>
     <body>
@@ -60,9 +58,18 @@
             <header id="header" class="mdl-layout__header">
                 <div class="mdl-layout__header-row">
                     <span class="mdl-layout-title">Material New Tab Page</span>
+                    <span class="mdl-layout-spacer"></span>
+                    <button id="overflow-menu" class="mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons">more_vert</i>
+                    </button>
+                    <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="overflow-menu">
+                        <li id="openSettings" class="mdl-menu__item">Settings</li>
+                        <li id="openAbout" class="mdl-menu__item">About</li>
+                    </ul>
                 </div>
                 <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
                     <a href="#tab-home" class="tab mdl-layout__tab is-active">Home</a>
+                    <a href="#tab-news" class="tab mdl-layout__tab">News</a>
                     <a href="#tab-todoist" class="tab mdl-layout__tab">Todoist</a>
                     <a href="#tab-localhost" class="tab mdl-layout__tab">Localhost</a>
                 </div>
@@ -73,21 +80,17 @@
             <div class="mdl-layout__drawer">
                 <span class="mdl-layout-title">Google Chrome</span>
                 <nav class="mdl-navigation">
-                    <a href="#" data-href="chrome://apps" class="mdl-navigation__link module_drawer_link"><i class="material-icons">apps</i> <span>Apps</span></a>
-                    <a href="#" data-href="chrome://bookmarks" class="mdl-navigation__link module_drawer_link"><i class="material-icons">star</i> <span>Bookmarks</span></a>
-                    <a href="#" data-href="chrome://downloads" class="mdl-navigation__link module_drawer_link"><i class="material-icons">file_download</i> <span>Downloads</span></a>
-                    <a href="#" data-href="chrome://history" class="mdl-navigation__link module_drawer_link"><i class="material-icons">history</i> <span>History</span></a>
-                    <a href="#" data-href="chrome://extensions" class="mdl-navigation__link module_drawer_link"><i class="material-icons">extension</i> <span>Extensions</span></a>
+                    <a href="#" data-href="chrome://apps" class="drawerChromeLink mdl-navigation__link"><i class="material-icons">apps</i> <span>Apps</span></a>
+                    <a href="#" data-href="chrome://bookmarks" class="drawerChromeLink mdl-navigation__link"><i class="material-icons">star</i> <span>Bookmarks</span></a>
+                    <a href="#" data-href="chrome://downloads" class="drawerChromeLink mdl-navigation__link"><i class="material-icons">file_download</i> <span>Downloads</span></a>
+                    <a href="#" data-href="chrome://history" class="drawerChromeLink mdl-navigation__link"><i class="material-icons">history</i> <span>History</span></a>
+                    <a href="#" data-href="chrome://extensions" class="drawerChromeLink mdl-navigation__link"><i class="material-icons">extension</i> <span>Extensions</span></a>
                     <a href="https://chrome.google.com/webstore" class="mdl-navigation__link" target="_blank"><i class="material-icons">shop</i> <span>Web Store</span></a>
-                    <a href="#" data-href="chrome://flags" class="mdl-navigation__link module_drawer_link"><i class="material-icons">flag</i> <span>Flags</span></a>
+                    <a href="#" data-href="chrome://flags" class="drawerChromeLink mdl-navigation__link"><i class="material-icons">flag</i> <span>Flags</span></a>
                     <hr>
-                    <a href="#" data-href="chrome://settings" class="mdl-navigation__link module_drawer_link"> <span>Settings</span></a>
-                    <a href="#" data-href="chrome://chrome" class="mdl-navigation__link module_drawer_link"><span>About Chrome</span></a>
+                    <a href="#" data-href="chrome://settings" class="drawerChromeLink mdl-navigation__link"> <span>Chrome Settings</span></a>
+                    <a href="#" data-href="chrome://chrome" class="drawerChromeLink mdl-navigation__link"><span>About Chrome</span></a>
                 </nav>
-                <div class="mdl-layout-spacer"></div>
-                <div class="mdl-layout__drawer-footer">
-                    <strong>Chrome Material New Tab</strong><br>Version: 0.4.1-SNAPSHOT
-                </div>
             </div>
 
             <!-- ----------------------------------------------------------------------------------- -->
@@ -98,19 +101,6 @@
                 <!-- TAB: Home -->
                 <section class="mdl-layout__tab-panel is-active" id="tab-home">
                     <div class="page-content">
-
-                        <!-- ------------------------------------ -->
-                        <!-- MODULE: Search -->
-                        <!--
-                        <div id="module_search">
-                            <div class="mdl-shadow--2dp">
-                                <input type="text" placeholder="Google Search">
-                                <button class="mdl-button mdl-js-button mdl-button--icon">
-                                    <i class="material-icons">search</i>
-                                </button>
-                            </div>
-                        </div>
-                        -->
 
                         <div class="mdl-grid">
                             <div class="mdl-cell mdl-cell--3-col">
@@ -126,9 +116,9 @@
                                         <div id="module_agenda_clockDate"></div>
                                     </div>
                                     <div class="mdl-card__actions mdl-card--border homeCardActions">
-                                        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect text-right">
-                                            &nbsp;
-                                        </a>
+                                        <a href="https://inbox.google.com" target="_blank" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect text-right">Inbox</a>
+                                        <a href="https://calendar.google.com" target="_blank" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect text-right">Calendar</a>
+                                        <a href="https://drive.google.com" target="_blank" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect text-right">Drive</a>
                                     </div>
                                 </div>
 
@@ -145,9 +135,7 @@
                                         <div id="module_bookmarks"></div>
                                     </div>
                                     <div class="mdl-card__actions mdl-card--border homeCardActions">
-                                        <a id="module_bookmarks_openAll" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect text-right">
-                                            Manage bookmarks
-                                        </a>
+                                        <a id="module_bookmarks_openAll" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect text-right">Manage bookmarks</a>
                                     </div>
                                 </div>
 
@@ -165,9 +153,7 @@
                                             <div id="module_apps" class="mdl-grid"></div>
                                         </div>
                                         <div class="mdl-card__actions mdl-card--border homeCardActions">
-                                            <a id="module_apps_openAll" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect text-right">
-                                                Manage apps
-                                            </a>
+                                            <a id="module_apps_openAll" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect text-right">Manage apps</a>
                                         </div>
                                     </div>
                                 </div>
@@ -185,15 +171,25 @@
                                         <div id="module_news"></div>
                                     </div>
                                     <div class="mdl-card__actions mdl-card--border homeCardActions">
-                                        <a href="https://news.google.com/" target="_blank" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect text-right">
-                                            Google News
-                                        </a>
+                                        <a href="https://news.google.com/" target="_blank" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect text-right">More News</a>
                                     </div>
                                 </div>
 
                             </div>
                         </div>
 
+                    </div>
+                </section>
+
+                <!-- ----------------------------------------------------------------- -->
+                <!-- TAB: News -->
+                <section class="mdl-layout__tab-panel" id="tab-news">
+                    <div class="page-content">
+                        <div class="mdl-grid">
+                            <div class="mdl-cell mdl-cell--12-col">
+
+                            </div>
+                        </div>
                     </div>
                 </section>
 
@@ -224,6 +220,65 @@
             </main>
 
         </div>
+        <!-- ------------------------------------------------------------------------------------------------------- -->
+        <!-- Settings page -->
+        <div id="settingsPage" class="pageOverlay">
+            <div class="mdl-card mdl-shadow--2dp">
+                <div class="mdl-card__title">
+                    <h2 class="mdl-card__title-text"><span>Settings</span></h2>
+                </div>
+                <div class="mdl-card__supporting-text">
+                    <p>
+                        WIP
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                    </p>
+                </div>
+                <div class="mdl-card__actions mdl-card--border">
+                    <a id="closeSettings" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect text-right">Close</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ------------------------------------------------------------------------------------------------------- -->
+        <!-- About page -->
+        <div id="aboutPage" class="pageOverlay">
+            <div class="mdl-card mdl-shadow--2dp">
+                <div class="mdl-card__title">
+                    <h2 class="mdl-card__title-text"><span>Material New Tab Page</span></h2>
+                </div>
+                <div class="mdl-card__supporting-text">
+                    <p>
+                        Free to use Chrome extension that replaces New Tab page. Provides additional utility to the New Tab page. Designed according to Material Design guidelines. Feel free to download, explore, share or modify any and all parts of the source code.
+                    </p>
+                    <table>
+                        <tr>
+                            <th>Version:</th>
+                            <td>0.0.12-SNAPSHOT</td>
+                        </tr>
+                        <tr>
+                            <th>License:</th>
+                            <td><a href="https://creativecommons.org/licenses/by/4.0/legalcode">CC Attribution 4.0 Internation</a></td>
+                        </tr>
+                        <tr>
+                            <th>Author:</th>
+                            <td><a href="https://plus.google.com/+MichalSukup%C4%8D%C3%A1k/posts">Michal Sukupcak</a></td>
+                        </tr>
+                        <tr>
+                            <th>Github:</th>
+                            <td><a href="https://github.com/michalsukupcak/Material-New-Tab">michalsukupcak/Material-New-Tab</a></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="mdl-card__actions mdl-card--border">
+                    <a id="closeAbout" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect text-right">Close</a>
+                </div>
+            </div>
+        </div>
 
         <!-- ------------------------------------------------------------------------------------------------------- -->
         <!-- Libraries -->
@@ -239,9 +294,7 @@
         <script src="./modules/agenda/agenda.js" type="text/javascript"></script>
         <script src="./modules/apps/apps.js" type="text/javascript"></script>
         <script src="./modules/bookmarks/bookmarks.js" type="text/javascript"></script>
-        <script src="./modules/drawer/drawer.js" type="text/javascript"></script>
         <script src="./modules/news/news.js" type="text/javascript"></script>
-        <script src="./modules/search/search.js" type="text/javascript"></script>
 
     </body>
 </html>

@@ -21,6 +21,8 @@
                 if (document.readyState === 'complete') {
                     console.log('Material New Tab Page is loaded.');
                     app.removeLoadingOverlay();
+                    app.setOverflowLinks();
+                    app.setDrawerLinks();
                     app.setElementHeights();
                     app.setTabContentLoaders();
                     clearInterval(interval);
@@ -37,6 +39,53 @@
             setTimeout(function () {
                 loading.style.display = 'none';
             }, 200);
+        },
+
+        /**
+         *
+         */
+        setOverflowLinks: function () {
+            var settingsPage = document.getElementById('settingsPage');
+            document.getElementById('openSettings').addEventListener('click', function () {
+                settingsPage.style.display = 'block';
+                window.setTimeout(function () {
+                    settingsPage.style.opacity = 1;
+                }, 10);
+            });
+            document.getElementById('closeSettings').addEventListener('click', function () {
+                settingsPage.style.opacity = 0;
+                window.setTimeout(function () {
+                    settingsPage.style.display = 'none';
+                }, 200);
+            });
+            var aboutPage = document.getElementById('aboutPage');
+            document.getElementById('openAbout').addEventListener('click', function () {
+                aboutPage.style.display = 'block';
+                window.setTimeout(function () {
+                    aboutPage.style.opacity = 1;
+                }, 10);
+
+            });
+            document.getElementById('closeAbout').addEventListener('click', function () {
+                aboutPage.style.opacity = 0;
+                window.setTimeout(function () {
+                    aboutPage.style.display = 'none';
+                }, 200);
+            });
+        },
+
+        /**
+         * Sets click handlers for chrome://... links.
+         */
+        setDrawerLinks: function () {
+            var drawerChromeLinks = document.getElementsByClassName('drawerChromeLink');
+            for (var i = 0; i < drawerChromeLinks.length; i++) {
+                drawerChromeLinks[i].onclick = function () {
+                    chrome.tabs.create({
+                        url: this.getAttribute('data-href')
+                    });
+                }
+            }
         },
 
         /**

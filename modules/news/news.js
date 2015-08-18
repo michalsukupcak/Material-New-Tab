@@ -26,7 +26,7 @@
                         newsTitle.setAttribute('class', 'newsTitle');
                         newsSnippet.appendChild(document.createTextNode(entry.contentSnippet));
                         newsSnippet.setAttribute('class', 'newsSnippet');
-                        newsLink.appendChild(document.createTextNode("Open article ..."));
+                        newsLink.appendChild(document.createTextNode("Open article"));
                         newsLink.setAttribute('href', entry.link);
                         newsLink.setAttribute('class', 'newsLink');
                         newsLink.setAttribute('target', '_blank');
@@ -41,6 +41,9 @@
 
     };
 
+    /**
+     *
+     */
     module_news.loadNews();
 
 })(document);

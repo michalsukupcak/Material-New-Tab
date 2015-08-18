@@ -6,6 +6,8 @@ body {
     height: 100%;
 }
 
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* Header */
 header#header {
     color: white;
 }
@@ -14,6 +16,20 @@ header#header a {
 }
 header#header div.mdl-layout__drawer-button i {
     color: white;
+}
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* Drawer */
+nav.mdl-navigation {}
+nav.mdl-navigation a.mdl-navigation__link {
+    vertical-align: middle;
+}
+nav.mdl-navigation a.mdl-navigation__link i {
+    vertical-align: middle;
+    margin: 0 10px 0 0;
+}
+nav.mdl-navigation a.mdl-navigation__link span {
+    vertical-align: middle;
 }
 
 /* ------------------------------------------------------------------------------------------------------------------ */
@@ -62,6 +78,52 @@ div.homeCard div.homeCardContent {
     overflow: auto;
 }
 div.homeCard div.homeCardActions {
+    text-align: right;
+}
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* About & Settings page */
+div.pageOverlay {
+    background: rgba(0, 0, 0, .5);
+    display: none;
+    height: 100%;
+    left: 0;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    transition: .2s ease;
+    width: 100%;
+    z-index: 99999999999;
+}
+div.pageOverlay div.mdl-card {
+    margin: 50px auto;
+    width: 480px;
+}
+div.pageOverlay div.mdl-card div.mdl-card__title {
+    background: #00BCD4;
+    color: white;
+}
+div.pageOverlay#aboutPage div.mdl-card div.mdl-card__title {
+    background-image: url("./../images/material-background.jpg");
+    height: 200px;
+}
+div.pageOverlay div.mdl-card div.mdl-card__supporting-text {}
+div.pageOverlay div.mdl-card div.mdl-card__supporting-text p {
+    text-align: justify;
+}
+div.pageOverlay div.mdl-card div.mdl-card__supporting-text table {}
+div.pageOverlay div.mdl-card div.mdl-card__supporting-text table tr {}
+div.pageOverlay div.mdl-card div.mdl-card__supporting-text table tr th {
+    text-align: left;
+}
+div.pageOverlay div.mdl-card div.mdl-card__supporting-text table tr td {}
+div.pageOverlay div.mdl-card div.mdl-card__supporting-text table tr td a {
+    color: #666;
+}
+div.pageOverlay div.mdl-card div.mdl-card__supporting-text table tr td a:hover {
+    text-decoration: none;
+}
+div.pageOverlay div.mdl-card div.mdl-card__actions {
     text-align: right;
 }
 

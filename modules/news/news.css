@@ -1,8 +1,8 @@
 div#module_news {}
 div#module_news div.news {
-    border-bottom: 1px solid #EEE;
-    margin: 0 0 10px 0;
-    padding: 0 0 10px 0;
+    border-bottom: 1px solid #E5E5E5;
+    margin: 0 0 15px 0;
+    padding: 0 0 15px 0;
 }
 div#module_news div.news:last-child {
     border-bottom: none;
@@ -10,7 +10,7 @@ div#module_news div.news:last-child {
     padding: 0;
 }
 div#module_news div.news div.newsTitle {
-    font-size: 1.4em;
+    font-size: 1.3em;
     font-weight: bold;
     line-height: 1.4em;
 }
