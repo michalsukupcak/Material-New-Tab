@@ -1,259 +1,124 @@
 <!DOCTYPE html>
-<html>
+    <html lang="en">
     <head>
 
-        <!-- ------------------------------------------------------------------------------------------------------- -->
+        <!-- ------------------------------------------- -->
         <!-- Meta tags -->
+        <meta charset="utf-8">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>New Tab</title>
 
-        <!-- ------------------------------------------------------------------------------------------------------- -->
-        <!-- Libraries -->
-        <link href="http://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet" type="text/css">
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
-        <link href="./vendor/mdl/material.min.css" rel="stylesheet" type="text/css">
-        <!--<link href="https://storage.googleapis.com/code.getmdl.io/1.0.2/material.blue-yellow.min.css" rel="stylesheet" type="text/css">-->
-        <!--<link href="https://storage.googleapis.com/code.getmdl.io/1.0.2/material.blue_grey-yellow.min.css" rel="stylesheet" type="text/css">-->
-        <!--<link href="https://storage.googleapis.com/code.getmdl.io/1.0.2/material.indigo-yellow.min.css" rel="stylesheet" type="text/css">-->
-        <!--<link href="https://storage.googleapis.com/code.getmdl.io/1.0.2/material.light_green-yellow.min.css" rel="stylesheet" type="text/css">-->
-        <!--<link href="https://storage.googleapis.com/code.getmdl.io/1.0.2/material.cyan-yellow.min.css" rel="stylesheet" type="text/css">-->
-
-        <!-- ------------------------------------------------------------------------------------------------------- -->
-        <!-- Styles -->
-        <link href="./styles/design.css" rel="stylesheet" type="text/css">
-        <link href="./styles/spinner.css" rel="stylesheet" type="text/css">
-
-        <!-- ------------------------------------------------------------------------------------------------------- -->
-        <!-- Modules CSS -->
-        <link href="./modules/agenda/agenda.css" rel="stylesheet" type="text/css">
-        <link href="./modules/apps/apps.css" rel="stylesheet" type="text/css">
-        <link href="./modules/bookmarks/bookmarks.css" rel="stylesheet" type="text/css">
-        <link href="./modules/news/news.css" rel="stylesheet" type="text/css">
-
-        <!-- ------------------------------------------------------------------------------------------------------- -->
-        <!-- Module HTML imports -->
-        <!-- ... -->
+        <!-- ------------------------------------------- -->
+        <!-- File imports -->
+        <script src="./bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+        <link rel="stylesheet" href="./styles/main.css">
+        <link rel="import" href="./build/elements.html">
 
     </head>
-    <body>
+    <body unresolved class="fullbleed layout vertical">
 
-        <!-- ------------------------------------------------------------------------------------------------------- -->
-        <!-- Loading overlay -->
-        <div id="loadingOverlay">
-            <div><strong>MATERIAL NEW TAB PAGE</strong></div>
-            <div>Loading ...</div>
-            <div class="loader">
-                <svg class="circular">
-                    <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/>
-                </svg>
-            </div>
-        </div>
+        <!-- ------------------------------------------- -->
+        <!-- Application template -->
+        <span id="browser-sync-binding"></span>
+        <template is="dom-bind" id="app">
 
-        <!-- ------------------------------------------------------------------------------------------------------- -->
-        <!-- Scaffold -->
-        <!--<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-tabs">-->
-        <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+            <!-- ------------------------------------------- -->
+            <!-- Overlay that hides app UI before API KEY has been set -->
+            <!--<div id="overlay"></div>-->
 
-            <!-- ----------------------------------------------------------------------------------- -->
-            <!-- Header -->
-            <header id="header" class="mdl-layout__header">
-                <div class="mdl-layout__header-row">
-                    <span class="mdl-layout-title">Material New Tab Page</span>
-                    <span class="mdl-layout-spacer"></span>
-                    <button id="overflow-menu" class="mdl-button mdl-js-button mdl-button--icon">
-                        <i class="material-icons">more_vert</i>
-                    </button>
-                    <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="overflow-menu">
-                        <li id="openSettings" class="mdl-menu__item">Settings</li>
-                        <li id="openAbout" class="mdl-menu__item">About</li>
-                    </ul>
-                </div>
-                <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
-                    <a href="#tab-home" class="tab mdl-layout__tab is-active">Home</a>
-                    <a href="#tab-news" class="tab mdl-layout__tab">News</a>
-                    <a href="#tab-todoist" class="tab mdl-layout__tab">Todoist</a>
-                    <a href="#tab-localhost" class="tab mdl-layout__tab">Localhost</a>
-                </div>
-            </header>
+            <!-- ------------------------------------------- -->
+            <!-- App scaffold -->
+            <paper-drawer-panel id="panel" drawer-width="300px" force-narrow>
 
-            <!-- ----------------------------------------------------------------------------------- -->
-            <!-- Drawer -->
-            <div class="mdl-layout__drawer">
-                <span class="mdl-layout-title">Google Chrome</span>
-                <nav class="mdl-navigation">
-                    <a href="#" data-href="chrome://apps" class="drawerChromeLink mdl-navigation__link"><i class="material-icons">apps</i> <span>Apps</span></a>
-                    <a href="#" data-href="chrome://bookmarks" class="drawerChromeLink mdl-navigation__link"><i class="material-icons">star</i> <span>Bookmarks</span></a>
-                    <a href="#" data-href="chrome://downloads" class="drawerChromeLink mdl-navigation__link"><i class="material-icons">file_download</i> <span>Downloads</span></a>
-                    <a href="#" data-href="chrome://history" class="drawerChromeLink mdl-navigation__link"><i class="material-icons">history</i> <span>History</span></a>
-                    <a href="#" data-href="chrome://extensions" class="drawerChromeLink mdl-navigation__link"><i class="material-icons">extension</i> <span>Extensions</span></a>
-                    <a href="https://chrome.google.com/webstore" class="mdl-navigation__link" target="_blank"><i class="material-icons">shop</i> <span>Web Store</span></a>
-                    <a href="#" data-href="chrome://flags" class="drawerChromeLink mdl-navigation__link"><i class="material-icons">flag</i> <span>Flags</span></a>
-                    <hr>
-                    <a href="#" data-href="chrome://settings" class="drawerChromeLink mdl-navigation__link"> <span>Chrome Settings</span></a>
-                    <a href="#" data-href="chrome://chrome" class="drawerChromeLink mdl-navigation__link"><span>About Chrome</span></a>
-                </nav>
-            </div>
+                <!-- ------------------------------------------- -->
+                <!-- Drawer -->
+                <paper-header-panel mode="seamed" drawer>
 
-            <!-- ----------------------------------------------------------------------------------- -->
-            <!-- Content -->
-            <main id="main" class="mdl-layout__content">
-
-                <!-- ----------------------------------------------------------------- -->
-                <!-- TAB: Home -->
-                <section class="mdl-layout__tab-panel is-active" id="tab-home">
-                    <div class="page-content">
-
-                        <div class="mdl-grid">
-                            <div class="mdl-cell mdl-cell--3-col">
-
-                                <!-- ------------------------------------ -->
-                                <!-- MODULE: Agenda -->
-                                <div class="mdl-card mdl-shadow--2dp homeCard">
-                                    <div class="mdl-card__title homeCardTitle">
-                                        <h2 class="mdl-card__title-text"><i class="material-icons">event</i> <span>Agenda</span></h2>
-                                    </div>
-                                    <div class="mdl-card__supporting-text homeCardContent">
-                                        <div id="module_agenda_clockTime"></div>
-                                        <div id="module_agenda_clockDate"></div>
-                                    </div>
-                                    <div class="mdl-card__actions mdl-card--border homeCardActions">
-                                        <a href="https://inbox.google.com" target="_blank" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect text-right">Inbox</a>
-                                        <a href="https://calendar.google.com" target="_blank" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect text-right">Calendar</a>
-                                        <a href="https://drive.google.com" target="_blank" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect text-right">Drive</a>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="mdl-cell mdl-cell--3-col">
-
-                                <!-- ------------------------------------ -->
-                                <!-- MODULE: Bookmarks -->
-                                <div class="mdl-card mdl-shadow--2dp homeCard">
-                                    <div class="mdl-card__title homeCardTitle">
-                                        <h2 class="mdl-card__title-text"><i class="material-icons">star</i> <span>Bookmarks</span></h2>
-                                    </div>
-                                    <div class="mdl-card__supporting-text homeCardContent">
-                                        <div id="module_bookmarks"></div>
-                                    </div>
-                                    <div class="mdl-card__actions mdl-card--border homeCardActions">
-                                        <a id="module_bookmarks_openAll" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect text-right">Manage bookmarks</a>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="mdl-cell mdl-cell--3-col">
-
-                                <!-- ------------------------------------ -->
-                                <!-- MODULE: Apps -->
-                                <div id="module_apps_html">
-                                    <div class="mdl-card mdl-shadow--2dp homeCard">
-                                        <div class="mdl-card__title homeCardTitle">
-                                            <h2 class="mdl-card__title-text"><i class="material-icons">apps</i> <span>Apps</span></h2>
-                                        </div>
-                                        <div class="mdl-card__supporting-text homeCardContent">
-                                            <div id="module_apps" class="mdl-grid"></div>
-                                        </div>
-                                        <div class="mdl-card__actions mdl-card--border homeCardActions">
-                                            <a id="module_apps_openAll" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect text-right">Manage apps</a>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="mdl-cell mdl-cell--3-col">
-
-                                <!-- ------------------------------------ -->
-                                <!-- MODULE: News -->
-                                <div class="mdl-card mdl-shadow--2dp homeCard">
-                                    <div class="mdl-card__title homeCardTitle">
-                                        <h2 class="mdl-card__title-text"><i class="material-icons">public</i> <span>News</span></h2>
-                                    </div>
-                                    <div class="mdl-card__supporting-text homeCardContent">
-                                        <div id="module_news"></div>
-                                    </div>
-                                    <div class="mdl-card__actions mdl-card--border homeCardActions">
-                                        <a href="https://news.google.com/" target="_blank" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect text-right">More News</a>
-                                    </div>
-                                </div>
-
-                            </div>
+                    <!-- Drawer toolbar -->
+                    <paper-toolbar class="tall">
+                        <div class="bottom fit">
+                            Google Chrome
+                            <p>Desktop web browser by Google</p>
                         </div>
+                    </paper-toolbar>
+
+                    <!-- Drawer content -->
+                    <div id="drawer">
+                        <paper-menu>
+                            <paper-item on-click="openChromeLink" data-link="apps"><iron-icon icon="apps"></iron-icon><span>Apps</span></paper-item>
+                            <paper-item on-click="openChromeLink" data-link="bookmarks"><iron-icon icon="star"></iron-icon><span>Bookmarks</span></paper-item>
+                            <paper-item on-click="openChromeLink" data-link="downloads"><iron-icon icon="file-download"></iron-icon><span>Downloads</span></paper-item>
+                            <paper-item on-click="openChromeLink" data-link="history"><iron-icon icon="history"></iron-icon><span>History</span></paper-item>
+                            <paper-item on-click="openChromeLink" data-link="extensions"><iron-icon icon="extension"></iron-icon><span>Extensions</span></paper-item>
+                            <paper-item><a href="https://chrome.google.com/webstore" target="_blank"><iron-icon icon="store"></iron-icon><span>Web Store</span></a></paper-item>
+                            <paper-item on-click="openChromeLink" data-link="flags"><iron-icon icon="flag"></iron-icon><span>Flags</span></paper-item>
+                            <hr>
+                            <paper-item on-click="openChromeLink" data-link="settings"><span>Chrome Settings</span></paper-item>
+                            <paper-item on-click="openChromeLink" data-link="about"><span>About Chrome</span></paper-item>
+                        </paper-menu>
+                    </div>
+
+                </paper-header-panel>
+
+                <!-- ------------------------------------------- -->
+                <!-- Main -->
+                <paper-header-panel main>
+
+                    <!-- Main toolbar -->
+                    <paper-toolbar class="medium-tall">
+
+                        <!-- Title row -->
+                        <paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
+                        <span>Material New Tab Page</span>
+                        <span class="flex"></span>
+                        <paper-menu-button horizontal-align="right">
+                            <paper-icon-button icon="more-vert" class="dropdown-trigger"></paper-icon-button>
+                            <paper-dropdown-menu class="dropdown-content">
+                                <paper-menu>
+                                    <paper-item on-click="openAboutDialog">About</paper-item>
+                                </paper-menu>
+                            </paper-dropdown-menu>
+                        </paper-menu-button>
+
+                        <!-- Tabs -->
+                        <paper-tabs selected="{{PAGE}}" attr-for-selected="data-page" class="bottom fit" noink>
+                            <paper-tab data-page="home">Home</paper-tab>
+                            <paper-tab data-page="news">News</paper-tab>
+                            <paper-tab data-page="">Youtube</paper-tab>
+                            <paper-tab data-page="">Twitter</paper-tab>
+                            <paper-tab data-page="">Reddit</paper-tab>
+                            <paper-tab data-page="">Todoist</paper-tab>
+                            <paper-tab data-page="">Localhost</paper-tab>
+                        </paper-tabs>
+
+                    </paper-toolbar>
+
+                    <!-- Main content -->
+                    <div id="main">
+
+                        <!-- Pages -->
+                        <x-pages __page="{{PAGE}}"></x-pages>
 
                     </div>
-                </section>
 
-                <!-- ----------------------------------------------------------------- -->
-                <!-- TAB: News -->
-                <section class="mdl-layout__tab-panel" id="tab-news">
-                    <div class="page-content">
-                        <div class="mdl-grid">
-                            <div class="mdl-cell mdl-cell--12-col">
+                </paper-header-panel>
 
-                            </div>
-                        </div>
-                    </div>
-                </section>
+            </paper-drawer-panel>
 
-                <!-- ----------------------------------------------------------------- -->
-                <!-- TAB: Todoist -->
-                <section class="mdl-layout__tab-panel" id="tab-todoist">
-                    <div class="page-content">
-                        <div class="mdl-grid">
-                            <div class="mdl-cell mdl-cell--12-col">
-                                <div id="iframe-todoist" data-src="https://todoist.com/app"></div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
+            <!-- ------------------------------------------- -->
+            <!-- Toast object for messages -->
+            <paper-toast id="toast"></paper-toast>
 
-                <!-- ----------------------------------------------------------------- -->
-                <!-- TAB: Localhost -->
-                <section class="mdl-layout__tab-panel" id="tab-localhost">
-                    <div class="page-content">
-                        <div class="mdl-grid">
-                            <div class="mdl-cell mdl-cell--12-col">
-                                <div id="iframe-localhost" data-src="http://localhost"></div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-            </main>
-
-        </div>
-        <!-- ------------------------------------------------------------------------------------------------------- -->
-        <!-- Settings page -->
-        <div id="settingsPage" class="pageOverlay">
-            <div class="mdl-card mdl-shadow--2dp">
-                <div class="mdl-card__title">
-                    <h2 class="mdl-card__title-text"><span>Settings</span></h2>
-                </div>
-                <div class="mdl-card__supporting-text">
+            <!-- ------------------------------------------- -->
+            <!-- About dialog -->
+            <paper-dialog id="aboutDialog" entry-animation="scale-up-animation" exit-animation="scale-down-animation" modal>
+                <h2>Material New Tab Page</h2>
+                <div>
                     <p>
-                        WIP
-                        <br>
-                        <br>
-                        <br>
-                        <br>
-                        <br>
-                        <br>
-                    </p>
-                </div>
-                <div class="mdl-card__actions mdl-card--border">
-                    <a id="closeSettings" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect text-right">Close</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- ------------------------------------------------------------------------------------------------------- -->
-        <!-- About page -->
-        <div id="aboutPage" class="pageOverlay">
-            <div class="mdl-card mdl-shadow--2dp">
-                <div class="mdl-card__title">
-                    <h2 class="mdl-card__title-text"><span>Material New Tab Page</span></h2>
-                </div>
-                <div class="mdl-card__supporting-text">
-                    <p>
-                        Free to use Chrome extension that replaces New Tab page. Provides additional utility to the New Tab page. Designed according to Material Design guidelines. Feel free to download, explore, share or modify any and all parts of the source code.
+                        Free to use Chrome extension that replaces New Tab page. Provides additional utility to the New
+                        Tab page. Designed according to Material Design guidelines. Feel free to download, explore,
+                        share or modify any and all parts of the source code.
                     </p>
                     <table>
                         <tr>
@@ -266,7 +131,7 @@
                         </tr>
                         <tr>
                             <th>Author:</th>
-                            <td><a href="https://plus.google.com/+MichalSukup%C4%8D%C3%A1k/posts">Michal Sukupcak</a></td>
+                            <td><a href="https://plus.google.com/+MichalSukup%C4%8D%C3%A1k/posts">Michal Sukupčák</a></td>
                         </tr>
                         <tr>
                             <th>Github:</th>
@@ -274,27 +139,23 @@
                         </tr>
                     </table>
                 </div>
-                <div class="mdl-card__actions mdl-card--border">
-                    <a id="closeAbout" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect text-right">Close</a>
+                <div class="buttons">
+                    <paper-button dialog-dismiss>Close</paper-button>
                 </div>
-            </div>
-        </div>
+            </paper-dialog>
 
-        <!-- ------------------------------------------------------------------------------------------------------- -->
+        </template>
+
+        <!-- ------------------------------------------- -->
         <!-- Libraries -->
-        <script src="./vendor/mdl/material.min.js" type="text/javascript"></script>
-        <script src="https://www.google.com/jsapi" type="text/javascript"></script>
 
-        <!-- ------------------------------------------------------------------------------------------------------- -->
-        <!-- Scripts -->
-        <script src="./scripts/app.js" type="text/javascript"></script>
-
-        <!-- ------------------------------------------------------------------------------------------------------- -->
-        <!-- Modules -->
-        <script src="./modules/agenda/agenda.js" type="text/javascript"></script>
-        <script src="./modules/apps/apps.js" type="text/javascript"></script>
-        <script src="./modules/bookmarks/bookmarks.js" type="text/javascript"></script>
-        <script src="./modules/news/news.js" type="text/javascript"></script>
+        <!-- ------------------------------------------- -->
+        <!-- Application scripts -->
+        <script src="./scripts/sha256.js"></script>
+        <script src="./scripts/base64.js"></script>
+        <script src="./scripts/moment.js"></script>
+        <script src="./scripts/functions.js"></script>
+        <script src="./scripts/app.js"></script>
 
     </body>
 </html>

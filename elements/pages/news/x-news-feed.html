@@ -1,0 +1,93 @@
+<dom-module id="x-news-feed">
+
+    <!-- ----------------------------------------------------------------------------------------------------------- -->
+    <!-- CSS -->
+    <style>
+
+        div.news { border-bottom: 1px solid #DDD; margin: 0 0 15px 0; padding: 0 0 15px 0; }
+        div.news:last-child { border: none; margin: 0; padding: 0; }
+        div.news div.title { font-weight: bold; }
+        div.news div.snippet { font-size: .8em; line-height: 1.4em; padding: 10px 0; }
+        div.news div.link { font-size: .8em; }
+        div.news div.link a { color: #1E86BD; }
+
+    </style>
+
+    <!-- ----------------------------------------------------------------------------------------------------------- -->
+    <!-- HTML -->
+    <template>
+        <google-feeds feed="[[feed]]" count="10" results="{{rss}}"></google-feeds>
+        <div>
+            <template is="dom-repeat" items="[[rss.entries]]" as="entry">
+                <div class="news">
+                    <div class="title">[[entry.title]]</div>
+                    <div class="snippet">[[entry.contentSnippet]]</div>
+                    <div class="link"><a href="[[entry.link]]">Open article</a></div>
+                </div>
+            </template>
+        </div>
+    </template>
+
+    <!-- ----------------------------------------------------------------------------------------------------------- -->
+    <!-- Javascript -->
+    <script>
+        Polymer({
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Init */
+
+            /**
+             * Element initialization and properties definition.
+             */
+            is: 'x-news-feed',
+            properties: {
+                icon: {
+                    type: String
+                },
+                title: {
+                    type: String
+                },
+                feed: {
+                    type: String
+                }
+            },
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Lifecycle callbacks */
+
+            /**
+             * Called when element is created.
+             */
+            created: function () {},
+
+            /**
+             * Called when element is attached to DOM.
+             */
+            attached: function () {
+
+            },
+
+            /**
+             * Called when element is detached from DOM.
+             */
+            detached: function () {},
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Observers */
+
+            // ...
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Event handlers */
+
+            // ...
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Helper functions */
+
+            // ...
+
+        });
+    </script>
+
+</dom-module>

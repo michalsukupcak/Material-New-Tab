@@ -1,0 +1,11 @@
+{
+  "name": "polymer-starter-kit",
+  "private": true,
+  "dependencies": {
+    "google-web-components": "GoogleWebComponents/google-web-components",
+    "iron-elements": "PolymerElements/iron-elements#1.0.3",
+    "paper-elements": "PolymerElements/paper-elements#1.0.3",
+    "platinum-elements": "PolymerElements/platinum-elements#1.0.1",
+    "neon-elements": "PolymerElements/neon-elements#1.0.0"
+  }
+}

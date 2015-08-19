@@ -1,0 +1,154 @@
+<dom-module id="x-apps">
+
+    <!-- ----------------------------------------------------------------------------------------------------------- -->
+    <!-- CSS -->
+    <style>
+
+        div#apps {}
+        div#apps div.appContainer {
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: .8em;
+            text-align: center;
+            margin: 0 0 15px 0;
+            padding: 4px 0;
+            transition: .2s ease;
+            width: 33%
+        }
+        div#apps div.appContainer:hover { background: #EEE; font-weight: bold; }
+        div#apps div.appContainer img { height: 36px; max-width: 100%; }
+        div#apps div.appContainer div { transition: .2s ease; }
+
+    </style>
+
+    <!-- ----------------------------------------------------------------------------------------------------------- -->
+    <!-- HTML -->
+    <template>
+
+        <!-- ------------------------------------------- -->
+        <!-- Apps -->
+        <div id="apps" class="horizontal layout wrap"></div>
+
+    </template>
+
+    <!-- ----------------------------------------------------------------------------------------------------------- -->
+    <!-- Javascript -->
+    <script>
+
+        /**
+         * App entity object.
+         *
+         * @param name
+         * @param icon
+         * @param id
+         * @constructor
+         */
+        function App(name, icon, id) {
+            this.name = name;
+            this.icon = icon;
+            this.id = id;
+        }
+
+        /**
+         * Compares leftApp and rightApp by name. Used in app sorting.
+         *
+         * @param leftApp
+         * @param rightApp
+         * @returns {number}
+         */
+        var compareApps =  function (leftApp, rightApp) {
+            return leftApp.name.localeCompare(rightApp.name);
+        };
+
+        Polymer({
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Init */
+
+            /**
+             * Element initialization and properties definition.
+             */
+            is: 'x-apps',
+            properties: {},
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Lifecycle callbacks */
+
+            /**
+             * Called when element is created.
+             */
+            created: function () {},
+
+            /**
+             * Called when element is attached to DOM.
+             */
+            attached: function () {
+                var that = this;
+                chrome.management.getAll(function (extensions) {
+
+                    var apps = [];
+                    for (var i = 0; i < extensions.length; i++) {
+                        var extension = extensions[i];
+                        if (extension.enabled == true && (extension.type == 'hosted_app' || extension.type == 'packaged_app' || extension.type == 'legacy_packaged_app')) {
+                            var name;
+                            if (extension.name.length > 15) {
+                                name = extension.name.substring(0,12) + ' ...';
+                            } else {
+                                name = extension.name;
+                            }
+                            var icon;
+                            if (extension.icons[1] != null) {
+                                icon = extension.icons[1].url;
+                            } else {
+                                icon = extension.icons[0].url;
+                            }
+                            apps.push(new App(name, icon, extension.id));
+                        }
+                    }
+                    apps.sort(compareApps);
+
+                    var div = that.$.apps;
+                    for (var i = 0; i < apps.length; i++) {
+                        var app = apps[i];
+                        var appIcon = document.createElement('img');
+                        appIcon.setAttribute('src', app.icon);
+                        var appDescription = document.createElement('div');
+                        appDescription.innerHTML = app.name;
+                        var appContainer = document.createElement('div');
+                        appContainer.setAttribute('class', 'appContainer');
+                        appContainer.setAttribute('data-app-id', app.id);
+                        appContainer.appendChild(appIcon);
+                        appContainer.appendChild(appDescription);
+                        appContainer.addEventListener('click', function () {
+                            chrome.management.launchApp(this.getAttribute('data-app-id'));
+                        });
+                        Polymer.dom(div).appendChild(appContainer);
+                    }
+
+                });
+            },
+
+            /**
+             * Called when element is detached from DOM.
+             */
+            detached: function () {},
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Observers */
+
+            // ...
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Event handlers */
+
+            // ...
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Helper functions */
+
+            // ...
+
+        });
+    </script>
+
+</dom-module>

@@ -1,0 +1,113 @@
+<dom-module id="x-news">
+
+    <!-- ----------------------------------------------------------------------------------------------------------- -->
+    <!-- CSS -->
+    <style include="shared-styles"></style>
+    <style>
+
+        div.container {}
+
+    </style>
+
+    <!-- ----------------------------------------------------------------------------------------------------------- -->
+    <!-- HTML -->
+    <template>
+        <div class="container horizontal center-justified layout">
+
+            <!-- World -->
+            <paper-material class="card">
+                <div class="title">
+                    <iron-icon icon="social:public"></iron-icon><span>World</span>
+                </div>
+                <div class="content">
+                    <x-news-feed feed="https://news.google.com/news?cf=all&hl=en&pz=1&ned=us&topic=w&output=rss"></x-news-feed>
+                </div>
+            </paper-material>
+
+            <!-- Google -->
+            <paper-material class="card">
+                <div class="title">
+                    <iron-icon icon="search"></iron-icon><span>Google</span>
+                </div>
+                <div class="content">
+                    <x-news-feed feed="http://news.google.com/news?cf=all&hl=en&pz=1&ned=us&q=google&output=rss"></x-news-feed>
+                </div>
+            </paper-material>
+
+            <!-- Android -->
+            <paper-material class="card">
+                <div class="title">
+                    <iron-icon icon="android"></iron-icon><span>Android</span>
+                </div>
+                <div class="content">
+                    <x-news-feed feed="http://news.google.com/news?cf=all&hl=en&pz=1&ned=us&q=android&output=rss"></x-news-feed>
+                </div>
+            </paper-material>
+
+            <!-- Technology -->
+            <paper-material class="card">
+                <div class="title">
+                    <iron-icon icon="hardware:phonelink"></iron-icon><span>Technology</span>
+                </div>
+                <div class="content">
+                    <x-news-feed feed="http://news.google.com/news?cf=all&hl=en&pz=1&ned=us&topic=tc&output=rss"></x-news-feed>
+                </div>
+            </paper-material>
+
+        </div>
+
+    </template>
+
+    <!-- ----------------------------------------------------------------------------------------------------------- -->
+    <!-- Javascript -->
+    <script>
+        Polymer({
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Init */
+
+            /**
+             * Element initialization and properties definition.
+             */
+            is: 'x-news',
+            properties: {},
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Lifecycle callbacks */
+
+            /**
+             * Called when element is created.
+             */
+            created: function () {},
+
+            /**
+             * Called when element is attached to DOM.
+             */
+            attached: function () {
+
+            },
+
+            /**
+             * Called when element is detached from DOM.
+             */
+            detached: function () {},
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Observers */
+
+            // ...
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Event handlers */
+
+            // ...
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Helper functions */
+
+            // ...
+
+        });
+    </script>
+
+</dom-module>

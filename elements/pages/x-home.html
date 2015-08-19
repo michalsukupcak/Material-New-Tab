@@ -1,0 +1,114 @@
+<dom-module id="x-home">
+
+    <!-- ----------------------------------------------------------------------------------------------------------- -->
+    <!-- CSS -->
+    <style include="shared-styles"></style>
+    <style>
+
+        div.container {}
+        div.container paper-material { width: 25%; margin: 0 10px; }
+        div.container paper-material div.content h2 { margin: 0; text-align: center; }
+    </style>
+
+    <!-- ----------------------------------------------------------------------------------------------------------- -->
+    <!-- HTML -->
+    <template>
+        <div class="container horizontal center-justified layout">
+
+            <!-- Dashboard -->
+            <paper-material class="card">
+                <div class="title">
+                    <iron-icon icon="dashboard"></iron-icon><span>Dashboard</span>
+                </div>
+                <div class="content">
+                    <x-clock></x-clock>
+                    <hr>
+                    <h2>Password Generator</h2>
+                    <x-password-generator></x-password-generator>
+                </div>
+            </paper-material>
+
+            <!-- Bookmarks -->
+            <paper-material class="card">
+                <div class="title">
+                    <iron-icon icon="star"></iron-icon><span>Bookmarks</span>
+                </div>
+                <div class="content">
+                    <x-bookmarks></x-bookmarks>
+                </div>
+            </paper-material>
+
+            <!-- Apps -->
+            <paper-material class="card">
+                <div class="title">
+                    <iron-icon icon="apps"></iron-icon><span>Apps</span>
+                </div>
+                <div class="content">
+                    <x-apps></x-apps>
+                </div>
+            </paper-material>
+
+            <!-- Calendar -->
+            <paper-material class="card">
+                <div class="title">
+                    <iron-icon icon="event"></iron-icon><span>Calendar</span>
+                </div>
+                <div class="content">
+                    <x-calendar></x-calendar>
+                </div>
+            </paper-material>
+
+        </div>
+    </template>
+
+    <!-- ----------------------------------------------------------------------------------------------------------- -->
+    <!-- Javascript -->
+    <script>
+        Polymer({
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Init */
+
+            /**
+             * Element initialization and properties definition.
+             */
+            is: 'x-home',
+            properties: {},
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Lifecycle callbacks */
+
+            /**
+             * Called when element is created.
+             */
+            created: function () {},
+
+            /**
+             * Called when element is attached to DOM.
+             */
+            attached: function () {},
+
+            /**
+             * Called when element is detached from DOM.
+             */
+            detached: function () {},
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Observers */
+
+            // ...
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Event handlers */
+
+            // ...
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Helper functions */
+
+            // ...
+
+        });
+    </script>
+
+</dom-module>

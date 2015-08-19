@@ -1,0 +1,88 @@
+<dom-module id="x-pages">
+
+    <!-- ----------------------------------------------------------------------------------------------------------- -->
+    <!-- CSS -->
+    <style>
+
+        section { height: 100%; }
+
+    </style>
+
+    <!-- ----------------------------------------------------------------------------------------------------------- -->
+    <!-- HTML -->
+    <template>
+
+        <!-- Pages -->
+        <neon-animated-pages id="pages" selected="{{__page}}" attr-for-selected="data-page" entry-animation="fade-in-animation" exit-animation="fade-out-animation">
+            <section data-page="home"><x-home></x-home></section>
+            <section data-page="news"><x-news></x-news></section>
+        </neon-animated-pages>
+
+    </template>
+
+    <!-- ----------------------------------------------------------------------------------------------------------- -->
+    <!-- Javascript -->
+    <script>
+        Polymer({
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Init */
+
+            /**
+             * Element initialization and properties definition.
+             */
+            is: 'x-pages',
+            properties: {
+                __page: {
+                    type: String,
+                    value: null,
+                    observer: '___pageChanged',
+                    notify: true
+                },
+                __params: {
+                    type: Object,
+                    value: {},
+                    notify: true,
+                }
+            },
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Lifecycle callbacks */
+
+            /**
+             * Called when element is created.
+             */
+            created: function () {},
+
+            /**
+             * Called when element is attached to DOM.
+             */
+            attached: function () {},
+
+            /**
+             * Called when element is detached from DOM.
+             */
+            detached: function () {},
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Observers */
+
+            // ...
+            ___pageChanged: function () {
+
+            }
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Event handlers */
+
+            // ...
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Helper functions */
+
+            // ...
+
+        });
+    </script>
+
+</dom-module>

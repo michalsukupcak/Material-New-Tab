@@ -1,0 +1,83 @@
+<dom-module id="x-clock">
+
+    <!-- ----------------------------------------------------------------------------------------------------------- -->
+    <!-- CSS -->
+    <style>
+
+        div#time { font-size: 3em; margin: 10px 0 0 0; text-align: center; }
+        div#date { font-size: 1.4em; margin: 0 0 10px 0; text-align: center;}
+
+    </style>
+
+    <!-- ----------------------------------------------------------------------------------------------------------- -->
+    <!-- HTML -->
+    <template>
+
+        <!-- ------------------------------------------- -->
+        <!-- Time and date -->
+        <div id="time">[[time]]</div>
+        <div id="date">[[date]]</div>
+
+    </template>
+
+    <!-- ----------------------------------------------------------------------------------------------------------- -->
+    <!-- Javascript -->
+    <script>
+        Polymer({
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Init */
+
+            /**
+             * Element initialization and properties definition.
+             */
+            is: 'x-clock',
+            properties: {},
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Lifecycle callbacks */
+
+            /**
+             * Called when element is created.
+             */
+            created: function () {},
+
+            /**
+             * Called when element is attached to DOM.
+             */
+            attached: function () {
+                this.clock();
+                var that = this;
+                window.setInterval(function () {
+                    that.clock();
+                }, 1000);
+            },
+
+            /**
+             * Called when element is detached from DOM.
+             */
+            detached: function () {},
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Observers */
+
+            // ...
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Event handlers */
+
+            // ...
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Helper functions */
+
+            clock: function () {
+                var date = new Date();
+                this.time = date.toLocaleTimeString();
+                this.date = date.toDateString();
+            }
+
+        });
+    </script>
+
+</dom-module>

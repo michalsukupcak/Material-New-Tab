@@ -1,0 +1,83 @@
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* HTML tags */
+
+/* Body */
+body { background: #F2F2F2; color: #333; font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 1em; }
+
+/* Horizontal line */
+h1 { margin-top: 15px; text-align: center; }
+
+/* Horizontal line */
+hr { border: none; border-top: 1px solid #DDD; margin: 30px auto; }
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* Polymer elements */
+
+/* paper-button */
+paper-button.primary { color: #1E86BD; }
+paper-button[raised].primary { background: #1E86BD; color: white; }
+paper-button[dialog-dismiss] { color: #333; }
+paper-button[dialog-confirm].delete { color: red; }
+
+/* paper-dialog */
+paper-dialog { background: white !important; max-width: 480px; min-height: 200px; }
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* Index.html  */
+
+/* Overlay that hides app UI before API key is set */
+div#overlay { background: white; height: 100%; left: 0; position: absolute; top: 0; transition: .2s ease; z-index: 1; width: 100%; }
+
+/* Panel */
+paper-drawer-panel#panel {}
+
+/* Drawer */
+paper-drawer-panel#panel paper-header-panel[drawer] { background: #F2F2F2; }
+paper-drawer-panel#panel paper-header-panel[drawer] paper-toolbar {
+    background: #F2F2F2 url('./../images/material-background.jpg');
+    border-bottom: 1px solid #DDD;
+    color: white;
+    font-weight: bold;
+    text-shadow: 1px 1px 1px #666;
+}
+paper-drawer-panel#panel paper-header-panel[drawer] paper-toolbar div { font-size: 1.2em; padding: 0 20px; }
+paper-drawer-panel#panel paper-header-panel[drawer] paper-toolbar div p { font-size: .6em; margin: 5px 0 20px 0; }
+paper-drawer-panel#panel paper-header-panel[drawer] div#drawer paper-menu {}
+paper-drawer-panel#panel paper-header-panel[drawer] div#drawer paper-menu hr { margin: 10px 0; }
+paper-drawer-panel#panel paper-header-panel[drawer] div#drawer paper-menu a { color: #333; display: block; text-decoration: none; }
+paper-drawer-panel#panel paper-header-panel[drawer] div#drawer paper-menu paper-item { cursor: pointer; font-size: .9em; transition: .2s ease; }
+paper-drawer-panel#panel paper-header-panel[drawer] div#drawer paper-menu paper-item iron-icon {}
+paper-drawer-panel#panel paper-header-panel[drawer] div#drawer paper-menu paper-item span { padding: 2px 0 0 15px; }
+paper-drawer-panel#panel paper-header-panel[drawer] div#drawer paper-menu paper-item:hover { background: #EEE; }
+
+/* Main */
+paper-drawer-panel#panel paper-header-panel[main] { background: #F2F2F2; }
+paper-drawer-panel#panel paper-header-panel[main] paper-toolbar {}
+paper-drawer-panel#panel paper-header-panel[main] paper-toolbar span { font-size: 1.2em; }
+paper-drawer-panel#panel paper-header-panel[main] paper-toolbar paper-dropdown-menu paper-menu { background: white; }
+paper-drawer-panel#panel paper-header-panel[main] paper-toolbar paper-dropdown-menu paper-menu paper-item { cursor: pointer; transition: .2s ease; }
+paper-drawer-panel#panel paper-header-panel[main] paper-toolbar paper-dropdown-menu paper-menu paper-item:hover { background: #F2F2F2; }
+paper-drawer-panel#panel paper-header-panel[main] div#main { padding: 10px 20px; }
+paper-drawer-panel#panel paper-header-panel[main] div#main div#loadingOverlay { display: none; position: absolute; top: -10px; width: 100%; }
+paper-drawer-panel#panel paper-header-panel[main] div#main div#loadingOverlay paper-progress { width: 100%; }
+
+/* Toast */
+paper-toast { z-index: 2; }
+
+/* About dialog */
+paper-dialog#aboutDialog {}
+paper-dialog#aboutDialog h2 {}
+paper-dialog#aboutDialog div {}
+paper-dialog#aboutDialog div p {}
+paper-dialog#aboutDialog div table {}
+paper-dialog#aboutDialog div table tr {}
+paper-dialog#aboutDialog div table tr th { text-align: right; }
+paper-dialog#aboutDialog div table tr td {}
+paper-dialog#aboutDialog div table tr td a { color: #333; }
+paper-dialog#aboutDialog div table tr td a:hover { text-decoration: none; }
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* Scrollbar */
+/*::-webkit-scrollbar { background: transparent !important; display: none; width: 3px; }*/
+/*::-webkit-scrollbar-button { background: transparent; height: 5px; }*/
+/*::-webkit-scrollbar-thumb { background: #DDD; }*/

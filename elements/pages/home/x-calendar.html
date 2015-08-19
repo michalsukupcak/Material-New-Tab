@@ -1,0 +1,284 @@
+<dom-module id="x-calendar">
+
+    <!-- ----------------------------------------------------------------------------------------------------------- -->
+    <!-- CSS -->
+    <style>
+
+        div.event { border-bottom: 1px solid #DDD; margin: 0 0 10px 0; padding: 0 0 10px 0; }
+        div.event div.name { font-weight: bold; }
+        div.event div.date { font-size: .8em; margin: 5px 0 0 0; }
+        div.event div.calendar { font-size: .8em; margin: 0 0 5px 0; }
+        div.event div.link { font-size: .8em; }
+        div.event div.link a { color: #1E86BD; text-decoration: none; }
+        div.event div.link iron-icon { width: 16px; }
+        div.event div.link a:hover { text-decoration: underline; }
+
+        div#reload { color: #999; cursor: pointer; text-align: right; }
+        div#reload:hover { text-decoration: underline; }
+        div#reload span { font-size: .6em; }
+        div#reload iron-icon { width: 12px; }
+
+    </style>
+
+    <!-- ----------------------------------------------------------------------------------------------------------- -->
+    <!-- HTML -->
+    <template>
+
+        <!-- ------------------------------------------- -->
+        <!-- Events -->
+        <template is="dom-repeat" items="[[events]]" as="event">
+            <div class="event">
+                <div class="name">[[event.name]]</div>
+                <div class="date">Date: <span>[[event.date]]</span></div>
+                <div class="calendar">Calendar: <span>[[event.calendar]]</span></div>
+                <div class="link"><a href="[[event.link]]">Open event <iron-icon icon="open-in-new"></iron-icon></a></div>
+            </div>
+        </template>
+
+        <!-- ------------------------------------------- -->
+        <!-- Reload -->
+        <div id="reload" on-click="reloadCalendars">
+            <span>Reload</span><iron-icon icon="refresh"></iron-icon>
+        </div>
+
+        <!-- ------------------------------------------- -->
+        <!-- Google Calendar API call to retrieve list of calendars -->
+        <iron-ajax id="getCalendarsRequest"
+            on-response="getCalendarsRequestResponse"
+            on-error="getCalendarsRequestError"
+        ></iron-ajax>
+
+        <!-- ------------------------------------------- -->
+        <!-- Google Calendar API call to retrieve list of events for given calendar -->
+        <iron-ajax id="getEventsRequest"
+            on-response="getEventsRequestResponse"
+            on-error="getEventsRequestError"
+        ></iron-ajax>
+
+        <!-- ------------------------------------------- -->
+        <!-- Localstorage for events -->
+        <iron-localstorage name="material-new-tab-page-calendar-events"
+            id="eventsLocalstorage"
+            value="{{events}}"
+            auto-save-disabled
+        ></iron-localstorage>
+
+        <!-- ------------------------------------------- -->
+        <!-- Localstorage for events -->
+        <iron-localstorage name="material-new-tab-page-calendar-last-update"
+            id="lastUpdateLocalstorage"
+            value="{{lastUpdate}}"
+            on-iron-localstorage-load="initCalendar"
+            on-iron-localstorage-load-empty="initCalendar"
+        ></iron-localstorage>
+
+    </template>
+
+    <!-- ----------------------------------------------------------------------------------------------------------- -->
+    <!-- Javascript -->
+    <script>
+
+        /**
+         * Event entity object.
+         *
+         * @param name
+         * @param icon
+         * @param id
+         * @constructor
+         */
+        function Event(name, date, calendar, link) {
+            var d;
+            var m = moment(date);
+            var yearDiff = moment().format('YYYY') - m.format('YYYY');
+            if (yearDiff > 0) {
+                m.add(yearDiff, 'years');
+            }
+            if (m.format('HH:mm') == '00:00') {
+                d = m.format('DD.MM.YYYY') + ' (All day)';
+            } else {
+                d = m.format('DD.MM.YYYY @ HH:mm');
+            }
+            this.name = name;
+            this.date = d;
+            this.timestamp = m.unix();
+            this.calendar = calendar;
+            this.link = link;
+        }
+
+        /**
+         * Compares leftEvent and rightEvent by date. Used in event sorting.
+         *
+         * @param leftEvent
+         * @param rightEvent
+         * @returns {number}
+         */
+        var compareEvents =  function (leftEvent, rightEvent) {
+            if (leftEvent.timestamp < rightEvent.timestamp) {
+                return -1;
+            } else if (leftEvent.timestamp == rightEvent.timestamp) {
+                return 0;
+            } else {
+                return 1;
+            }
+        };
+
+        Polymer({
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Init */
+
+            /**
+             * Element initialization and properties definition.
+             */
+            is: 'x-calendar',
+            properties: {
+                calendars: {
+                    type: Array,
+                    value: []
+                },
+                calendarIndex: {
+                    type: Number,
+                    value: 0
+                },
+                events: {
+                    type: Array,
+                    value: []
+                },
+                lastUpdate: {
+                    type: Number,
+                    value: 0
+                }
+            },
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Lifecycle callbacks */
+
+            /**
+             * Called when element is created.
+             */
+            created: function () {},
+
+            /**
+             * Called when element is attached to DOM.
+             */
+            attached: function () {},
+
+            /**
+             * Called when element is detached from DOM.
+             */
+            detached: function () {},
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Observers */
+
+            // ...
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Event handlers */
+
+            /**
+             *
+             */
+            reloadCalendars: function () {
+                this.lastUpdate = 0;
+                this.events = [];
+                this.initCalendar();
+            },
+
+            /**
+             *
+             */
+            getCalendarsRequestResponse: function (event) {
+                var calendars = event.detail.response.items;
+                this.calendars = calendars;
+                this.events = [];
+                if (this.calendars.length > 0) {
+                    this.calendarIndex = 0;
+                    this.fireGetEventsRequest();
+                }
+            },
+
+            /**
+             *
+             */
+            getCalendarsRequestError: function (event) {
+                console.log(event.response.error);
+            },
+
+            /**
+             *
+             */
+            getEventsRequestResponse: function (event) {
+                var events = event.detail.response.items;
+                for (var i = 0; i < events.length; i++) {
+                    var e = events[i];
+                    this.push('events', new Event(e.summary, (e.start.date != null ? e.start.date : e.start.dateTime), event.detail.response.summary, e.htmlLink));
+                }
+                if (this.calendarIndex < this.calendars.length) {
+                    this.fireGetEventsRequest();
+                } else {
+                    this.events.sort(compareEvents);
+                    this.events = this.events.slice();
+                    this.$.eventsLocalstorage.save();
+                    this.lastUpdate = moment().unix();
+                }
+            },
+
+            /**
+             *
+             */
+            getEventsRequestError: function (event) {
+                console.log(event.detail.error);
+            },
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Helper functions */
+
+            initCalendar: function () {
+                if (this.lastUpdate < moment().unix() - 3600) {
+                    var that = this;
+                    chrome.identity.getAuthToken({ 'interactive': true }, function (token) {
+                        that.$.getCalendarsRequest.url =
+                                'https://www.googleapis.com/calendar/v3/users/me/calendarList' +
+                                '?access_token=' + encodeURIComponent(token);
+                        that.$.getCalendarsRequest.generateRequest();
+                    });
+                }
+            },
+
+            /**
+             *
+             */
+            fireGetEventsRequest: function () {
+                var that = this;
+                chrome.identity.getAuthToken({ 'interactive': true }, function (token) {
+                    var m = moment();
+                    that.$.getEventsRequest.url =
+                            'https://www.googleapis.com/calendar/v3/calendars/' + encodeURIComponent(that.calendars[that.calendarIndex].id) + '/events' +
+                            '?maxResults=5' +
+                            '&timeMin=' + encodeURIComponent(m.format("YYYY-MM-DDTHH:mm:ssZ")) +
+                            '&timeMax=' + encodeURIComponent(m.add(1, 'months').format("YYYY-MM-DDTHH:mm:ssZ")) +
+                            '&access_token=' + encodeURIComponent(token);
+                    that.$.getEventsRequest.generateRequest();
+                    that.calendarIndex++;
+                });
+            },
+
+            /**
+             *
+             * @param calendarId
+             * @returns {*}
+             */
+            getCalendarById: function (calendarId) {
+                for (var i = 0; i < this.calendars.length; i++) {
+                    if (calendarId == this.calendars[i].id) {
+                        return this.calendars[i].summary;
+                    }
+                }
+                return null;
+            }
+
+        });
+    </script>
+
+</dom-module>
