@@ -1,0 +1,159 @@
+<dom-module id="x-dashboard">
+
+    <!-- ----------------------------------------------------------------------------------------------------------- -->
+    <!-- CSS -->
+    <style include="shared-styles"></style>
+    <style include="home-colors"></style>
+    <style>
+
+        paper-dialog#customizeDialog {}
+        paper-dialog#customizeDialog div.content {}
+        paper-dialog#customizeDialog div.content div.checkbox { padding: 5px 0 10px 0; }
+        paper-dialog#customizeDialog div.content div.checkbox span {}
+        paper-dialog#customizeDialog div.content div.checkbox span paper-toggle-button { margin: 0 0 0 20px; }
+
+    </style>
+
+    <!-- ----------------------------------------------------------------------------------------------------------- -->
+    <!-- HTML -->
+    <template>
+
+        <!-- ------------------------------------------- -->
+        <!-- Dashboard -->
+        <paper-material class="card" elevation="2">
+            <div class="header horizontal layout">
+                <div class="title">
+                    <iron-icon icon="dashboard"></iron-icon><span>Dashboard</span>
+                </div>
+                <div class="flex"></div>
+                <paper-menu-button horizontal-align="right">
+                    <paper-icon-button icon="more-vert" class="dropdown-trigger"></paper-icon-button>
+                    <paper-dropdown-menu class="dropdown-content">
+                        <paper-menu>
+                            <paper-item on-click="openCustomizeDialog">Customize</paper-item>
+                        </paper-menu>
+                    </paper-dropdown-menu>
+                </paper-menu-button>
+            </div>
+            <div class="content">
+                <template is="dom-if" if="[[showClock]]">
+                    <x-clock></x-clock>
+                </template>
+                <template is="dom-if" if="[[showPasswordGenerator]]">
+                    <template is="dom-if" if="[[showClock]]">
+                        <hr>
+                    </template>
+                    <x-password-generator></x-password-generator>
+                </template>
+            </div>
+        </paper-material>
+
+        <!-- ------------------------------------------- -->
+        <!-- Save warning dialog -->
+        <paper-dialog id="customizeDialog" entry-animation="scale-up-animation" exit-animation="scale-down-animation" modal>
+            <h2>Customize dashboard</h2>
+            <div class="content">
+                <div class="checkbox horizontal layout">
+                    <span>Enable clock</span>
+                    <span class="flex"></span>
+                    <span><paper-toggle-button checked="{{showClock}}"></paper-toggle-button></span>
+                </div>
+                <div class="checkbox horizontal layout">
+                    <span>Enable Password Generator</span>
+                    <span class="flex"></span>
+                    <span><paper-toggle-button checked="{{showPasswordGenerator}}"></paper-toggle-button></span>
+                </div>
+            </div>
+            <div class="buttons">
+                <paper-button dialog-dismiss>Close</paper-button>
+            </div>
+        </paper-dialog>
+
+        <!-- ------------------------------------------- -->
+        <!-- Localstorage for show clock -->
+        <iron-localstorage name="material-new-tab-page-dashboard-show-clock"
+            id="showClockLocalstorage"
+            value="{{showClock}}"
+            on-iron-localstorage-load-empty="initShowClock"
+        ></iron-localstorage>
+
+        <!-- ------------------------------------------- -->
+        <!-- Localstorage for show password generator -->
+        <iron-localstorage name="material-new-tab-page-dashboard-show-password-generator"
+            id="showPasswordGenerator"
+            value="{{showPasswordGenerator}}"
+            on-iron-localstorage-load-empty="initShowPasswordGenerator"
+        ></iron-localstorage>
+
+    </template>
+
+    <!-- ----------------------------------------------------------------------------------------------------------- -->
+    <!-- Javascript -->
+    <script>
+        Polymer({
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Init */
+
+            /**
+             * Element initialization and properties definition.
+             */
+            is: 'x-dashboard',
+            properties: {
+                showClock: {
+                    type: Boolean,
+                    value: true
+                },
+                showPasswordGenerator: {
+                    type: Boolean,
+                    value: true
+                }
+            },
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Lifecycle callbacks */
+
+            /**
+             * Called when element is created.
+             */
+            created: function () {},
+
+            /**
+             * Called when element is attached to DOM.
+             */
+            attached: function () {},
+
+            /**
+             * Called when element is detached from DOM.
+             */
+            detached: function () {},
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Observers */
+
+            // ...
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Event handlers */
+
+            openCustomizeDialog: function () {
+                this.$.customizeDialog.open();
+            },
+
+            initShowClock: function () {
+                this.showClock = true;
+            },
+
+            initShowPasswordGenerator: function () {
+                this.showPasswordGenerator = true;
+            }
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Helper functions */
+
+            // ...
+
+        });
+    </script>
+
+</dom-module>

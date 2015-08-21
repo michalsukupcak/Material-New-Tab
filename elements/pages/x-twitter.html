@@ -1,11 +1,14 @@
-<dom-module id="x-pages">
+<dom-module id="x-twitter">
 
     <!-- ----------------------------------------------------------------------------------------------------------- -->
     <!-- CSS -->
     <style>
 
-        :host { display: block; height: 100%; }
-        :host neon-animated-pages { height: 100%; }
+        :host {
+            background: white;
+            display: block;
+            height: 100%;
+        }
 
     </style>
 
@@ -13,13 +16,9 @@
     <!-- HTML -->
     <template>
 
-        <!-- Pages -->
-        <neon-animated-pages id="pages" selected="{{__page}}" attr-for-selected="data-page" entry-animation="fade-in-animation" exit-animation="fade-out-animation">
-            <section data-page="home"><x-home></x-home></section>
-            <section data-page="news"><x-news></x-news></section>
-            <section data-page="youtube"><x-youtube></x-youtube></section>
-            <section data-page="twitter"><x-twitter></x-twitter></section>
-        </neon-animated-pages>
+        <div style="background: orange; height: 100%;">
+            Twitter
+        </div>
 
     </template>
 
@@ -34,20 +33,8 @@
             /**
              * Element initialization and properties definition.
              */
-            is: 'x-pages',
-            properties: {
-                __page: {
-                    type: String,
-                    value: null,
-                    observer: '___pageChanged',
-                    notify: true
-                },
-                __params: {
-                    type: Object,
-                    value: {},
-                    notify: true,
-                }
-            },
+            is: 'x-twitter',
+            properties: {},
 
             /* ------------------------------------------------------------------------------------------------------ */
             /* Lifecycle callbacks */
@@ -60,7 +47,9 @@
             /**
              * Called when element is attached to DOM.
              */
-            attached: function () {},
+            attached: function () {
+                //window.onresize = this.setCardsHeight();
+            },
 
             /**
              * Called when element is detached from DOM.
@@ -71,9 +60,6 @@
             /* Observers */
 
             // ...
-            ___pageChanged: function () {
-
-            }
 
             /* ------------------------------------------------------------------------------------------------------ */
             /* Event handlers */
@@ -83,7 +69,26 @@
             /* ------------------------------------------------------------------------------------------------------ */
             /* Helper functions */
 
-            // ...
+            /**
+             * Calculates height for div.news paper-material.card div.container(s).
+             *
+             * @private
+             */
+            setCardsHeight: function () {
+                var viewportHeight = window.innerHeight;
+                var toolbarHeight = document.querySelector('paper-toolbar#mainToolbar').offsetHeight;
+                var height =
+                                viewportHeight
+                                - toolbarHeight
+                                - 54 // <div.header> (card header) height
+                                - 40 // <div#main> top+bottom padding
+                                - 40 // <paper-material.card div.content> top+bottom padding
+                        ;
+                var cards = document.querySelectorAll('div.home paper-material.card div.content');
+                for (var i = 0; i < cards.length; i++) {
+                    cards[i].style.height = height + 'px';
+                }
+            }
 
         });
     </script>

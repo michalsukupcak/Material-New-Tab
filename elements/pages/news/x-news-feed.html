@@ -2,30 +2,49 @@
 
     <!-- ----------------------------------------------------------------------------------------------------------- -->
     <!-- CSS -->
+    <style include="shared-styles"></style>
+    <style include="news-colors"></style>
     <style>
 
-        div.news { border-bottom: 1px solid #DDD; margin: 0 0 15px 0; padding: 0 0 15px 0; }
-        div.news:last-child { border: none; margin: 0; padding: 0; }
-        div.news div.title { font-weight: bold; }
-        div.news div.snippet { font-size: .8em; line-height: 1.4em; padding: 10px 0; }
-        div.news div.link { font-size: .8em; }
-        div.news div.link a { color: #1E86BD; }
+        div.article { border-bottom: 1px solid #DDD; margin: 0 0 15px 0; padding: 0 0 15px 0; transition: .2s ease; }
+        div.article:last-child { border: none; margin: 0; padding: 0; }
+        div.article div.title { font-weight: bold; }
+        div.article div.snippet { font-size: .8em; line-height: 1.4em; padding: 10px 0; }
+        div.article div.link { font-size: .8em; }
+        div.article div.link a { color: #455A64; }
 
     </style>
 
     <!-- ----------------------------------------------------------------------------------------------------------- -->
     <!-- HTML -->
     <template>
-        <google-feeds feed="[[feed]]" count="10" results="{{rss}}"></google-feeds>
-        <div>
-            <template is="dom-repeat" items="[[rss.entries]]" as="entry">
-                <div class="news">
-                    <div class="title">[[entry.title]]</div>
-                    <div class="snippet">[[entry.contentSnippet]]</div>
-                    <div class="link"><a href="[[entry.link]]">Open article</a></div>
+        <google-feeds feed="[[feed.url]]" count="[[feed.count]]" results="{{rss}}" loading="{{loading}}" on-google-feeds-response="setCardHeight"></google-feeds>
+        <paper-material class="card" elevation="2">
+            <div class="header">
+                <div class="title">
+                    <iron-icon icon="[[feed.icon]]"></iron-icon><span>[[feed.name]]</span>
                 </div>
-            </template>
-        </div>
+            </div>
+            <div id="content" class="content">
+
+                <!-- Loader -->
+                <template is="dom-if" if="[[loading]]">
+                    <div class="vertical center layout">
+                        <paper-spinner active></paper-spinner>
+                    </div>
+                </template>
+
+                <!-- Articles -->
+                <template is="dom-repeat" items="[[rss.entries]]" as="entry">
+                    <div class="article">
+                        <div class="title">[[entry.title]]</div>
+                        <div class="snippet">[[entry.contentSnippet]]</div>
+                        <div class="link"><a href="[[entry.link]]" target="_blank">Open article</a></div>
+                    </div>
+                </template>
+
+            </div>
+        </paper-material>
     </template>
 
     <!-- ----------------------------------------------------------------------------------------------------------- -->
@@ -41,14 +60,13 @@
              */
             is: 'x-news-feed',
             properties: {
-                icon: {
-                    type: String
-                },
-                title: {
-                    type: String
-                },
                 feed: {
-                    type: String
+                    type: String,
+                    value: ''
+                },
+                loading: {
+                    type: Boolean,
+                    value: true
                 }
             },
 
@@ -63,9 +81,7 @@
             /**
              * Called when element is attached to DOM.
              */
-            attached: function () {
-
-            },
+            attached: function () {},
 
             /**
              * Called when element is detached from DOM.
@@ -81,11 +97,28 @@
             /* Event handlers */
 
             // ...
+            hideLoader: function () {
+                this.loading = false;
+            },
 
             /* ------------------------------------------------------------------------------------------------------ */
             /* Helper functions */
 
-            // ...
+            setCardHeight: function () {
+                var viewportHeight = window.innerHeight;
+                var toolbarHeight = document.querySelector('paper-toolbar#mainToolbar').offsetHeight;
+                var height =
+                                viewportHeight
+                                - toolbarHeight
+                                - 54 // <paper-material.card div.header> height
+                                - 40 // <div#main> top+bottom padding
+                                - 40 // <paper-material.card div.content> top+bottom padding
+                                - 28 // <h1> height
+                                - 15 // <h1> top margin
+                                - 20 // <h1> bottom margin
+                        ;
+                this.$.content.style.height = height + 'px';
+            }
 
         });
     </script>

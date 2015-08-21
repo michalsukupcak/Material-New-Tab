@@ -3,64 +3,86 @@
     <!-- ----------------------------------------------------------------------------------------------------------- -->
     <!-- CSS -->
     <style include="shared-styles"></style>
+    <style include="news-colors"></style>
     <style>
 
-        div.container {}
+        h1 {}
+        h1 iron-icon { cursor: pointer; padding: 0 0 4px 0; }
+
+        x-news-feed { margin: 0 10px; }
+
+        paper-dialog { min-width: 800px; }
+        paper-dialog div.feed {}
+        paper-dialog div.feed paper-input { margin: 0 10px 0 0; }
+        paper-dialog div.feed paper-button { }
 
     </style>
 
     <!-- ----------------------------------------------------------------------------------------------------------- -->
     <!-- HTML -->
     <template>
-        <div class="container horizontal center-justified layout">
 
-            <!-- World -->
-            <paper-material class="card">
-                <div class="title">
-                    <iron-icon icon="social:public"></iron-icon><span>World</span>
-                </div>
-                <div class="content">
-                    <x-news-feed feed="https://news.google.com/news?cf=all&hl=en&pz=1&ned=us&topic=w&output=rss"></x-news-feed>
-                </div>
-            </paper-material>
+        <!-- ------------------------------------------- -->
+        <!-- Title -->
+        <h1>RSS Feeds <iron-icon icon="settings" title="Customize" on-click="openCustomizeDialog"></iron-icon></h1>
 
-            <!-- Google -->
-            <paper-material class="card">
-                <div class="title">
-                    <iron-icon icon="search"></iron-icon><span>Google</span>
-                </div>
-                <div class="content">
-                    <x-news-feed feed="http://news.google.com/news?cf=all&hl=en&pz=1&ned=us&q=google&output=rss"></x-news-feed>
-                </div>
-            </paper-material>
-
-            <!-- Android -->
-            <paper-material class="card">
-                <div class="title">
-                    <iron-icon icon="android"></iron-icon><span>Android</span>
-                </div>
-                <div class="content">
-                    <x-news-feed feed="http://news.google.com/news?cf=all&hl=en&pz=1&ned=us&q=android&output=rss"></x-news-feed>
-                </div>
-            </paper-material>
-
-            <!-- Technology -->
-            <paper-material class="card">
-                <div class="title">
-                    <iron-icon icon="hardware:phonelink"></iron-icon><span>Technology</span>
-                </div>
-                <div class="content">
-                    <x-news-feed feed="http://news.google.com/news?cf=all&hl=en&pz=1&ned=us&topic=tc&output=rss"></x-news-feed>
-                </div>
-            </paper-material>
-
+        <!-- ------------------------------------------- -->
+        <!-- News container -->
+        <div class="news horizontal center-justified layout">
+            <template is="dom-repeat" items="{{feeds}}" as="feed">
+                <x-news-feed feed="[[feed]]"></x-news-feed>
+            </template>
         </div>
+
+        <!-- ------------------------------------------- -->
+        <!-- RSS feed dialog -->
+        <paper-dialog id="customizeDialog" entry-animation="scale-up-animation" exit-animation="scale-down-animation" modal>
+            <h2>Your RSS feeds:</h2>
+            <div>
+                <template is="dom-repeat" items="{{feeds}}" as="feed">
+                    <div class="feed horizontal end layout">
+                        <paper-input label="Feed name" value="{{feed.name}}"></paper-input>
+                        <paper-input label="URL" value="{{feed.url}}"></paper-input>
+                        <paper-input label="Icon" value="{{feed.icon}}"></paper-input>
+                        <paper-input label="Number of articles" value="{{feed.count}}"></paper-input>
+                        <paper-button on-click="deleteFeed">Delete</paper-button>
+                    </div>
+                </template>
+                <paper-button on-click="addNewFeed">Add new feed</paper-button>
+            </div>
+            <div class="buttons">
+                <paper-button dialog-confirm>Close</paper-button>
+            </div>
+        </paper-dialog>
+
+        <!-- ------------------------------------------- -->
+        <!-- Localstorage for secret -->
+        <iron-localstorage name="material-new-tab-page-news-feeds"
+            id="feedsLocalstorage"
+            value="{{feeds}}"
+        ></iron-localstorage>
 
     </template>
 
     <!-- ----------------------------------------------------------------------------------------------------------- -->
     <!-- Javascript -->
     <script>
+
+        /**
+         * Google news feed.
+         *
+         * @param name
+         * @param url
+         * @param icon
+         * @param count
+         */
+        function Feed(name, url, icon, count) {
+            this.name = name;
+            this.url = url;
+            this.icon = icon;
+            this.count = count;
+        }
+
         Polymer({
 
             /* ------------------------------------------------------------------------------------------------------ */
@@ -70,7 +92,12 @@
              * Element initialization and properties definition.
              */
             is: 'x-news',
-            properties: {},
+            properties: {
+                feeds: {
+                    type: Array,
+                    value: []
+                }
+            },
 
             /* ------------------------------------------------------------------------------------------------------ */
             /* Lifecycle callbacks */
@@ -83,9 +110,7 @@
             /**
              * Called when element is attached to DOM.
              */
-            attached: function () {
-
-            },
+            attached: function () {},
 
             /**
              * Called when element is detached from DOM.
@@ -100,7 +125,35 @@
             /* ------------------------------------------------------------------------------------------------------ */
             /* Event handlers */
 
-            // ...
+            /**
+             * Opens customize dialog.
+             */
+            openCustomizeDialog: function () {
+                this.$.customizeDialog.open();
+            },
+
+            /**
+             * Adds new feed to feed list.
+             */
+            addNewFeed: function () {
+                if (!this.feeds) {
+                    this.feeds = []
+                };
+                this.push('feeds', new Feed('Top Stories', 'https://news.google.com/news?cf=all&hl=en&pz=1&ned=us&output=rss', 'social:public', '10'));
+                this.setCardsHeight();
+            },
+
+            /**
+             * Deletes feed.
+             */
+            deleteFeed: function (event) {
+                var feed = event.model.feed;
+                for (var i = 0; i < this.feeds.length; i++) {
+                    if (feed.name == this.feeds[i].name) {
+                        this.splice('feeds', i, 1);
+                    }
+                }
+            },
 
             /* ------------------------------------------------------------------------------------------------------ */
             /* Helper functions */

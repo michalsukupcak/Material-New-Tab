@@ -16,9 +16,9 @@ function __toast(message) {
  * @private
  */
 function __error(message, event) {
-    var m = 'Ooops! Error: ' + message + ' (See console for details.)';
+    var m = 'Ooops! An error occured: ' + message + ' (See console for details.)';
     __toast(m);
-    throw 'ERROR: ' + event.detail.error.message
+    throw 'APPLICATION ERROR: ' + event.detail.error.message
 }
 
 
@@ -39,3 +39,4 @@ function __showLoadingOverlay() {
 function __hideLoadingOverlay() {
     document.getElementById('loadingOverlay').style.display = 'none';
 }
+

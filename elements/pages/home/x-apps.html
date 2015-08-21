@@ -2,6 +2,8 @@
 
     <!-- ----------------------------------------------------------------------------------------------------------- -->
     <!-- CSS -->
+    <style include="shared-styles"></style>
+    <style include="home-colors"></style>
     <style>
 
         div#apps {}
@@ -27,7 +29,16 @@
 
         <!-- ------------------------------------------- -->
         <!-- Apps -->
-        <div id="apps" class="horizontal layout wrap"></div>
+        <paper-material class="card" elevation="2">
+            <div class="header">
+                <div class="title">
+                    <iron-icon icon="apps"></iron-icon><span>Apps</span>
+                </div>
+            </div>
+            <div class="content">
+                <div id="apps" class="horizontal layout wrap"></div>
+            </div>
+        </paper-material>
 
     </template>
 
@@ -56,7 +67,7 @@
          * @param rightApp
          * @returns {number}
          */
-        var compareApps =  function (leftApp, rightApp) {
+        var __compareApps =  function (leftApp, rightApp) {
             return leftApp.name.localeCompare(rightApp.name);
         };
 
@@ -69,7 +80,12 @@
              * Element initialization and properties definition.
              */
             is: 'x-apps',
-            properties: {},
+            properties: {
+                apps: {
+                    type: Array,
+                    value: []
+                }
+            },
 
             /* ------------------------------------------------------------------------------------------------------ */
             /* Lifecycle callbacks */
@@ -105,7 +121,7 @@
                             apps.push(new App(name, icon, extension.id));
                         }
                     }
-                    apps.sort(compareApps);
+                    apps.sort(__compareApps);
 
                     var div = that.$.apps;
                     for (var i = 0; i < apps.length; i++) {

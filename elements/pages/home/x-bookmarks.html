@@ -2,6 +2,8 @@
 
     <!-- ----------------------------------------------------------------------------------------------------------- -->
     <!-- CSS -->
+    <style include="shared-styles"></style>
+    <style include="home-colors"></style>
     <style>
 
         div#bookmarks {}
@@ -28,7 +30,16 @@
 
         <!-- ------------------------------------------- -->
         <!-- Bookmarks -->
-        <div id="bookmarks"></div>
+        <paper-material class="card" elevation="2">
+            <div class="header">
+                <div class="title">
+                    <iron-icon icon="star"></iron-icon><span>Bookmarks</span>
+                </div>
+            </div>
+            <div class="content">
+                <div id="bookmarks"></div>
+            </div>
+        </paper-material>
 
     </template>
 

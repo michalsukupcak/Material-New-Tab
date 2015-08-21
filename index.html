@@ -46,16 +46,30 @@
                     <!-- Drawer content -->
                     <div id="drawer">
                         <paper-menu>
-                            <paper-item on-click="openChromeLink" data-link="apps"><iron-icon icon="apps"></iron-icon><span>Apps</span></paper-item>
-                            <paper-item on-click="openChromeLink" data-link="bookmarks"><iron-icon icon="star"></iron-icon><span>Bookmarks</span></paper-item>
-                            <paper-item on-click="openChromeLink" data-link="downloads"><iron-icon icon="file-download"></iron-icon><span>Downloads</span></paper-item>
-                            <paper-item on-click="openChromeLink" data-link="history"><iron-icon icon="history"></iron-icon><span>History</span></paper-item>
-                            <paper-item on-click="openChromeLink" data-link="extensions"><iron-icon icon="extension"></iron-icon><span>Extensions</span></paper-item>
-                            <paper-item><a href="https://chrome.google.com/webstore" target="_blank"><iron-icon icon="store"></iron-icon><span>Web Store</span></a></paper-item>
-                            <paper-item on-click="openChromeLink" data-link="flags"><iron-icon icon="flag"></iron-icon><span>Flags</span></paper-item>
+                            <paper-icon-item on-click="openChromeLink" data-link="apps">
+                                <iron-icon icon="apps"></iron-icon>Apps
+                            </paper-icon-item>
+                            <paper-icon-item on-click="openChromeLink" data-link="bookmarks">
+                                <iron-icon icon="star"></iron-icon>Bookmarks
+                            </paper-icon-item>
+                            <paper-icon-item on-click="openChromeLink" data-link="downloads">
+                                <iron-icon icon="file-download"></iron-icon>Downloads
+                            </paper-icon-item>
+                            <paper-icon-item on-click="openChromeLink" data-link="history">
+                                <iron-icon icon="history"></iron-icon>History
+                            </paper-icon-item>
+                            <paper-icon-item on-click="openChromeLink" data-link="extensions">
+                                <iron-icon icon="extension"></iron-icon>Extensions
+                            </paper-icon-item>
+                            <paper-icon-item on-click="openWebStore">
+                                <iron-icon icon="store"></iron-icon>Web Store
+                            </paper-icon-item>
+                            <paper-icon-item on-click="openChromeLink" data-link="flags">
+                                <iron-icon icon="flag"></iron-icon>Flags
+                            </paper-icon-item>
                             <hr>
-                            <paper-item on-click="openChromeLink" data-link="settings"><span>Chrome Settings</span></paper-item>
-                            <paper-item on-click="openChromeLink" data-link="about"><span>About Chrome</span></paper-item>
+                            <paper-icon-item on-click="openChromeLink" data-link="settings">Settings</paper-icon-item>
+                            <paper-icon-item on-click="openChromeLink" data-link="chrome">About</paper-icon-item>
                         </paper-menu>
                     </div>
 
@@ -66,10 +80,10 @@
                 <paper-header-panel main>
 
                     <!-- Main toolbar -->
-                    <paper-toolbar class="medium-tall">
+                    <paper-toolbar id="mainToolbar" style="height: 112px;">
 
                         <!-- Title row -->
-                        <paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
+                        <paper-icon-button icon="menu" on-click="openDrawer"></paper-icon-button>
                         <span>Material New Tab Page</span>
                         <span class="flex"></span>
                         <paper-menu-button horizontal-align="right">
@@ -82,14 +96,10 @@
                         </paper-menu-button>
 
                         <!-- Tabs -->
-                        <paper-tabs selected="{{PAGE}}" attr-for-selected="data-page" class="bottom fit" noink>
+                        <paper-tabs selected="{{PAGE}}" attr-for-selected="data-page" on-iron-select="pageChanged" class="bottom fit" noink>
                             <paper-tab data-page="home">Home</paper-tab>
                             <paper-tab data-page="news">News</paper-tab>
-                            <paper-tab data-page="">Youtube</paper-tab>
-                            <paper-tab data-page="">Twitter</paper-tab>
-                            <paper-tab data-page="">Reddit</paper-tab>
-                            <paper-tab data-page="">Todoist</paper-tab>
-                            <paper-tab data-page="">Localhost</paper-tab>
+                            <paper-tab data-page="youtube">Youtube</paper-tab>
                         </paper-tabs>
 
                     </paper-toolbar>
@@ -98,7 +108,7 @@
                     <div id="main">
 
                         <!-- Pages -->
-                        <x-pages __page="{{PAGE}}"></x-pages>
+                        <x-pages __page="{{PAGE}}" class="flex"></x-pages>
 
                     </div>
 
@@ -123,7 +133,7 @@
                     <table>
                         <tr>
                             <th>Version:</th>
-                            <td>0.0.12-SNAPSHOT</td>
+                            <td>[[VERSION]]</td>
                         </tr>
                         <tr>
                             <th>License:</th>
@@ -143,6 +153,13 @@
                     <paper-button dialog-dismiss>Close</paper-button>
                 </div>
             </paper-dialog>
+
+            <!-- ------------------------------------------- -->
+            <!-- Page localstorage -->
+            <iron-localstorage name="material-new-tab-page-PAGE"
+                id="pageLocalstorage"
+                value="{{PAGE}}"
+            ></iron-localstorage>
 
         </template>
 

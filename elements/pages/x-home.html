@@ -2,63 +2,25 @@
 
     <!-- ----------------------------------------------------------------------------------------------------------- -->
     <!-- CSS -->
-    <style include="shared-styles"></style>
     <style>
 
-        div.container {}
-        div.container paper-material { width: 25%; margin: 0 10px; }
-        div.container paper-material div.content h2 { margin: 0; text-align: center; }
+        x-dashboard, x-bookmarks, x-apps, x-calendar { margin: 0 10px; width: 25%; }
+
     </style>
 
     <!-- ----------------------------------------------------------------------------------------------------------- -->
     <!-- HTML -->
     <template>
-        <div class="container horizontal center-justified layout">
 
-            <!-- Dashboard -->
-            <paper-material class="card">
-                <div class="title">
-                    <iron-icon icon="dashboard"></iron-icon><span>Dashboard</span>
-                </div>
-                <div class="content">
-                    <x-clock></x-clock>
-                    <hr>
-                    <h2>Password Generator</h2>
-                    <x-password-generator></x-password-generator>
-                </div>
-            </paper-material>
-
-            <!-- Bookmarks -->
-            <paper-material class="card">
-                <div class="title">
-                    <iron-icon icon="star"></iron-icon><span>Bookmarks</span>
-                </div>
-                <div class="content">
-                    <x-bookmarks></x-bookmarks>
-                </div>
-            </paper-material>
-
-            <!-- Apps -->
-            <paper-material class="card">
-                <div class="title">
-                    <iron-icon icon="apps"></iron-icon><span>Apps</span>
-                </div>
-                <div class="content">
-                    <x-apps></x-apps>
-                </div>
-            </paper-material>
-
-            <!-- Calendar -->
-            <paper-material class="card">
-                <div class="title">
-                    <iron-icon icon="event"></iron-icon><span>Calendar</span>
-                </div>
-                <div class="content">
-                    <x-calendar></x-calendar>
-                </div>
-            </paper-material>
-
+        <!-- ------------------------------------------- -->
+        <!-- Home container -->
+        <div class="home horizontal center-justified layout">
+            <x-dashboard></x-dashboard>
+            <x-bookmarks></x-bookmarks>
+            <x-apps></x-apps>
+            <x-calendar></x-calendar>
         </div>
+
     </template>
 
     <!-- ----------------------------------------------------------------------------------------------------------- -->
@@ -86,7 +48,9 @@
             /**
              * Called when element is attached to DOM.
              */
-            attached: function () {},
+            attached: function () {
+                window.onresize = this.setCardsHeight();
+            },
 
             /**
              * Called when element is detached from DOM.
@@ -106,7 +70,26 @@
             /* ------------------------------------------------------------------------------------------------------ */
             /* Helper functions */
 
-            // ...
+            /**
+             * Calculates height for div.news paper-material.card div.container(s).
+             *
+             * @private
+             */
+            setCardsHeight: function () {
+                var viewportHeight = window.innerHeight;
+                var toolbarHeight = document.querySelector('paper-toolbar#mainToolbar').offsetHeight;
+                var height =
+                        viewportHeight
+                        - toolbarHeight
+                        - 54 // <div.header> (card header) height
+                        - 40 // <div#main> top+bottom padding
+                        - 40 // <paper-material.card div.content> top+bottom padding
+                    ;
+                var cards = document.querySelectorAll('div.home paper-material.card div.content');
+                for (var i = 0; i < cards.length; i++) {
+                    cards[i].style.height = height + 'px';
+                }
+            }
 
         });
     </script>

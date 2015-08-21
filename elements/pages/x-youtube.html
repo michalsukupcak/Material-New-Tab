@@ -1,0 +1,245 @@
+<dom-module id="x-youtube">
+
+    <!-- ----------------------------------------------------------------------------------------------------------- -->
+    <!-- CSS -->
+    <style include="shared-styles"></style>
+    <style include="youtube-colors"></style>
+    <style>
+
+        paper-material { background: white; display: block; margin: 10px; width: 320px; }
+        paper-material div.title { font-weight: bold; padding: 10px 10px 5px 10px; }
+        paper-material div.published { color: #666; font-size: .8em; padding: 0 10px 2px 10px; }
+        paper-material div.channel { color: #666; font-size: .8em; padding: 0 10px 15px 10px; }
+        paper-material div.channel a { color: #CC181E; }
+
+        div.search { margin: 20px auto; }
+        div.search input {
+            background: white;
+            border: 1px solid white;
+            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+            font-size: 1.1em;
+            margin: 0 4px;
+            padding: 0 20px;
+            width: 500px;
+        }
+
+    </style>
+
+    <!-- ----------------------------------------------------------------------------------------------------------- -->
+    <!-- HTML -->
+    <template>
+
+        <!-- ------------------------------------------- -->
+        <!-- Title -->
+        <h1>Subscriptions</h1>
+
+        <!-- ------------------------------------------- -->
+        <!-- Youtube links -->
+        <div class="search horizontal center-justified layout">
+            <paper-button on-click="openYoutube" raised><iron-icon icon="home"></iron-icon></paper-button>
+            <input is="iron-input" id="search" placeholder="Search Youtube" on-keyup="keyUpHandler">
+            <paper-button on-click="openSearch" raised><iron-icon icon="search"></iron-icon></paper-button>
+            <!--<paper-button raised><iron-icon icon="av:video-library"></iron-icon></paper-button>-->
+        </div>
+
+        <!-- ------------------------------------------- -->
+        <!-- Youtube videos container -->
+        <div class="horizontal center-justified wrap layout">
+            <template is="dom-repeat" items="{{videos}}" as="video">
+                <paper-material elevation="2" class="vertical layout">
+                    <img src="[[video.thumbnail]]">
+                    <div class="title">[[video.title]]</div>
+                    <div class="published">Published on <span>[[video.published]]</span></div>
+                    <div class="channel">Uploaded by <a href="[[video.channelUrl]]" target="_blank">[[video.channel]]</a></div>
+                </paper-material>
+            </template>
+        </div>
+
+        <!-- ------------------------------------------- -->
+        <!-- Youtube videos subscriptions API call -->
+        <iron-ajax id="getSubscriptionVideosRequest"
+            on-response="getSubscriptionVideosRequestResponse"
+            on-error="getSubscriptionVideosRequestError"
+        ></iron-ajax>
+
+        <!-- ------------------------------------------- -->
+        <!-- Localstorage for videos -->
+        <iron-localstorage name="material-new-tab-page-youtube-videos"
+            id="videosLocalstorage"
+            value="{{videos}}"
+            auto-save-disabled
+        ></iron-localstorage>
+
+        <!-- ------------------------------------------- -->
+        <!-- Localstorage for last videos update -->
+        <iron-localstorage name="material-new-tab-page-youtube-last-update"
+            id="lastUpdateLocalstorage"
+            value="{{lastUpdate}}"
+            on-iron-localstorage-load="initYoutube"
+            on-iron-localstorage-load-empty="initYoutube"
+        ></iron-localstorage>
+
+    </template>
+
+    <!-- ----------------------------------------------------------------------------------------------------------- -->
+    <!-- Javascript -->
+    <script>
+
+        /**
+         *
+         * @param id
+         * @param title
+         * @param channel
+         * @param channelUrl
+         * @param published
+         * @param thumbnail
+         */
+        function Video(id, title, channel, channelUrl, published, thumbnail) {
+            var m = moment(published);
+            this.id = id;
+            this.title = title;
+            this.channel = channel;
+            this.channelUrl = 'https://youtube.com/channel/' + channelUrl;
+            this.published = m.format('DD.MM.YYYY @ HH:mm');;
+            this.timestamp = m.unix();
+            this.thumbnail = thumbnail;
+        };
+
+        /**
+         * Compares leftVideo and rightVideo by date. Used in video date sorting.
+         *
+         * @param leftVideo
+         * @param rightVideo
+         * @returns {number}
+         */
+        var __compareVideos =  function (leftVideo, rightVideo) {
+            if (leftVideo.timestamp < rightVideo.timestamp) {
+                return 1;
+            } else if (leftVideo.timestamp == rightVideo.timestamp) {
+                return 0;
+            } else {
+                return -1;
+            }
+        };
+
+        Polymer({
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Init */
+
+            /**
+             * Element initialization and properties definition.
+             */
+            is: 'x-youtube',
+            properties: {
+                videos: {
+                    type: Array,
+                    value: []
+                },
+                lastUpdate: {
+                    type: Number,
+                    value: 0
+                }
+            },
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Lifecycle callbacks */
+
+            /**
+             * Called when element is created.
+             */
+            created: function () {},
+
+            /**
+             * Called when element is attached to DOM.
+             */
+            attached: function () {},
+
+            /**
+             * Called when element is detached from DOM.
+             */
+            detached: function () {},
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Observers */
+
+            // ...
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Event handlers */
+
+            /**
+             * Opens youtube homepage.
+             */
+            openYoutube: function () {
+                chrome.tabs.create({ url: 'https://www.youtube.com/' });
+            },
+
+            /**
+             * Opens search URL with value from search input.
+             */
+            openSearch: function () {
+                chrome.tabs.create({ url: 'https://www.youtube.com/results?search_query=' + encodeURIComponent(this.$.search.value) });
+            },
+
+            /**
+             * Keyup handler for search input (submits search on enter).
+             */
+            keyUpHandler: function () {
+                var key = (typeof event.which === "number") ? event.which : event.keyCode;
+                if (key == 13) {
+                    this.openSearch();
+                }
+            },
+
+            /**
+             * Youtube video load response handler.
+             */
+            getSubscriptionVideosRequestResponse: function (event) {
+                var videos = event.detail.response.items;
+                this.videos = [];
+                for (var i = 0; i < videos.length; i++) {
+                    var v = videos[i];
+                    var s = v.snippet;
+                    if (v.snippet.type == 'upload') {
+                        this.push('videos', new Video(v.id, s.title, s.channelTitle, s.channelId, s.publishedAt, s.thumbnails.medium.url));
+                    }
+                }
+                this.videos.sort(__compareVideos);
+                this.videos = this.videos.slice();
+                this.$.videosLocalstorage.save();
+                this.lastUpdate = moment().unix();
+            },
+
+            /**
+             * Youtube video load request error handler.
+             */
+            getSubscriptionVideosRequestError: function (event) {
+                __error('Failed to load videos!', event);
+            },
+
+            /* ------------------------------------------------------------------------------------------------------ */
+            /* Helper functions */
+
+            /**
+             * Initializes youtube videos (no sooner than every 15 minutes).
+             */
+            initYoutube: function () {
+                if (this.lastUpdate < moment().unix() - 900) {
+                    var that = this;
+                    chrome.identity.getAuthToken({ 'interactive': true }, function (token) {
+                        that.$.getSubscriptionVideosRequest.url =
+                                'https://www.googleapis.com/youtube/v3/activities' +
+                                '?part=id,snippet' +
+                                '&home=true' +
+                                '&maxResults=24' +
+                                '&access_token=' + encodeURIComponent(token);
+                        that.$.getSubscriptionVideosRequest.generateRequest();
+                    });
+                }
+            }
+
+        });
+    </script>
+
+</dom-module>
