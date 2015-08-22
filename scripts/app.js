@@ -12,7 +12,7 @@
     /**
      * Define application "global" variables (influencing behavior beyond the scope of the template).
      */
-    app.VERSION = '1.0.0 (Release candidate)';
+    app.VERSION = '1.0.1 (Release candidate)';
     app.PAGE = 'home';
 
     app.pageChanged = function () {

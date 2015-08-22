@@ -11,10 +11,14 @@
 
         x-news-feed { margin: 0 10px; }
 
-        paper-dialog { min-width: 800px; }
+        paper-dialog { min-width: 968px; }
         paper-dialog div.feed {}
         paper-dialog div.feed paper-input { margin: 0 10px 0 0; }
-        paper-dialog div.feed paper-button { }
+        paper-dialog div.feed paper-input.name { width: 20%; }
+        paper-dialog div.feed paper-input.url { width: 30%; }
+        paper-dialog div.feed paper-input.icon { width: 20%; }
+        paper-dialog div.feed paper-input.count { width: 20%; }
+        paper-dialog div.feed paper-button { width: 5%; }
 
     </style>
 
@@ -41,17 +45,17 @@
             <div>
                 <template is="dom-repeat" items="{{feeds}}" as="feed">
                     <div class="feed horizontal end layout">
-                        <paper-input label="Feed name" value="{{feed.name}}"></paper-input>
-                        <paper-input label="URL" value="{{feed.url}}"></paper-input>
-                        <paper-input label="Icon" value="{{feed.icon}}"></paper-input>
-                        <paper-input label="Number of articles" value="{{feed.count}}"></paper-input>
-                        <paper-button on-click="deleteFeed">Delete</paper-button>
+                        <paper-input class="name" label="Feed name" value="{{feed.name}}"></paper-input>
+                        <paper-input class="url" label="URL" value="{{feed.url}}"></paper-input>
+                        <paper-input class="icon" label="Icon" value="{{feed.icon}}"></paper-input>
+                        <paper-input class="count" label="Number of articles" value="{{feed.count}}"></paper-input>git
+                        <paper-button on-click="deleteFeed" class="delete">Delete</paper-button>
                     </div>
                 </template>
-                <paper-button on-click="addNewFeed">Add new feed</paper-button>
+                <paper-button on-click="addNewFeed">+ Add new feed</paper-button>
             </div>
             <div class="buttons">
-                <paper-button dialog-confirm>Close</paper-button>
+                <paper-button dialog-dismiss>Close</paper-button>
             </div>
         </paper-dialog>
 
@@ -139,7 +143,7 @@
                 if (!this.feeds) {
                     this.feeds = []
                 };
-                this.push('feeds', new Feed('Top Stories', 'https://news.google.com/news?cf=all&hl=en&pz=1&ned=us&output=rss', 'social:public', '10'));
+                this.push('feeds', new Feed('', '', 'social:public', '5'));
                 this.setCardsHeight();
             },
 
