@@ -90,7 +90,8 @@
                             <paper-icon-button icon="more-vert" class="dropdown-trigger"></paper-icon-button>
                             <paper-dropdown-menu class="dropdown-content">
                                 <paper-menu>
-                                    <paper-item on-click="openAboutDialog">About</paper-item>
+                                    <paper-item on-click="openDataSyncDialog">Data synchronization</paper-item>
+                                    <paper-item on-click="openAboutDialog">About extension</paper-item>
                                 </paper-menu>
                             </paper-dropdown-menu>
                         </paper-menu-button>
@@ -119,6 +120,18 @@
             <!-- ------------------------------------------- -->
             <!-- Toast object for messages -->
             <paper-toast id="toast"></paper-toast>
+
+            <!-- ------------------------------------------- -->
+            <!-- Data sync dialog -->
+            <paper-dialog id="dataSyncDialog" entry-animation="scale-up-animation" exit-animation="scale-down-animation" modal>
+                <h2>Sync your data across browsers</h2>
+                <div>
+                    <x-datasync></x-datasync>
+                </div>
+                <div class="buttons">
+                    <paper-button dialog-dismiss>Close</paper-button>
+                </div>
+            </paper-dialog>
 
             <!-- ------------------------------------------- -->
             <!-- About dialog -->
@@ -156,7 +169,7 @@
 
             <!-- ------------------------------------------- -->
             <!-- Page localstorage -->
-            <iron-localstorage name="material-new-tab-page-PAGE"
+            <iron-localstorage name="material-new-tab-PAGE"
                 id="pageLocalstorage"
                 value="{{PAGE}}"
             ></iron-localstorage>
@@ -165,6 +178,7 @@
 
         <!-- ------------------------------------------- -->
         <!-- Libraries -->
+        <script src="https://cdn.firebase.com/js/client/2.2.9/firebase.js"></script>
 
         <!-- ------------------------------------------- -->
         <!-- Application scripts -->
@@ -172,6 +186,7 @@
         <script src="./scripts/base64.js"></script>
         <script src="./scripts/moment.js"></script>
         <script src="./scripts/functions.js"></script>
+        <script src="./scripts/firebase.js"></script>
         <script src="./scripts/app.js"></script>
 
     </body>

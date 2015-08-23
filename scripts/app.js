@@ -12,7 +12,7 @@
     /**
      * Define application "global" variables (influencing behavior beyond the scope of the template).
      */
-    app.VERSION = '1.0.1 (Release candidate)';
+    app.VERSION = '1.1.3 (Firebase)';
     app.PAGE = 'home';
 
     app.pageChanged = function () {
@@ -63,6 +63,13 @@
     };
 
     /**
+     * Opens data sync dialog (with firebase authentication).
+     */
+    app.openDataSyncDialog = function () {
+        this.$.dataSyncDialog.open();
+    };
+
+    /**
      * Opens about dialog (with extension info).
      */
     app.openAboutDialog = function () {
@@ -75,12 +82,13 @@
     window.addEventListener('WebComponentsReady', function () {
         console.log('Material New Tab Page is ready!');
 
-
         // Require identity token
         // chrome.identity.getAuthToken({ 'interactive': true }, function (token) {});
 
+        if (FIREBASE.get().getAuth()) {
+            window.dispatchEvent(new CustomEvent('__firebaseInit'));
+        }
+
     });
-
-
 
 })(document);
