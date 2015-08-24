@@ -12,6 +12,16 @@ var FIREBASE = {
     get: function () {
         this.init();
         return this.firebase;
+    },
+
+    getUid: function () {
+        this.init();
+        return this.firebase.getAuth().uid;
+    },
+
+    getDashboard: function () {
+        this.init();
+        return this.firebase.child('users').child(this.getUid()).child('dashboard');
     }
 
 };

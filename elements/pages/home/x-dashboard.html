@@ -36,12 +36,10 @@
                 </paper-menu-button>
             </div>
             <div class="content">
+                <div id="spinner" class="horizontal center-justified layout">
+                    <paper-spinner active></paper-spinner>
+                </div>
                 <div id="clockContainer"></div>
-                <template is="dom-if" if="[[showClock]]">
-                    <template is="dom-if" if="[[showPasswordGenerator]]">
-                        <hr>
-                    </template>
-                </template>
                 <div id="passwordGeneratorContainer"></div>
             </div>
         </paper-material>
@@ -54,34 +52,18 @@
                 <div class="checkbox horizontal layout">
                     <span>Enable clock</span>
                     <span class="flex"></span>
-                    <span><paper-toggle-button checked="{{showClock}}"></paper-toggle-button></span>
+                    <span><paper-toggle-button on-click="toggleClock" checked="[[clockEnabled]]"></paper-toggle-button></span>
                 </div>
                 <div class="checkbox horizontal layout">
                     <span>Enable Password Generator</span>
                     <span class="flex"></span>
-                    <span><paper-toggle-button checked="{{showPasswordGenerator}}"></paper-toggle-button></span>
+                    <span><paper-toggle-button on-click="togglePasswordGenerator" checked="[[passwordGeneratorEnabled]]"></paper-toggle-button></span>
                 </div>
             </div>
             <div class="buttons">
                 <paper-button dialog-dismiss>Close</paper-button>
             </div>
         </paper-dialog>
-
-        <!-- ------------------------------------------- -->
-        <!-- Localstorage for show clock -->
-        <iron-localstorage name="material-new-tab-dashboard-show-clock"
-            id="showClockLocalstorage"
-            value="{{showClock}}"
-            on-iron-localstorage-load-empty="initShowClock"
-        ></iron-localstorage>
-
-        <!-- ------------------------------------------- -->
-        <!-- Localstorage for show password generator -->
-        <iron-localstorage name="material-new-tab-dashboard-show-password-generator"
-            id="showPasswordGenerator"
-            value="{{showPasswordGenerator}}"
-            on-iron-localstorage-load-empty="initShowPasswordGenerator"
-        ></iron-localstorage>
 
     </template>
 
@@ -98,15 +80,13 @@
              */
             is: 'x-dashboard',
             properties: {
-                showClock: {
+                clockEnabled: {
                     type: Boolean,
-                    value: true,
-                    observer: '_showClockChanged'
+                    value: true
                 },
-                showPasswordGenerator: {
+                passwordGeneratorEnabled: {
                     type: Boolean,
-                    value: true,
-                    observer: '_showPasswordGeneratorChanged'
+                    value: true
                 }
             },
 
@@ -116,23 +96,23 @@
             /**
              * Called when element is created.
              */
-            created: function () {
-                var that = this;
-                window.addEventListener('__firebaseInit', function () {
-                    var d = FIREBASE.get().child('users').child(FIREBASE.get().getAuth().uid).child('dashboard');
-                    d.on('value', function (snapshot) {
-                        that.showClock = snapshot.val().showClock;
-                        that.showPasswordGenerator = snapshot.val().showPasswordGenerator;
-                    }, function (errorObject) {
-                        console.log(errorObject);
-                    });
-                });
-            },
+            created: function () {},
 
             /**
              * Called when element is attached to DOM.
              */
-            attached: function () {},
+            attached: function () {
+                var that = this;
+                FIREBASE.getDashboard().on('value', function (snapshot) {
+                    if (snapshot.val() !== null) {
+                        that.$.spinner.style.display = 'none';
+                        that.clockEnabled = snapshot.val().clockEnabled;
+                        that.enableClock();
+                        that.passwordGeneratorEnabled = snapshot.val().passwordGeneratorEnabled;
+                        that.enablePasswordGenerator();
+                    }
+                });
+            },
 
             /**
              * Called when element is detached from DOM.
@@ -142,42 +122,7 @@
             /* ------------------------------------------------------------------------------------------------------ */
             /* Observers */
 
-            _showClockChanged: function (value) {
-                console.log('clock changed');
-                if (value == true) {
-                    if (this.$.clockContainer.firstChild == null) {
-                        this.$.clockContainer.appendChild(document.createElement('x-clock'));
-                    }
-                } else {
-                    while (this.$.clockContainer.firstChild) {
-                        this.$.clockContainer.removeChild(this.$.clockContainer.firstChild);
-                    }
-                }
-                var auth = FIREBASE.get().getAuth();
-                if (auth) {
-                    FIREBASE.get().child('users').child(auth.uid).child('dashboard').update({
-                        showClock: value
-                    });
-                }
-            },
-
-            _showPasswordGeneratorChanged: function (value) {
-                if (value == true) {
-                    if (this.$.passwordGeneratorContainer.firstChild == null) {
-                        this.$.passwordGeneratorContainer.appendChild(document.createElement('x-password-generator'));
-                    }
-                } else {
-                    while (this.$.passwordGeneratorContainer.firstChild) {
-                        this.$.passwordGeneratorContainer.removeChild(this.$.passwordGeneratorContainer.firstChild);
-                    }
-                }
-                var auth = FIREBASE.get().getAuth();
-                if (auth) {
-                    FIREBASE.get().child('users').child(auth.uid).child('dashboard').update({
-                        showPasswordGenerator: value
-                    });
-                }
-            },
+            // ...
 
             /* ------------------------------------------------------------------------------------------------------ */
             /* Event handlers */
@@ -186,22 +131,48 @@
                 this.$.customizeDialog.open();
             },
 
-            initShowClock: function () {
-                if (FIREBASE.get().getAuth() == null) {
-                    this.showClock = true;
-                }
+            toggleClock: function () {
+                this.clockEnabled = !this.clockEnabled;
+                this.enableClock();
+                FIREBASE.getDashboard().update({
+                    clockEnabled: this.clockEnabled
+                });
             },
 
-            initShowPasswordGenerator: function () {
-                if (FIREBASE.get().getAuth() == null) {
-                    this.showPasswordGenerator = true;
-                }
-            }
+            togglePasswordGenerator: function () {
+                this.passwordGeneratorEnabled = !this.passwordGeneratorEnabled;
+                this.enablePasswordGenerator();
+                FIREBASE.getDashboard().update({
+                    passwordGeneratorEnabled: this.passwordGeneratorEnabled
+                });
+            },
 
             /* ------------------------------------------------------------------------------------------------------ */
             /* Helper functions */
 
-            // ...
+            enableClock: function () {
+                if (this.clockEnabled == true) {
+                    if (this.$.clockContainer.firstChild == null) {
+                        this.$.clockContainer.appendChild(document.createElement('x-clock'));
+                    }
+                } else {
+                    while (this.$.clockContainer.firstChild) {
+                        this.$.clockContainer.removeChild(this.$.clockContainer.firstChild);
+                    }
+                }
+            },
+
+            enablePasswordGenerator: function () {
+                if (this.passwordGeneratorEnabled == true) {
+                    if (this.$.passwordGeneratorContainer.firstChild == null) {
+                        this.$.passwordGeneratorContainer.appendChild(document.createElement('x-password-generator'));
+                    }
+                } else {
+                    while (this.$.passwordGeneratorContainer.firstChild) {
+                        this.$.passwordGeneratorContainer.removeChild(this.$.passwordGeneratorContainer.firstChild);
+                    }
+                }
+            }
 
         });
     </script>

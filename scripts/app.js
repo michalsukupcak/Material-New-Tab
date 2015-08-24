@@ -10,70 +10,17 @@
     var app = document.querySelector('#app');
 
     /**
-     * Define application "global" variables (influencing behavior beyond the scope of the template).
+     * Updates app content.
      */
-    app.VERSION = '1.1.3 (Firebase)';
-    app.PAGE = 'home';
-
-    app.pageChanged = function () {
-        var color;
-        switch (this.PAGE) {
-            default:
-            case 'home':
-                color = '1E86BD';
-                break;
-            case 'news':
-                color = '455A64';
-                break;
-            case 'youtube':
-                color = 'CC181E';
-                break;
-            case 'twitter':
-                color = '4099FF';
-                break;
-            case 'reddit':
-                color = 'F2F2F2';
-                break;
+    app.updateElements = function () {
+        while (this.$.container.firstChild) {
+            this.$.container.removeChild(this.$.container.firstChild);
         }
-        this.$.mainToolbar.style.backgroundColor = '#' + color;
-    };
-
-    app.openDrawer = function () {
-        this.$.panel.openDrawer();
-    };
-
-    /**
-     * Opens chrome://... link
-     *
-     * @param link
-     */
-    app.openChromeLink = function (event) {
-        console.log(event.parentNode);
-        var link = event.target.dataset.link;
-        chrome.tabs.create({ url: 'chrome://' + link });
-        this.$.panel.closeDrawer();
-    };
-
-    /**
-     * Opens Chrome Web Store in new tab.
-     */
-    app.openWebStore = function () {
-        chrome.tabs.create({ url: 'https://chrome.google.com/webstore' });
-        this.$.panel.closeDrawer();
-    };
-
-    /**
-     * Opens data sync dialog (with firebase authentication).
-     */
-    app.openDataSyncDialog = function () {
-        this.$.dataSyncDialog.open();
-    };
-
-    /**
-     * Opens about dialog (with extension info).
-     */
-    app.openAboutDialog = function () {
-        this.$.aboutDialog.open();
+        if (FIREBASE.get().getAuth()) {
+            Polymer.dom(this.$.container).appendChild(document.createElement('x-app'));
+        } else {
+            Polymer.dom(this.$.container).appendChild(document.createElement('x-login'));
+        }
     };
 
     /**
@@ -81,14 +28,21 @@
      */
     window.addEventListener('WebComponentsReady', function () {
         console.log('Material New Tab Page is ready!');
+        app.updateElements();
+    });
 
-        // Require identity token
-        // chrome.identity.getAuthToken({ 'interactive': true }, function (token) {});
+    /**
+     * Updates app content on user login.
+     */
+    window.addEventListener('__userLogin', function () {
+        app.updateElements();
+    });
 
-        if (FIREBASE.get().getAuth()) {
-            window.dispatchEvent(new CustomEvent('__firebaseInit'));
-        }
-
+    /**
+     * Updates app content on user logout.
+     */
+    window.addEventListener('__userLogout', function () {
+        app.updateElements();
     });
 
 })(document);

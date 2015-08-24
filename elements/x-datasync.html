@@ -4,14 +4,10 @@
     <!-- CSS -->
     <style>
 
-        p {}
+        p { text-align: justify; }
         p i { color: #666; }
 
-        hr { margin: 15px; }
-
-        paper-tabs { --paper-tabs-selection-bar-color: #1E86BD; }
-        neon-animated-pages { height: 300px; overflow: hidden; }
-        neon-animated-pages section { padding: 20px; }
+        hr { margin: 15px 0; }
 
         div.spinner { margin: auto; text-align: center; }
         div.error { background: #F2F2F2; border: 1px solid #CCC; color: red; padding: 5px; text-align: center; }
@@ -25,123 +21,58 @@
 
         <!-- ------------------------------------------- -->
         <!-- Description -->
-        <p>Log in or create a new account to synch your data across all your browsers.</p>
         <p>
             <i>
                 This feature <strong>only syncs local data</strong>, such as RSS feeds or Dashboard
-                configuration. Data from third party services (such as Google Calendar, Youtube) are only stored
+                configuration. Data from third party services (such as Google Calendar or Youtube) are only stored
                 locally and are never uploaded anywhere. Password Generator data are not synced at all.
             </i>
         </p>
 
         <!-- ------------------------------------------- -->
-        <!-- Login/register forms -->
-        <div hidden$="[[showUser]]">
-
-            <!-- Tabs -->
-            <paper-tabs selected="{{tab}}" noink>
-                <paper-tab>Login</paper-tab>
-                <paper-tab>Register</paper-tab>
-            </paper-tabs>
-
-            <!-- Pages -->
-            <neon-animated-pages id="pages" selected="{{tab}}">
-
-                <!-- Login section -->
-                <section>
-
-                    <!-- Spinner -->
-                    <div hidden$="[[!loginLoading]]" class="spinner horizontal center-justified layout">
-                        <paper-spinner active></paper-spinner>
-                    </div>
-
-                    <!-- Error -->
-                    <div hidden$="[[!loginError]]" class="error" id="loginError"></div>
-
-                    <!-- Success (register) -->
-                    <div hidden$="[[!registerSuccess]]" class="success">
-                        Registration successful, you can now log in with your email and password.
-                    </div>
-
-                    <!-- Success (reset) -->
-                    <div hidden$="[[!resetSuccess]]" class="success">
-                        Instructions on how to reset your password have been sent to your email.
-                    </div>
-
-                    <!-- Login form -->
-                    <gold-email-input id="loginEmail" label="Email address"></gold-email-input>
-                    <paper-input id="loginPassword" label="Password" type="password" min="5"></paper-input>
-                    <div class="horizontal center-justified layout">
-                        <paper-button id="loginButton" on-click="doLogin" class="primary">Log in</paper-button>
-                        <paper-button id="loginButton" on-click="doReset">Reset password</paper-button>
-                    </div>
-
-                </section>
-
-                <!-- Register section -->
-                <section>
-
-                    <!-- Spinner -->
-                    <div hidden$="[[!registerLoading]]" class="spinner horizontal center-justified layout">
-                        <paper-spinner active></paper-spinner>
-                    </div>
-
-                    <!-- Error -->
-                    <div hidden="[[!registerError]]" class="error" id="registerError"></div>
-
-                    <!-- Register form -->
-                    <gold-email-input id="registerEmail" label="Email address"></gold-email-input>
-                    <paper-input id="registerPassword" label="Password  (at least 5 characters)" type="password"></paper-input>
-                    <paper-input id="registerPassword2" label="Repeat password" type="password"></paper-input>
-                    <div class="horizontal center-justified layout">
-                        <paper-button id="registerButton" on-click="doRegister" class="primary">Register</paper-button>
-                    </div>
-
-                </section>
-
-            </neon-animated-pages>
-
+        <!-- Title -->
+        <br>
+        <div class="horizontal center-justified layout">
+            <strong>You are logged in as:</strong>
         </div>
 
         <!-- ------------------------------------------- -->
-        <!-- Logged in user info -->
-        <div hidden$="[[!showUser]]">
-            <hr>
+        <!-- Account -->
+        <div class="horizontal center-justified layout">
+            <h2>[[email]]</h2>
+        </div>
 
-            <!-- Title -->
-            <div class="horizontal center-justified layout">
-                <h2>[[email]]</h2>
-            </div>
+        <!-- ------------------------------------------- -->
+        <!-- Logout button -->
+        <br>
+        <div class="horizontal center-justified layout">
+            <paper-button on-click="showChangePassword">Change password</paper-button>
+            <paper-button on-click="logout" class="primary">Logout</paper-button>
+        </div>
 
-            <!-- Subtitle -->
-            <div class="horizontal center-justified layout">
-                <h3>Manage account</h3>
-            </div>
+        <!-- ------------------------------------------- -->
+        <!-- Change password form -->
+        <div hidden$="[[!showChangePasswordForm]]">
 
             <!-- Spinner -->
             <div hidden$="[[!updateLoading]]" class="spinner horizontal center-justified layout">
                 <paper-spinner active></paper-spinner>
             </div>
 
-
             <!-- Update error -->
             <div hidden$="[[!updateError]]" class="error" id="updateError"></div>
 
             <!-- Update success -->
-            <div hidden$="[[!updateSuccess]]" class="success">
-                Your password was changed.
-            </div>
+            <div hidden$="[[!updateSuccess]]" class="success">Your password was changed.</div>
 
             <!-- Update form -->
             <paper-input id="updateOldPassword" label="Current password" type="password"></paper-input>
             <paper-input id="updateNewPassword" label="New password (at least 5 characters)" type="password"></paper-input>
             <paper-input id="updateNewPassword2" label="Reset password" type="password"></paper-input>
             <div class="horizontal center-justified layout">
-                <paper-button on-click="updatePassword" id="updatePassword">Update password</paper-button>
-                <paper-button on-click="deleteFirebaseTokens" class="primary">Logout</paper-button></p>
+                <paper-button on-click="updatePassword" id="updatePassword" class="primary">Update password</paper-button>
             </div>
 
-            <hr>
         </div>
 
     </template>
@@ -159,40 +90,11 @@
              */
             is: 'x-datasync',
             properties: {
-                tab: {
-                    type: Number,
-                    value: 0,
-                    observer: '_tabChanged'
-                },
                 email: {
                     type: String,
                     value: ''
                 },
-                showUser: {
-                    type: Boolean,
-                    value: false
-                },
-                loginLoading: {
-                    type: Boolean,
-                    value: false
-                },
-                loginError: {
-                    type: Boolean,
-                    value: false
-                },
-                registerLoading: {
-                    type: Boolean,
-                    value: false
-                },
-                registerError: {
-                    type: Boolean,
-                    value: false
-                },
-                registerSuccess: {
-                    type: Boolean,
-                    value: false
-                },
-                resetSuccess: {
+                showChangePasswordForm: {
                     type: Boolean,
                     value: false
                 },
@@ -222,14 +124,7 @@
              * Called when element is attached to DOM.
              */
             attached: function () {
-                var auth = FIREBASE.get().getAuth();
-                if (auth == null) {
-                    this.showUser = false;
-                } else {
-                    this.showUser = true;
-                    this.email = auth.password.email;
-                }
-                this.tab = 0;
+                this.email = FIREBASE.get().getAuth().password.email;
             },
 
             /**
@@ -240,153 +135,25 @@
             /* ------------------------------------------------------------------------------------------------------ */
             /* Observers */
 
-            /**
-             * Change entry/exit animations based on currently selected tab.
-             */
-            _tabChanged: function (newValue) {
-                if (!this.showUser) {
-                    if (newValue == 0) {
-                        this.$.pages.entryAnimation = 'slide-from-right-animation';
-                        this.$.pages.exitAnimation = 'slide-left-animation';
-                    } else {
-                        this.$.pages.entryAnimation = 'slide-from-left-animation';
-                        this.$.pages.exitAnimation = 'slide-right-animation';
-                    }
-                }
-            },
+            // ...
 
             /* ------------------------------------------------------------------------------------------------------ */
             /* Event handlers */
 
             /**
-             * Validate login form and login user into Firebase database.
+             * Unauthorize user from Firebase.
              */
-            doLogin: function () {
-                var valid = true;
-                if (this.$.loginEmail.value == '' || !this.$.loginEmail.validate()) {
-                    this.$.loginEmail.invalid = true;
-                    this.$.loginEmail.$.input.focus();
-                    valid = false;
-                } else if (this.$.loginPassword.value == '' || this.$.loginPassword.value.length < 5) {
-                    this.$.loginPassword.invalid = true;
-                    this.$.loginPassword.$.input.focus();
-                    valid = false;
-                } else {
-                    this.$.loginEmail.invalid = false;
-                    this.$.loginPassword.invalid = false;
-                }
-                if (valid) {
-                    this.disableAllInputs();
-                    this.loginLoading = true;
-                    this.loginError = false;
-                    var that = this;
-                    FIREBASE.get().authWithPassword({
-                        email: this.$.loginEmail.value,
-                        password: this.$.loginPassword.value
-                    }, function (error, authData) {
-                        that.loginLoading = false;
-                        that.enableAllInputs();
-                        if (error) {
-                            that.loginError = true;
-                            that.$.loginError.innerHTML = error;
-                        } else {
-                            that.loginError = false;
-                            that.showForms = false;
-                            that.showUser = true;
-                            that.email = authData.password.email;
-                            that.$.loginPassword.value = '';
-                            that.$.loginEmail.value = '';
-                            window.dispatchEvent(new CustomEvent('__firebaseInit'));
-                        }
-                    })
-                }
+            logout: function () {
+                FIREBASE.get().unauth();
+                window.dispatchEvent(new CustomEvent('__userLogout'));
             },
 
             /**
-             * Validate email and submit reset password form.
+             * Toggles change password form.
              */
-            doReset: function () {
-                if (this.$.loginEmail.value == '' || !this.$.loginEmail.validate()) {
-                    this.$.loginEmail.invalid = true;
-                    this.$.loginEmail.$.input.focus();
-                } else {
-                    this.loginLoading = true;
-                    var that = this;
-                    FIREBASE.get().resetPassword({
-                        email: this.$.loginEmail.value
-                    }, function (error) {
-                        that.loginLoading = false;
-                        if (error) {
-                            that.loginError = true;
-                            that.$.loginError.innerHTML = error;
-                        } else {
-                            that.resetSuccess = true;
-                            window.setTimeout(function () {
-                                that.resetSuccess = false;
-                            }, 5000);
-                        }
-                    })
-                }
+            showChangePassword: function () {
+                this.showChangePasswordForm = !this.showChangePasswordForm;
             },
-
-            /**
-             * Validate register form and register new user in Firebase database.
-             */
-            doRegister: function () {
-                var valid = true;
-                if (this.$.registerEmail.value == '' || !this.$.registerEmail.validate()) {
-                    this.$.registerEmail.invalid = true;
-                    this.$.registerEmail.$.input.focus();
-                    valid = false;
-                } else if (this.$.registerPassword.value == '' || this.$.registerPassword.value.length < 5) {
-                    this.$.registerPassword.invalid = true;
-                    this.$.registerPassword.$.input.focus();
-                    valid = false;
-                } else if (this.$.registerPassword2.value == '' || this.$.registerPassword2.value.length < 5) {
-                    this.$.registerPassword2.invalid = true;
-                    this.$.registerPassword2.$.input.focus();
-                    valid = false;
-                } else if (this.$.registerPassword.value != this.$.registerPassword2.value) {
-                    this.$.registerPassword.invalid = true;
-                    this.$.registerPassword2.invalid = true;
-                    this.$.registerPassword.$.input.focus();
-                    valid = false;
-                } else {
-                    this.$.registerPassword.invalid = false;
-                    this.$.registerPassword.invalid = false;
-                    this.$.registerPassword2.invalid = false;
-                }
-                if (valid) {
-                    this.disableAllInputs();
-                    this.registerLoading = true;
-                    this.registerError = false;
-                    var that = this;
-                    FIREBASE.get().createUser({
-                        email: this.$.registerEmail.value,
-                        password: this.$.registerPassword.value
-                    }, function (error, userData) {
-                        that.registerLoading = false;
-                        that.enableAllInputs();
-                        if (error) {
-                            that.registerError = true;
-                            that.$.registerError.innerHTML = error;
-                        } else {
-                            that.registerError = false;
-                            that.registerSuccess = true;
-                            window.setTimeout(function () {
-                                that.registerSuccess = false;
-                            }, 5000);
-                            that.$.loginEmail.value = that.$.registerEmail.value;
-                            that.$.loginPassword.value = that.$.registerPassword.value;
-                            that.$.registerEmail.value = '';
-                            that.$.registerPassword.value = '';
-                            that.$.registerPassword2.value = '';
-                            that.tab = 0;
-                        }
-                    });
-                }
-            },
-
 
             /**
              * Validate update password form and update user's password.
@@ -448,45 +215,12 @@
                     });
 
                 }
-            },
-
-            /**
-             * Unauthorize user from Firebase.
-             */
-            deleteFirebaseTokens: function () {
-                FIREBASE.get().unauth();
-                this.showUser = false;
-                window.dispatchEvent(new CustomEvent('__firebaseDestroy'));
-            },
+            }
 
             /* ------------------------------------------------------------------------------------------------------ */
             /* Helper functions */
 
-            /**
-             * Disables all inputs in both login an register forms.
-             */
-            disableAllInputs: function () {
-                this.$.loginEmail.disabled = true;
-                this.$.loginPassword.disabled = true;
-                this.$.loginButton.disabled = true;
-                this.$.registerEmail.disabled = true;
-                this.$.registerPassword.disabled = true;
-                this.$.registerPassword2.disabled = true;
-                this.$.registerButton.disabled = true;
-            },
-
-            /**
-             * Enables all inputs in both login an register forms.
-             */
-            enableAllInputs: function () {
-                this.$.loginEmail.disabled = false;
-                this.$.loginPassword.disabled = false;
-                this.$.loginButton.disabled = false;
-                this.$.registerEmail.disabled = false;
-                this.$.registerPassword.disabled = false;
-                this.$.registerPassword2.disabled = false;
-                this.$.registerButton.disabled = false;
-            }
+            // ...
 
         });
     </script>
