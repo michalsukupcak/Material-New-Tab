@@ -4,7 +4,7 @@
     <!-- CSS -->
     <style>
 
-        :host { display: block; height: 100%; margin: 100px auto; width: 600px; }
+        :host { display: block; height: 100%; margin: 50px auto; width: 650px; }
 
         paper-material { background: white; padding: 10px 20px; }
 
@@ -12,32 +12,44 @@
 
         p { text-align: justify; }
         p i { color: #999; }
+        p i a { color: #999; }
 
-        paper-tabs { --paper-tabs-selection-bar-color: #1E86BD; }
+        paper-tabs { border-bottom: 1px solid #CCC; --paper-tabs-selection-bar-color: #1E86BD; }
         neon-animated-pages { height: 300px; overflow: hidden; }
         neon-animated-pages section { padding: 20px; }
 
         div.spinner { margin: auto; text-align: center; }
+
+        footer { color: #CCC; font-size: .8em; padding: 0 0 10px 0; text-align: center; }
+        footer a { color: #CCC; }
 
     </style>
 
     <!-- ----------------------------------------------------------------------------------------------------------- -->
     <!-- HTML -->
     <template>
-        <paper-material elevation="2">
+        <paper-material elevation="5">
 
             <!-- ------------------------------------------- -->
             <!-- Description -->
-            <h2>Welcome to Material New Tab</h2>
+            <h2>
+                <img src="../images/web-store-icon.png">
+                <br>
+                Welcome to Material New Tab
+            </h2>
             <p>
                 Before we start, please create an account. This feature syncs basic settings of your extension, ensuring
-                your data survives when you change computer or browser.
+                your data survives when you reinstall the extension, your browser or use a different computer.
             </p>
             <p>
                 <i>
-                    This feature <strong>only syncs local data</strong>, such as RSS feed settings or Dashboard
-                    configuration. Data from third party services (such as Google Calendar or Youtube) are only stored
-                    locally and are never uploaded anywhere. Password Generator data are not synced at all.
+                    This feature <strong>only syncs local data created by you</strong>, such as RSS feed settings and
+                    similiar configuration. Data from third party services (such as Google Calendar or Youtube) never
+                    leave your computer and are NOT uploaded or synced anywhere. We value your privacy and this account
+                    only serves as data synchronization feature for your convenience. We're not collecting any
+                    analytical data nor we're interested in observing your actions. This extension is fully open-source
+                    with <a href="https://github.com/michalsukupcak/Material-New-Tab" target="_blank">source code
+                    published on Github</a>.
                 </i>
             </p>
 
@@ -89,6 +101,10 @@
                 </section>
 
             </neon-animated-pages>
+
+            <footer>
+                Created by Michal Sukupčák | <a href="" target="_blank">Google+</a> | <a href="" target="_blank">Github</a>
+            </footer>
 
             <!-- ------------------------------------------- -->
             <!-- Toast -->

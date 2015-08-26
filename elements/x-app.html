@@ -133,7 +133,7 @@
                     </paper-menu-button>
 
                     <!-- Tabs -->
-                    <paper-tabs selected="{{PAGE}}" attr-for-selected="data-page" class="bottom fit" noink>
+                    <paper-tabs selected="{{page}}" attr-for-selected="data-page" class="bottom fit" noink>
                         <paper-tab data-page="home">Home</paper-tab>
                         <paper-tab data-page="news">News</paper-tab>
                         <paper-tab data-page="youtube">Youtube</paper-tab>
@@ -146,7 +146,7 @@
 
                     <!-- ------------------------------------------- -->
                     <!-- Pages -->
-                    <neon-animated-pages id="pages" selected="{{PAGE}}" attr-for-selected="data-page" entry-animation="fade-in-animation" exit-animation="fade-out-animation">
+                    <neon-animated-pages id="pages" selected="{{page}}" attr-for-selected="data-page" entry-animation="fade-in-animation" exit-animation="fade-out-animation">
                         <section data-page="home"><x-home></x-home></section>
                         <section data-page="news"><x-news></x-news></section>
                         <section data-page="youtube"><x-youtube></x-youtube></section>
@@ -187,7 +187,7 @@
                 <table>
                     <tr>
                         <th>Version:</th>
-                        <td>[[VERSION]]</td>
+                        <td>[[version]]</td>
                     </tr>
                     <tr>
                         <th>License:</th>
@@ -210,9 +210,10 @@
 
         <!-- ------------------------------------------- -->
         <!-- Page localstorage -->
-        <iron-localstorage name="material-new-tab-PAGE"
+        <iron-localstorage name="material-new-tab-page"
             id="pageLocalstorage"
-            value="{{PAGE}}"
+            value="{{page}}"
+            on-iron-localstorage-load-empty="initPage"
         ></iron-localstorage>
 
     </template>
@@ -230,14 +231,13 @@
              */
             is: 'x-app',
             properties: {
-
-                VERSION: {
+                version: {
                     type: String,
-                    value: '1.1.3 (Firebase)'
+                    value: ''
                 },
-                PAGE: {
+                page: {
                     type: String,
-                    value: 'home',
+                    value: '',
                     observer: '_pageChanged'
                 }
 
@@ -254,7 +254,9 @@
             /**
              * Called when element is attached to DOM.
              */
-            attached: function () {},
+            attached: function () {
+                this.version = APP_VERSION;
+            },
 
             /**
              * Called when element is detached from DOM.
@@ -264,10 +266,12 @@
             /* ------------------------------------------------------------------------------------------------------ */
             /* Observers */
 
-            // ...
+            /**
+             * Observes page changes and sets appropriate color to main paper-toolbar.
+             */
             _pageChanged: function () {
                 var color;
-                switch (this.PAGE) {
+                switch (this.page) {
                     default:
                     case 'home':
                         color = '1E86BD';
@@ -290,6 +294,13 @@
 
             /* ------------------------------------------------------------------------------------------------------ */
             /* Event handlers */
+
+            /**
+             * Initializes page variable.
+             */
+            initPage: function () {
+                this.page = 'home';
+            },
 
             /**
              * Opens drawer.

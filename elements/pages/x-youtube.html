@@ -6,7 +6,23 @@
     <style include="youtube-colors"></style>
     <style>
 
-        paper-material { background: white; display: block; margin: 10px; width: 320px; }
+        paper-material { background: white; display: block; margin: 10px; position: relative; width: 320px; }
+        paper-material div.type { background: rgba(0, 0, 0, .5); color: white; font-size: .8em; padding: 5px; position: absolute; right: 0; top: 0; }
+        paper-material a.open { background: rgba(0, 0, 0, .5); color: white; font-size: .8em; padding: 5px; position: absolute; right: 0; top: 25px; }
+        paper-material div.play {
+            background: rgba(0, 0, 0, .7);
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            margin: 0 0 0 -25px;
+            padding: 10px 0;
+            position: absolute;
+            left: 50%;
+            text-align: center;
+            top: 80px;
+            width: 50px;
+        }
+        paper-material img { cursor: pointer; }
         paper-material div.title { font-weight: bold; padding: 10px 10px 5px 10px; }
         paper-material div.published { color: #666; font-size: .8em; padding: 0 10px 2px 10px; }
         paper-material div.channel { color: #666; font-size: .8em; padding: 0 10px 15px 10px; }
@@ -24,6 +40,12 @@
             width: 500px;
         }
 
+        paper-dialog#videoPlayerDialog { background: black !important; min-width: 850px !important; }
+        paper-dialog#videoPlayerDialog div#player {}
+        paper-dialog#videoPlayerDialog div.buttons {}
+        paper-dialog#videoPlayerDialog div.buttons paper-button { color: #EEE; }
+        paper-dialog#videoPlayerDialog div.buttons paper-button.primary { color: #CC181E; }
+
     </style>
 
     <!-- ----------------------------------------------------------------------------------------------------------- -->
@@ -32,7 +54,7 @@
 
         <!-- ------------------------------------------- -->
         <!-- Title -->
-        <h1>Subscriptions</h1>
+        <h1>New videos</h1>
 
         <!-- ------------------------------------------- -->
         <!-- Youtube links -->
@@ -48,13 +70,26 @@
         <div class="horizontal center-justified wrap layout">
             <template is="dom-repeat" items="{{videos}}" as="video">
                 <paper-material elevation="2" class="vertical layout">
-                    <img src="[[video.thumbnail]]">
+                    <div class="type">[[video.type]]</div>
+                    <a class="open" href="[[video.url]]" target="_blank" title="Open on Youtube"><iron-icon icon="open-in-new"></iron-icon></a>
+                    <div class="play" on-click="openVideoPlayerDialog"><iron-icon icon="av:play-arrow"></iron-icon></div>
+                    <img src="[[video.thumbnail]]" on-click="openVideoPlayerDialog" title="Play">
                     <div class="title">[[video.title]]</div>
                     <div class="published">Published on <span>[[video.published]]</span></div>
                     <div class="channel">Uploaded by <a href="[[video.channelUrl]]" target="_blank">[[video.channel]]</a></div>
                 </paper-material>
             </template>
         </div>
+
+        <!-- ------------------------------------------- -->
+        <!-- Video player dialog -->
+        <paper-dialog id="videoPlayerDialog" on-iron-overlay-closed="videoPlayerDialogClosed" entry-animation="scale-up-animation" exit-animation="scale-down-animation" modal>
+            <div id="player"></div>
+            <div class="buttons">
+                <paper-button class="primary" dialog-confirm>Continue on youtube</paper-button>
+                <paper-button dialog-dismiss>Close</paper-button>
+            </div>
+        </paper-dialog>
 
         <!-- ------------------------------------------- -->
         <!-- Youtube videos subscriptions API call -->
@@ -95,15 +130,17 @@
          * @param published
          * @param thumbnail
          */
-        function Video(id, title, channel, channelUrl, published, thumbnail) {
+        function Video(id, title, channel, channelUrl, published, thumbnail, type) {
             var m = moment(published);
             this.id = id;
+            this.url = 'https://youtube.com/watch?v=' + id;
             this.title = title;
             this.channel = channel;
             this.channelUrl = 'https://youtube.com/channel/' + channelUrl;
             this.published = m.format('DD.MM.YYYY @ HH:mm');;
             this.timestamp = m.unix();
             this.thumbnail = thumbnail;
+            this.type = type;
         };
 
         /**
@@ -140,6 +177,10 @@
                 lastUpdate: {
                     type: Number,
                     value: 0
+                },
+                player: {
+                    type: Object,
+                    value: null
                 }
             },
 
@@ -173,14 +214,18 @@
              * Opens youtube homepage.
              */
             openYoutube: function () {
-                chrome.tabs.create({ url: 'https://www.youtube.com/' });
+                chrome.tabs.create({
+                    url: 'https://www.youtube.com/'
+                });
             },
 
             /**
              * Opens search URL with value from search input.
              */
             openSearch: function () {
-                chrome.tabs.create({ url: 'https://www.youtube.com/results?search_query=' + encodeURIComponent(this.$.search.value) });
+                chrome.tabs.create({
+                    url: 'https://www.youtube.com/results?search_query=' + encodeURIComponent(this.$.search.value)
+                });
             },
 
             /**
@@ -200,11 +245,42 @@
                 var videos = event.detail.response.items;
                 this.videos = [];
                 for (var i = 0; i < videos.length; i++) {
-                    var v = videos[i];
-                    var s = v.snippet;
-                    if (v.snippet.type == 'upload') {
-                        this.push('videos', new Video(v.id, s.title, s.channelTitle, s.channelId, s.publishedAt, s.thumbnails.medium.url));
+                    var video = videos[i];
+                    var contentDetails = video.contentDetails;
+                    var snippet = video.snippet;
+                    var id;
+                    var title = snippet.title;
+                    var channelTitle = snippet.channelTitle;
+                    var channelId = snippet.channelId;
+                    var published = snippet.publishedAt;
+                    var thumbnail = snippet.thumbnails.medium.url;
+                    var type;
+                    switch (snippet.type) {
+                        case 'upload':
+                            id = contentDetails.upload.videoId;
+                            type = 'Subscription upload';
+                            break;
+                        case 'like':
+                            id = contentDetails.like.resourceId.videoId;
+                            type = 'You might like this';
+                            break;
+                        case 'favorite':
+                            id = contentDetails.favorite.resourceId.videoId;
+                            type = 'Favorite video';
+                            break;
+                        case 'playlistItem':
+                            id = contentDetails.playlistItem.resourceId.videoId;
+                            type = 'New video in playlist';
+                            break;
+                        case 'recommendation':
+                            id = contentDetails.recommendation.resourceId.videoId;
+                            type = 'Recommended video';
+                            break;
+                        default:
+                            console.log(snippet.type);
+                            continue;
                     }
+                    this.push('videos', new Video(id, title, channelTitle, channelId, published, thumbnail, type));
                 }
                 this.videos.sort(__compareVideos);
                 this.videos = this.videos.slice();
@@ -219,6 +295,37 @@
                 __error('Failed to load videos!', event);
             },
 
+            openVideoPlayerDialog: function (event) {
+                var video = event.model.video;
+                if (this.player == null) {
+                    this.player = new YT.Player('player', {
+                        height: '480',
+                        width: '800',
+                        videoId: video.id,
+                        events: {
+                            'onReady': this.videoPlayerReady
+                        }
+                    });
+                } else {
+                    this.player.loadVideoById(video.id);
+                }
+                this.$.videoPlayerDialog.open();
+            },
+
+            videoPlayerReady: function (event) {
+                event.target.playVideo();
+            },
+
+            videoPlayerDialogClosed: function (event, reason) {
+                if (reason.confirmed) {
+                    chrome.tabs.create({
+                        url: this.player.getVideoUrl() + '#t=' + parseInt(this.player.getCurrentTime()) + 's'
+                    });
+                }
+                this.player.stopVideo();
+                this.player.clearVideo();
+            },
+
             /* ------------------------------------------------------------------------------------------------------ */
             /* Helper functions */
 
@@ -231,9 +338,9 @@
                     chrome.identity.getAuthToken({ 'interactive': true }, function (token) {
                         that.$.getSubscriptionVideosRequest.url =
                                 'https://www.googleapis.com/youtube/v3/activities' +
-                                '?part=id,snippet' +
+                                '?part=snippet,contentDetails' +
                                 '&home=true' +
-                                '&maxResults=24' +
+                                '&maxResults=32' +
                                 '&access_token=' + encodeURIComponent(token);
                         that.$.getSubscriptionVideosRequest.generateRequest();
                     });

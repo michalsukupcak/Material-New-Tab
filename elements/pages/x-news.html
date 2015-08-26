@@ -14,11 +14,12 @@
         paper-dialog { min-width: 968px; }
         paper-dialog div.feed {}
         paper-dialog div.feed paper-input { margin: 0 10px 0 0; }
-        paper-dialog div.feed paper-input.name { width: 20%; }
-        paper-dialog div.feed paper-input.url { width: 30%; }
-        paper-dialog div.feed paper-input.icon { width: 20%; }
-        paper-dialog div.feed paper-input.count { width: 20%; }
+        paper-dialog div.feed paper-input.name { width: 15%; }
+        paper-dialog div.feed paper-input.url { width: 45%; }
+        paper-dialog div.feed paper-input.icon { width: 15%; }
+        paper-dialog div.feed paper-input.count { width: 15%; }
         paper-dialog div.feed paper-button { width: 5%; }
+        paper-dialog a { color: #999; }
 
     </style>
 
@@ -40,7 +41,7 @@
 
         <!-- ------------------------------------------- -->
         <!-- RSS feed dialog -->
-        <paper-dialog id="customizeDialog" entry-animation="scale-up-animation" exit-animation="scale-down-animation" modal>
+        <paper-dialog id="customizeDialog" on-iron-overlay-closed="updateFeeds" entry-animation="scale-up-animation" exit-animation="scale-down-animation" modal>
             <h2>Your RSS feeds:</h2>
             <div>
                 <template is="dom-repeat" items="{{feeds}}" as="feed">
@@ -48,23 +49,19 @@
                         <paper-input class="name" label="Feed name" value="{{feed.name}}"></paper-input>
                         <paper-input class="url" label="URL" value="{{feed.url}}"></paper-input>
                         <paper-input class="icon" label="Icon" value="{{feed.icon}}"></paper-input>
-                        <paper-input class="count" label="Number of articles" value="{{feed.count}}"></paper-input>git
+                        <paper-input class="count" label="Number of articles" value="{{feed.count}}"></paper-input>
                         <paper-button on-click="deleteFeed" class="delete">Delete</paper-button>
                     </div>
                 </template>
                 <paper-button on-click="addNewFeed">+ Add new feed</paper-button>
+                <div class="vertical end layout">
+                    <a href="https://elements.polymer-project.org/elements/iron-icons?view=demo:demo/index.html" target="_blank">Where to find icon names?</a>
+                </div>
             </div>
             <div class="buttons">
                 <paper-button dialog-dismiss>Close</paper-button>
             </div>
         </paper-dialog>
-
-        <!-- ------------------------------------------- -->
-        <!-- Localstorage for secret -->
-        <iron-localstorage name="material-new-tab-news-feeds"
-            id="feedsLocalstorage"
-            value="{{feeds}}"
-        ></iron-localstorage>
 
     </template>
 
@@ -80,11 +77,12 @@
          * @param icon
          * @param count
          */
-        function Feed(name, url, icon, count) {
+        function Feed(name, url, icon, count, id) {
             this.name = name;
             this.url = url;
             this.icon = icon;
             this.count = count;
+            this.id = id;
         }
 
         Polymer({
@@ -114,7 +112,13 @@
             /**
              * Called when element is attached to DOM.
              */
-            attached: function () {},
+            attached: function () {
+                var that = this;
+                FIREBASE.getFeeds().on('child_added', function (snapshot) {
+                    var f = snapshot.val();
+                    that.push('feeds', new Feed(f.name, f.url, f.icon, f.count, snapshot.key()));
+                });
+            },
 
             /**
              * Called when element is detached from DOM.
@@ -137,32 +141,60 @@
             },
 
             /**
-             * Adds new feed to feed list.
+             * Adds new feed to FIREBASE database.
              */
             addNewFeed: function () {
-                if (!this.feeds) {
-                    this.feeds = []
-                };
-                this.push('feeds', new Feed('', '', 'social:public', '5'));
-                this.setCardsHeight();
+                var feed = new Feed('[feed name]', '[feed url]', 'social:public', 5, null);
+                FIREBASE.getFeeds().push().set({
+                    name: feed.name,
+                    url: feed.url,
+                    icon: feed.icon,
+                    count: feed.count
+                });
             },
 
             /**
-             * Deletes feed.
+             * Deletes feed from FIREBASE database.
              */
             deleteFeed: function (event) {
-                var feed = event.model.feed;
+                var id = event.model.feed.id;
+                var index = this.findFeedIndexById(id);
+                this.splice('feeds', index, 1);
+                FIREBASE.getFeeds().child(event.model.feed.id).remove();
+            },
+
+            /**
+             * Updates feeds in firebase DB.
+             */
+            updateFeeds: function (event) {
+                var fFeeds = FIREBASE.getFeeds();
                 for (var i = 0; i < this.feeds.length; i++) {
-                    if (feed.name == this.feeds[i].name) {
-                        this.splice('feeds', i, 1);
-                    }
+                    var feed = this.feeds[i];
+                    fFeeds.child(feed.id).set({
+                        name: feed.name,
+                        url: feed.url,
+                        icon: feed.icon,
+                        count: feed.count
+                    });
                 }
             },
 
             /* ------------------------------------------------------------------------------------------------------ */
             /* Helper functions */
 
-            // ...
+            /**
+             * Finds feed index in this.feeds array based in feed's ID.
+             *
+             * @param id
+             * @returns {number}
+             */
+            findFeedIndexById: function (id) {
+                for (var i = 0; i < this.feeds.length; i++) {
+                    if (id == this.feeds[i].id) {
+                        return i;
+                    }
+                }
+            }
 
         });
     </script>

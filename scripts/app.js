@@ -1,4 +1,11 @@
 /**
+ * Defines application version.
+ *
+ * @type {string}
+ */
+var APP_VERSION = '1.3.2';
+
+/**
  * Main application template companion script.
  */
 (function (document) {
@@ -27,7 +34,7 @@
      * Event listener for Polymer initialization.
      */
     window.addEventListener('WebComponentsReady', function () {
-        console.log('Material New Tab Page is ready!');
+        console.log('Material New Tab is ready!');
         app.updateElements();
     });
 

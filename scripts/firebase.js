@@ -19,9 +19,9 @@ var FIREBASE = {
         return this.firebase.getAuth().uid;
     },
 
-    getDashboard: function () {
+    getFeeds: function () {
         this.init();
-        return this.firebase.child('users').child(this.getUid()).child('dashboard');
+        return this.firebase.child('users').child(this.getUid()).child('feeds');
     }
 
 };

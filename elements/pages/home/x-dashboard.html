@@ -6,11 +6,7 @@
     <style include="home-colors"></style>
     <style>
 
-        paper-dialog#customizeDialog {}
-        paper-dialog#customizeDialog div.content {}
-        paper-dialog#customizeDialog div.content div.checkbox { padding: 5px 0 10px 0; }
-        paper-dialog#customizeDialog div.content div.checkbox span {}
-        paper-dialog#customizeDialog div.content div.checkbox span paper-toggle-button { margin: 0 0 0 20px; }
+
 
     </style>
 
@@ -25,45 +21,13 @@
                 <div class="title">
                     <iron-icon icon="dashboard"></iron-icon><span>Dashboard</span>
                 </div>
-                <div class="flex"></div>
-                <paper-menu-button horizontal-align="right">
-                    <paper-icon-button icon="more-vert" class="dropdown-trigger"></paper-icon-button>
-                    <paper-dropdown-menu class="dropdown-content">
-                        <paper-menu>
-                            <paper-item on-click="openCustomizeDialog">Customize</paper-item>
-                        </paper-menu>
-                    </paper-dropdown-menu>
-                </paper-menu-button>
             </div>
             <div class="content">
-                <div id="spinner" class="horizontal center-justified layout">
-                    <paper-spinner active></paper-spinner>
-                </div>
-                <div id="clockContainer"></div>
-                <div id="passwordGeneratorContainer"></div>
+                <x-clock></x-clock>
+                <hr>
+                <x-password-generator></x-password-generator>
             </div>
         </paper-material>
-
-        <!-- ------------------------------------------- -->
-        <!-- Save warning dialog -->
-        <paper-dialog id="customizeDialog" entry-animation="scale-up-animation" exit-animation="scale-down-animation" modal>
-            <h2>Customize dashboard</h2>
-            <div class="content">
-                <div class="checkbox horizontal layout">
-                    <span>Enable clock</span>
-                    <span class="flex"></span>
-                    <span><paper-toggle-button on-click="toggleClock" checked="[[clockEnabled]]"></paper-toggle-button></span>
-                </div>
-                <div class="checkbox horizontal layout">
-                    <span>Enable Password Generator</span>
-                    <span class="flex"></span>
-                    <span><paper-toggle-button on-click="togglePasswordGenerator" checked="[[passwordGeneratorEnabled]]"></paper-toggle-button></span>
-                </div>
-            </div>
-            <div class="buttons">
-                <paper-button dialog-dismiss>Close</paper-button>
-            </div>
-        </paper-dialog>
 
     </template>
 
@@ -79,16 +43,7 @@
              * Element initialization and properties definition.
              */
             is: 'x-dashboard',
-            properties: {
-                clockEnabled: {
-                    type: Boolean,
-                    value: true
-                },
-                passwordGeneratorEnabled: {
-                    type: Boolean,
-                    value: true
-                }
-            },
+            properties: {},
 
             /* ------------------------------------------------------------------------------------------------------ */
             /* Lifecycle callbacks */
@@ -101,18 +56,7 @@
             /**
              * Called when element is attached to DOM.
              */
-            attached: function () {
-                var that = this;
-                FIREBASE.getDashboard().on('value', function (snapshot) {
-                    if (snapshot.val() !== null) {
-                        that.$.spinner.style.display = 'none';
-                        that.clockEnabled = snapshot.val().clockEnabled;
-                        that.enableClock();
-                        that.passwordGeneratorEnabled = snapshot.val().passwordGeneratorEnabled;
-                        that.enablePasswordGenerator();
-                    }
-                });
-            },
+            attached: function () {},
 
             /**
              * Called when element is detached from DOM.
@@ -127,52 +71,12 @@
             /* ------------------------------------------------------------------------------------------------------ */
             /* Event handlers */
 
-            openCustomizeDialog: function () {
-                this.$.customizeDialog.open();
-            },
-
-            toggleClock: function () {
-                this.clockEnabled = !this.clockEnabled;
-                this.enableClock();
-                FIREBASE.getDashboard().update({
-                    clockEnabled: this.clockEnabled
-                });
-            },
-
-            togglePasswordGenerator: function () {
-                this.passwordGeneratorEnabled = !this.passwordGeneratorEnabled;
-                this.enablePasswordGenerator();
-                FIREBASE.getDashboard().update({
-                    passwordGeneratorEnabled: this.passwordGeneratorEnabled
-                });
-            },
+            // ...
 
             /* ------------------------------------------------------------------------------------------------------ */
             /* Helper functions */
 
-            enableClock: function () {
-                if (this.clockEnabled == true) {
-                    if (this.$.clockContainer.firstChild == null) {
-                        this.$.clockContainer.appendChild(document.createElement('x-clock'));
-                    }
-                } else {
-                    while (this.$.clockContainer.firstChild) {
-                        this.$.clockContainer.removeChild(this.$.clockContainer.firstChild);
-                    }
-                }
-            },
-
-            enablePasswordGenerator: function () {
-                if (this.passwordGeneratorEnabled == true) {
-                    if (this.$.passwordGeneratorContainer.firstChild == null) {
-                        this.$.passwordGeneratorContainer.appendChild(document.createElement('x-password-generator'));
-                    }
-                } else {
-                    while (this.$.passwordGeneratorContainer.firstChild) {
-                        this.$.passwordGeneratorContainer.removeChild(this.$.passwordGeneratorContainer.firstChild);
-                    }
-                }
-            }
+            // ...
 
         });
     </script>
