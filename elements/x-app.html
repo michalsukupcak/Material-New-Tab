@@ -32,9 +32,9 @@
         paper-drawer-panel#panel paper-header-panel[main] { background: #F2F2F2; }
         paper-drawer-panel#panel paper-header-panel[main] paper-toolbar { transition: .6s ease; }
         paper-drawer-panel#panel paper-header-panel[main] paper-toolbar span { font-size: 1.2em; }
-        paper-drawer-panel#panel paper-header-panel[main] paper-toolbar paper-dropdown-menu paper-menu { background: white; }
-        paper-drawer-panel#panel paper-header-panel[main] paper-toolbar paper-dropdown-menu paper-menu paper-item { cursor: pointer; transition: .2s ease; }
-        paper-drawer-panel#panel paper-header-panel[main] paper-toolbar paper-dropdown-menu paper-menu paper-item:hover { background: #F2F2F2; }
+        paper-drawer-panel#panel paper-header-panel[main] paper-toolbar paper-menu { background: white; }
+        paper-drawer-panel#panel paper-header-panel[main] paper-toolbar paper-menu paper-item { cursor: pointer; transition: .2s ease; }
+        paper-drawer-panel#panel paper-header-panel[main] paper-toolbar paper-menu paper-item:hover { background: #F2F2F2; }
         paper-drawer-panel#panel paper-header-panel[main] div#main { padding: 20px; }
         paper-drawer-panel#panel paper-header-panel[main] div#main neon-animated-pages { height: 100%; }
 
@@ -124,12 +124,10 @@
                     <span class="flex"></span>
                     <paper-menu-button horizontal-align="right">
                         <paper-icon-button icon="more-vert" class="dropdown-trigger"></paper-icon-button>
-                        <paper-dropdown-menu class="dropdown-content">
-                            <paper-menu>
-                                <paper-item on-click="openDataSyncDialog">Data synchronization</paper-item>
-                                <paper-item on-click="openAboutDialog">About extension</paper-item>
-                            </paper-menu>
-                        </paper-dropdown-menu>
+                        <paper-menu class="dropdown-content">
+                            <paper-item on-click="openDataSyncDialog">Data synchronization</paper-item>
+                            <paper-item on-click="openAboutDialog">About extension</paper-item>
+                        </paper-menu>
                     </paper-menu-button>
 
                     <!-- Tabs -->
@@ -137,6 +135,7 @@
                         <paper-tab data-page="home">Home</paper-tab>
                         <paper-tab data-page="news">News</paper-tab>
                         <paper-tab data-page="youtube">Youtube</paper-tab>
+                        <paper-tab data-page="twitter">Twitter</paper-tab>
                     </paper-tabs>
 
                 </paper-toolbar>
@@ -150,6 +149,7 @@
                         <section data-page="home"><x-home></x-home></section>
                         <section data-page="news"><x-news></x-news></section>
                         <section data-page="youtube"><x-youtube></x-youtube></section>
+                        <section data-page="twitter"><x-twitter></x-twitter></section>
                     </neon-animated-pages>
 
                 </div>
@@ -250,6 +250,11 @@
              * Called when element is created.
              */
             created: function () {},
+
+            /**
+             * Called when element is ready.
+             */
+            ready: function () {},
 
             /**
              * Called when element is attached to DOM.

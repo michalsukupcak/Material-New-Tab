@@ -66,12 +66,16 @@
             created: function () {},
 
             /**
+             * Called when element is ready.
+             */
+            ready: function () {},
+
+            /**
              * Called when element is attached to DOM.
              */
             attached: function () {
-                var that = this;
                 chrome.bookmarks.getTree(function (bookmarks) {
-                    var div = that.$.bookmarks;
+                    var div = this.$.bookmarks;
                     var otherBookmarksFolder = bookmarks[0].children[1];
                     if (otherBookmarksFolder.title == 'Other bookmarks') {
                         var folder = otherBookmarksFolder.children;
@@ -100,7 +104,7 @@
                     } else {
                         throw "Folder 'Other bookmarks' is missing in root folder!";
                     }
-                });
+                }.bind(this));
             },
 
             /**

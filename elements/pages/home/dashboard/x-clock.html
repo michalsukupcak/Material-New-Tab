@@ -45,14 +45,18 @@
             created: function () {},
 
             /**
+             * Called when element is ready.
+             */
+            ready: function () {},
+
+            /**
              * Called when element is attached to DOM.
              */
             attached: function () {
                 this.clock();
-                var that = this;
                 window.setInterval(function () {
-                    that.clock();
-                }, 1000);
+                    this.clock();
+                }.bind(this), 1000);
             },
 
             /**

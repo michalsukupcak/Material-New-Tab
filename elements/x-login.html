@@ -150,6 +150,11 @@
             created: function () {},
 
             /**
+             * Called when element is ready.
+             */
+            ready: function () {},
+
+            /**
              * Called when element is attached to DOM.
              */
             attached: function () {},
@@ -208,23 +213,22 @@
                 if (valid) {
                     this.disableAllInputs();
                     this.registerLoading = true;
-                    var that = this;
                     FIREBASE.get().createUser({
                         email: this.$.registerEmail.value,
                         password: this.$.registerPassword.value
                     }, function (error, userData) {
-                        that.registerLoading = false;
-                        that.enableAllInputs();
+                        this.registerLoading = false;
+                        this.enableAllInputs();
                         if (error) {
-                            that.__toast('Ooops! ' + error);
+                            this.__toast('Ooops! ' + error);
                         } else {
-                            that.$.loginEmail.value = that.$.registerEmail.value;
-                            that.$.loginPassword.value = that.$.registerPassword.value;
-                            that.$.registerEmail.value = that.$.registerPassword.value = that.$.registerPassword2.value = '';
-                            that.tab = 1;
-                            that.__toast('Registration successful, you can now log in with your email and password.');
+                            this.$.loginEmail.value = this.$.registerEmail.value;
+                            this.$.loginPassword.value = this.$.registerPassword.value;
+                            this.$.registerEmail.value = this.$.registerPassword.value = this.$.registerPassword2.value = '';
+                            this.tab = 1;
+                            this.__toast('Registration successful, you can now log in with your email and password.');
                         }
-                    });
+                    }.bind(this));
                 }
             },
 
@@ -248,19 +252,18 @@
                 if (valid) {
                     this.disableAllInputs();
                     this.loginLoading = true;
-                    var that = this;
                     FIREBASE.get().authWithPassword({
                         email: this.$.loginEmail.value,
                         password: this.$.loginPassword.value
                     }, function (error, authData) {
-                        that.loginLoading = false;
-                        that.enableAllInputs();
+                        this.loginLoading = false;
+                        this.enableAllInputs();
                         if (error) {
                             this.__toast('Ooops! ' + error);
                         } else {
                             window.dispatchEvent(new CustomEvent('__userLogin'));
                         }
-                    })
+                    }.bind(this));
                 }
             },
 
@@ -273,17 +276,16 @@
                     this.$.loginEmail.$.input.focus();
                 } else {
                     this.loginLoading = true;
-                    var that = this;
                     FIREBASE.get().resetPassword({
                         email: this.$.loginEmail.value
                     }, function (error) {
-                        that.loginLoading = false;
+                        this.loginLoading = false;
                         if (error) {
-                            that.__toast('Oops! ' + error);
+                            this.__toast('Oops! ' + error);
                         } else {
-                            that.__toast('Instructions on how to reset your password have been sent to your email.');
+                            this.__toast('Instructions on how to reset your password have been sent to your email.');
                         }
-                    })
+                    }.bind(this));
                 }
             },
 

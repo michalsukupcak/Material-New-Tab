@@ -3,7 +3,7 @@
   "private": true,
   "dependencies": {
     "iron-elements": "PolymerElements/iron-elements#1.0.3",
-    "paper-elements": "PolymerElements/paper-elements#1.0.3",
+    "paper-elements": "PolymerElements/paper-elements#1.0.5",
     "google-web-components": "GoogleWebComponents/google-web-components",
     "gold-elements": "PolymerElements/gold-elements#1.0.1",
     "platinum-elements": "PolymerElements/platinum-elements#1.0.1",

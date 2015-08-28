@@ -121,6 +121,11 @@
             created: function () {},
 
             /**
+             * Called when element is ready.
+             */
+            ready: function () {},
+
+            /**
              * Called when element is attached to DOM.
              */
             attached: function () {
@@ -189,30 +194,29 @@
                     this.$.updatePassword.disabled = true;
                     this.updateLoading = true;
                     this.updateError = false;
-                    var that = this;
                     FIREBASE.get().changePassword({
                         email: this.email,
                         oldPassword: this.$.updateOldPassword.value,
                         newPassword: this.$.updateNewPassword.value
                     }, function (error) {
-                        that.$.updateOldPassword.disabled = false;
-                        that.$.updateNewPassword.disabled = false;
-                        that.$.updateNewPassword2.disabled = false;
-                        that.$.updatePassword.disabled = false;
-                        that.updateLoading = false;
+                        this.$.updateOldPassword.disabled = false;
+                        this.$.updateNewPassword.disabled = false;
+                        this.$.updateNewPassword2.disabled = false;
+                        this.$.updatePassword.disabled = false;
+                        this.updateLoading = false;
                         if (error) {
-                            that.updateError = true;
-                            that.$.updateError.innerHTML = error;
+                            this.updateError = true;
+                            this.$.updateError.innerHTML = error;
                         } else {
-                            that.$.updateOldPassword.value = '';
-                            that.$.updateNewPassword.value = '';
-                            that.$.updateNewPassword2.value = '';
-                            that.updateSuccess = true;
+                            this.$.updateOldPassword.value = '';
+                            this.$.updateNewPassword.value = '';
+                            this.$.updateNewPassword2.value = '';
+                            this.updateSuccess = true;
                             window.setTimeout(function () {
-                                that.updateSuccess = false;
-                            }, 5000);
+                                this.updateSuccess = false;
+                            }.bind(this), 5000);
                         }
-                    });
+                    }.bind(this));
 
                 }
             }

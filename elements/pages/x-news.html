@@ -29,7 +29,7 @@
 
         <!-- ------------------------------------------- -->
         <!-- Title -->
-        <h1>RSS Feeds <iron-icon icon="settings" title="Customize" on-click="openCustomizeDialog"></iron-icon></h1>
+        <h1>RSS feeds <iron-icon icon="settings" title="Customize" on-click="openCustomizeDialog"></iron-icon></h1>
 
         <!-- ------------------------------------------- -->
         <!-- News container -->
@@ -110,14 +110,18 @@
             created: function () {},
 
             /**
+             * Called when element is ready.
+             */
+            ready: function () {},
+
+            /**
              * Called when element is attached to DOM.
              */
             attached: function () {
-                var that = this;
                 FIREBASE.getFeeds().on('child_added', function (snapshot) {
                     var f = snapshot.val();
-                    that.push('feeds', new Feed(f.name, f.url, f.icon, f.count, snapshot.key()));
-                });
+                    this.push('feeds', new Feed(f.name, f.url, f.icon, f.count, snapshot.key()));
+                }.bind(this));
             },
 
             /**

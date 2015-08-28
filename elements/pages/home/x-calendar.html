@@ -30,11 +30,9 @@
                 <div class="flex"></div>
                 <paper-menu-button horizontal-align="right">
                     <paper-icon-button icon="more-vert" class="dropdown-trigger"></paper-icon-button>
-                    <paper-dropdown-menu class="dropdown-content">
-                        <paper-menu>
-                            <paper-item on-click="refreshCalendars">Refresh</paper-item>
-                        </paper-menu>
-                    </paper-dropdown-menu>
+                    <paper-menu class="dropdown-content">
+                        <paper-item on-click="refreshCalendars">Refresh</paper-item>
+                    </paper-menu>
                 </paper-menu-button>
             </div>
             <div class="content">
@@ -182,6 +180,11 @@
             created: function () {},
 
             /**
+             * Called when element is ready.
+             */
+            ready: function () {},
+
+            /**
              * Called when element is attached to DOM.
              */
             attached: function () {},
@@ -264,13 +267,12 @@
             initCalendar: function () {
                 if (this.lastUpdate < moment().unix() - 3600) {
                     this.loading = true;
-                    var that = this;
                     chrome.identity.getAuthToken({ 'interactive': true }, function (token) {
-                        that.$.getCalendarsRequest.url =
+                        this.$.getCalendarsRequest.url =
                                 'https://www.googleapis.com/calendar/v3/users/me/calendarList' +
                                 '?access_token=' + encodeURIComponent(token);
-                        that.$.getCalendarsRequest.generateRequest();
-                    });
+                        this.$.getCalendarsRequest.generateRequest();
+                    }.bind(this));
                 }
             },
 
@@ -278,18 +280,17 @@
              *
              */
             fireGetEventsRequest: function () {
-                var that = this;
                 chrome.identity.getAuthToken({ 'interactive': true }, function (token) {
                     var m = moment();
-                    that.$.getEventsRequest.url =
-                            'https://www.googleapis.com/calendar/v3/calendars/' + encodeURIComponent(that.calendars[that.calendarIndex].id) + '/events' +
+                    this.$.getEventsRequest.url =
+                            'https://www.googleapis.com/calendar/v3/calendars/' + encodeURIComponent(this.calendars[this.calendarIndex].id) + '/events' +
                             '?maxResults=5' +
                             '&timeMin=' + encodeURIComponent(m.format("YYYY-MM-DDTHH:mm:ssZ")) +
                             '&timeMax=' + encodeURIComponent(m.add(1, 'months').format("YYYY-MM-DDTHH:mm:ssZ")) +
                             '&access_token=' + encodeURIComponent(token);
-                    that.$.getEventsRequest.generateRequest();
-                    that.calendarIndex++;
-                });
+                    this.$.getEventsRequest.generateRequest();
+                    this.calendarIndex++;
+                }.bind(this));
             },
 
             /**

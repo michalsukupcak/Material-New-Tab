@@ -22,7 +22,7 @@
             top: 80px;
             width: 50px;
         }
-        paper-material img { cursor: pointer; }
+        paper-material img { background: white; cursor: pointer; height: 180px; width: 320px; }
         paper-material div.title { font-weight: bold; padding: 10px 10px 5px 10px; }
         paper-material div.published { color: #666; font-size: .8em; padding: 0 10px 2px 10px; }
         paper-material div.channel { color: #666; font-size: .8em; padding: 0 10px 15px 10px; }
@@ -75,7 +75,7 @@
                     <div class="play" on-click="openVideoPlayerDialog"><iron-icon icon="av:play-arrow"></iron-icon></div>
                     <img src="[[video.thumbnail]]" on-click="openVideoPlayerDialog" title="Play">
                     <div class="title">[[video.title]]</div>
-                    <div class="published">Published on <span>[[video.published]]</span></div>
+                    <div class="published">Published <span>[[video.published]]</span></div>
                     <div class="channel">Uploaded by <a href="[[video.channelUrl]]" target="_blank">[[video.channel]]</a></div>
                 </paper-material>
             </template>
@@ -137,8 +137,8 @@
             this.title = title;
             this.channel = channel;
             this.channelUrl = 'https://youtube.com/channel/' + channelUrl;
-            this.published = m.format('DD.MM.YYYY @ HH:mm');;
-            this.timestamp = m.unix();
+            this.published = m.fromNow();
+            this.datetime = m.format();
             this.thumbnail = thumbnail;
             this.type = type;
         };
@@ -151,9 +151,11 @@
          * @returns {number}
          */
         var __compareVideos =  function (leftVideo, rightVideo) {
-            if (leftVideo.timestamp < rightVideo.timestamp) {
+            var leftVideoTimestamp = moment(leftVideo.datetime).unix();
+            var rightVideoTimestamp = moment(rightVideo.datetime).unix();
+            if (leftVideoTimestamp < rightVideoTimestamp) {
                 return 1;
-            } else if (leftVideo.timestamp == rightVideo.timestamp) {
+            } else if (leftVideoTimestamp == rightVideoTimestamp) {
                 return 0;
             } else {
                 return -1;
@@ -193,9 +195,22 @@
             created: function () {},
 
             /**
+             * Called when element is ready.
+             */
+            ready: function () {},
+
+            /**
              * Called when element is attached to DOM.
              */
-            attached: function () {},
+            attached: function () {
+                window.setInterval(function () {
+                    if (this.videos) {
+                        for (var i = 0; i < this.videos.length; i++) {
+                            this.set('videos.' + i + '.published', moment(this.videos[i].datetime).fromNow());
+                        }
+                    }
+                }.bind(this), 60000);
+            },
 
             /**
              * Called when element is detached from DOM.
@@ -334,16 +349,15 @@
              */
             initYoutube: function () {
                 if (this.lastUpdate < moment().unix() - 900) {
-                    var that = this;
                     chrome.identity.getAuthToken({ 'interactive': true }, function (token) {
-                        that.$.getSubscriptionVideosRequest.url =
+                        this.$.getSubscriptionVideosRequest.url =
                                 'https://www.googleapis.com/youtube/v3/activities' +
                                 '?part=snippet,contentDetails' +
                                 '&home=true' +
                                 '&maxResults=32' +
                                 '&access_token=' + encodeURIComponent(token);
-                        that.$.getSubscriptionVideosRequest.generateRequest();
-                    });
+                        this.$.getSubscriptionVideosRequest.generateRequest();
+                    }.bind(this));
                 }
             }
 

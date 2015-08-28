@@ -96,10 +96,14 @@
             created: function () {},
 
             /**
+             * Called when element is ready.
+             */
+            ready: function () {},
+
+            /**
              * Called when element is attached to DOM.
              */
             attached: function () {
-                var that = this;
                 chrome.management.getAll(function (extensions) {
 
                     var apps = [];
@@ -123,7 +127,7 @@
                     }
                     apps.sort(__compareApps);
 
-                    var div = that.$.apps;
+                    var div = this.$.apps;
                     for (var i = 0; i < apps.length; i++) {
                         var app = apps[i];
                         var appIcon = document.createElement('img');
@@ -141,7 +145,7 @@
                         Polymer.dom(div).appendChild(appContainer);
                     }
 
-                });
+                }.bind(this));
             },
 
             /**

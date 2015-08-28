@@ -80,6 +80,11 @@
             created: function () {},
 
             /**
+             * Called when element is ready.
+             */
+            ready: function () {},
+
+            /**
              * Called when element is attached to DOM.
              */
             attached: function () {},
@@ -109,15 +114,15 @@
                 var viewportHeight = window.innerHeight;
                 var toolbarHeight = document.querySelector('paper-toolbar#mainToolbar').offsetHeight;
                 var height =
-                                viewportHeight
-                                - toolbarHeight
-                                - 54 // <paper-material.card div.header> height
-                                - 40 // <div#main> top+bottom padding
-                                - 40 // <paper-material.card div.content> top+bottom padding
-                                - 28 // <h1> height
-                                - 15 // <h1> top margin
-                                - 20 // <h1> bottom margin
-                        ;
+                    viewportHeight
+                    - toolbarHeight
+                    - 54 // <paper-material.card div.header> height
+                    - 40 // <div#main> top+bottom padding
+                    - 40 // <paper-material.card div.content> top+bottom padding
+                    - 28 // <h1> height
+                    - 15 // <h1> top margin
+                    - 20 // <h1> bottom margin
+                ;
                 this.$.content.style.height = height + 'px';
             }
 
