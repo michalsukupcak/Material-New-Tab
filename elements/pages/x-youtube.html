@@ -71,12 +71,12 @@
             <template is="dom-repeat" items="{{videos}}" as="video">
                 <paper-material elevation="2" class="vertical layout">
                     <div class="type">[[video.type]]</div>
-                    <a class="open" href="[[video.url]]" target="_blank" title="Open on Youtube"><iron-icon icon="open-in-new"></iron-icon></a>
+                    <a class="open" href="[[__getVideoUrl(video.id)]]" target="_blank" title="Open on Youtube"><iron-icon icon="open-in-new"></iron-icon></a>
                     <div class="play" on-click="openVideoPlayerDialog"><iron-icon icon="av:play-arrow"></iron-icon></div>
                     <img src="[[video.thumbnail]]" on-click="openVideoPlayerDialog" title="Play">
                     <div class="title">[[video.title]]</div>
                     <div class="published">Published <span>[[video.published]]</span></div>
-                    <div class="channel">Uploaded by <a href="[[video.channelUrl]]" target="_blank">[[video.channel]]</a></div>
+                    <div class="channel">Uploaded by <a href="[[__getChannelUrl(video.channelUri)]]" target="_blank">[[video.channelName]]</a></div>
                 </paper-material>
             </template>
         </div>
@@ -125,20 +125,19 @@
          *
          * @param id
          * @param title
-         * @param channel
+         * @param channelName
          * @param channelUrl
          * @param published
          * @param thumbnail
          */
-        function Video(id, title, channel, channelUrl, published, thumbnail, type) {
+        function Video(id, title, channelName, channelUri, published, thumbnail, type) {
             var m = moment(published);
             this.id = id;
-            this.url = 'https://youtube.com/watch?v=' + id;
             this.title = title;
-            this.channel = channel;
-            this.channelUrl = 'https://youtube.com/channel/' + channelUrl;
-            this.published = m.fromNow();
+            this.channelName = channelName;
+            this.channelUri = channelUri;
             this.datetime = m.format();
+            this.published = m.fromNow();
             this.thumbnail = thumbnail;
             this.type = type;
         };
@@ -359,6 +358,14 @@
                         this.$.getSubscriptionVideosRequest.generateRequest();
                     }.bind(this));
                 }
+            },
+
+            __getVideoUrl: function (id) {
+                return 'https://youtube.com/watch?v=' + id;
+            },
+
+            __getChannelUrl: function (channelUrl) {
+                return 'https://youtube.com/channel/' + channelUrl;
             }
 
         });

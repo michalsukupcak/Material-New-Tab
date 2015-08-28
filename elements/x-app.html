@@ -136,6 +136,7 @@
                         <paper-tab data-page="news">News</paper-tab>
                         <paper-tab data-page="youtube">Youtube</paper-tab>
                         <paper-tab data-page="twitter">Twitter</paper-tab>
+                        <paper-tab data-page="reddit">Reddit</paper-tab>
                     </paper-tabs>
 
                 </paper-toolbar>
@@ -150,6 +151,7 @@
                         <section data-page="news"><x-news></x-news></section>
                         <section data-page="youtube"><x-youtube></x-youtube></section>
                         <section data-page="twitter"><x-twitter></x-twitter></section>
+                        <section data-page="reddit"><x-reddit></x-reddit></section>
                     </neon-animated-pages>
 
                 </div>
@@ -291,7 +293,7 @@
                         color = '4099FF';
                         break;
                     case 'reddit':
-                        color = 'F2F2F2';
+                        color = 'FFA000';
                         break;
                 }
                 this.$.mainToolbar.style.backgroundColor = '#' + color;

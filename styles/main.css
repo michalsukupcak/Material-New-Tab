@@ -32,3 +32,13 @@ x-login {}
 ::-webkit-scrollbar { background: transparent; width: 3px; }
 ::-webkit-scrollbar-button { background: transparent; height: 0px; }
 ::-webkit-scrollbar-thumb { background: #727272; cursor: pointer; }
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* WORKAROUND: Styles in custom elements are not applied to HTML code injected through element.innerHTML after the
+               element is already loaded. Calling Polymer.updateStyles() or this.updateStyles() doesn't work. CSS
+               therefore needs to be located outside any elements, therefore it ended here. Applies to x-twitter.html
+               file.
+               @TODO Find a way how to fix this.
+*/
+x-twitter paper-material.tweet div.content div.text a { color: #4099FF; text-decoration: none; }
+x-twitter paper-material.tweet div.content div.text a:hover { text-decoration: underline; }
