@@ -49,7 +49,7 @@
                 <template is="dom-repeat" items="[[events]]" as="event">
                     <div class="event">
                         <div class="name">[[event.name]]</div>
-                        <div class="date">Date: <span>[[event.date]]</span></div>
+                        <div class="date">Date: <span>[[event.date]]</span> (<span>[[event.fromNow]]</span>)</div>
                         <div class="calendar">Calendar: <span>[[event.calendar]]</span></div>
                         <div class="link"><a href="[[event.link]]">Open event</a></div>
                     </div>
@@ -111,13 +111,14 @@
                 m.add(yearDiff, 'years');
             }
             if (m.format('HH:mm') == '00:00') {
-                d = m.format('DD.MM.YYYY') + ' (All day)';
+                d = m.format('DD.MM.YYYY');
             } else {
                 d = m.format('DD.MM.YYYY @ HH:mm');
             }
             this.name = name;
             this.date = d;
             this.timestamp = m.unix();
+            this.fromNow = m.fromNow();
             this.calendar = calendar;
             this.link = link;
         }

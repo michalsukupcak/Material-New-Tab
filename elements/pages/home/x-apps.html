@@ -30,10 +30,17 @@
         <!-- ------------------------------------------- -->
         <!-- Apps -->
         <paper-material class="card" elevation="2">
-            <div class="header">
+            <div class="header horizontal layout">
                 <div class="title">
                     <iron-icon icon="apps"></iron-icon><span>Apps</span>
                 </div>
+                <div class="flex"></div>
+                <paper-menu-button horizontal-align="right">
+                    <paper-icon-button icon="more-vert" class="dropdown-trigger"></paper-icon-button>
+                    <paper-menu class="dropdown-content">
+                        <paper-item on-click="openApps">Manage apps</paper-item>
+                    </paper-menu>
+                </paper-menu-button>
             </div>
             <div class="content">
                 <div id="apps" class="horizontal layout wrap"></div>
@@ -161,7 +168,14 @@
             /* ------------------------------------------------------------------------------------------------------ */
             /* Event handlers */
 
-            // ...
+            /**
+             * Opens apps list.
+             */
+            openApps: function () {
+                chrome.tabs.create({
+                    url: 'chrome://apps'
+                });
+            }
 
             /* ------------------------------------------------------------------------------------------------------ */
             /* Helper functions */

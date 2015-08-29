@@ -10,6 +10,7 @@
         div.article:last-child { border: none; margin: 0; padding: 0; }
         div.article div.title { font-weight: bold; }
         div.article div.snippet { font-size: .8em; line-height: 1.4em; padding: 10px 0; }
+        div.article div.date { color: #999; font-size: .8em; }
         div.article div.link { font-size: .8em; }
         div.article div.link a { color: #455A64; }
         div.article div.link a:hover { text-decoration: none; }
@@ -40,7 +41,11 @@
                     <div class="article">
                         <div class="title">[[entry.title]]</div>
                         <div class="snippet">[[entry.contentSnippet]]</div>
-                        <div class="link"><a href="[[entry.link]]" target="_blank">Open article</a></div>
+                        <div class="horizontal layout">
+                            <div class="link"><a href="[[entry.link]]" target="_blank">Open article</a></div>
+                            <div class="flex"></div>
+                            <div class="date">[[__formatDate(entry.publishedDate)]]</div>
+                        </div>
                     </div>
                 </template>
 
@@ -68,6 +73,10 @@
                 loading: {
                     type: Boolean,
                     value: true
+                },
+                rss: {
+                    type: Object,
+                    value: null
                 }
             },
 
@@ -124,6 +133,10 @@
                     - 20 // <h1> bottom margin
                 ;
                 this.$.content.style.height = height + 'px';
+            },
+
+            __formatDate: function (date) {
+                return moment(date).format('DD.MM.YYYY HH:mm');
             }
 
         });

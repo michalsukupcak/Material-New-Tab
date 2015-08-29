@@ -20,7 +20,11 @@
         }
         div#bookmarks a:hover { background: #EEE; font-weight: bold; }
         div#bookmarks a img { margin: 0 7px 0 0; vertical-align: middle; }
+
         div#bookmarks a span { font-size: .8em; vertical-align: middle; }
+
+        paper-dialog {}
+        paper-dialog div { text-align: justify; }
 
     </style>
 
@@ -31,10 +35,17 @@
         <!-- ------------------------------------------- -->
         <!-- Bookmarks -->
         <paper-material class="card" elevation="2">
-            <div class="header">
+            <div class="header horizontal layout">
                 <div class="title">
                     <iron-icon icon="star"></iron-icon><span>Bookmarks</span>
                 </div>
+                <div class="flex"></div>
+                <paper-menu-button horizontal-align="right">
+                    <paper-icon-button icon="more-vert" class="dropdown-trigger"></paper-icon-button>
+                    <paper-menu class="dropdown-content">
+                        <paper-item on-click="openBookmarks">Manage bookmarks</paper-item>
+                    </paper-menu>
+                </paper-menu-button>
             </div>
             <div class="content">
                 <div id="bookmarks"></div>
@@ -76,34 +87,85 @@
             attached: function () {
                 chrome.bookmarks.getTree(function (bookmarks) {
                     var div = this.$.bookmarks;
+                    var mainFolders = bookmarks[0].children; // Top level folders
+                    for (var i = 0; i < mainFolders.length; i++) {
+                        var mainFolder = mainFolders[i];
+                        if (mainFolder.title == 'Other bookmarks') { // Work only with "Other bookmarks" folder
+                            var topLevel = mainFolder.children;
+                            if (topLevel.length > 0) {
+                                var folders = [];
+                                var links = [];
+                                for (var j = 0; j < topLevel.length; j++) {
+                                    var entry = topLevel[j];
+                                    if (entry.url == null) { // Folder
+                                        folders.push(entry);
+                                    } else { // URL
+                                        links.push(entry);
+                                    }
+                                }
+                                for (var j = 0; j < links.length; j++) {
+                                    Polymer.dom(div).appendChild(this.createLink(links[j]));
+                                }
+                                if (links.length > 0 && folders.length > 0) {
+                                    Polymer.dom(div).appendChild(document.createElement('hr'));
+                                }
+                                for (var j = 0; j < folders.length; j++) {
+                                    var folder = folders[j];
+                                    var title = document.createElement('h5');
+                                    title.appendChild(document.createTextNode(folder.title));
+                                    Polymer.dom(div).appendChild(title);
+                                    var children = folder.children;
+                                    for (var k = 0; k < children.length; k++) {
+                                        var entry = children[k];
+                                        if (entry.url == null) { // Sub-folder
+                                            Polymer.dom(div).appendChild(this.createFolder(entry));
+                                        } else {
+                                            Polymer.dom(div).appendChild(this.createLink(entry));
+                                        }
+                                    }
+                                    if ((j + 1) < folders.length) {
+                                        Polymer.dom(div).appendChild(document.createElement('hr'));
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                    }
+
+                    /*
                     var otherBookmarksFolder = bookmarks[0].children[1];
                     if (otherBookmarksFolder.title == 'Other bookmarks') {
                         var folder = otherBookmarksFolder.children;
                         for (var i = 0; i < folder.length; i++) {
-                            if (i > 0) {
-                                Polymer.dom(div).appendChild(document.createElement('hr'));
-                            }
-                            var title = folder[i].title;
-                            var links = folder[i].children;
-                            var h = document.createElement('h5');
-                            h.appendChild(document.createTextNode(title));
-                            Polymer.dom(div).appendChild(h);
-                            for (var j = 0; j < links.length; j++) {
-                                var favicon = document.createElement('img');
-                                favicon.setAttribute('src', 'chrome://favicon/' + links[j].url);
-                                var span = document.createElement('span');
-                                span.appendChild(document.createTextNode(links[j].title));
-                                var link = document.createElement('a');
-                                link.setAttribute('target','_blank');
-                                link.setAttribute('href', links[j].url);
-                                link.appendChild(favicon);
-                                link.appendChild(span);
-                                Polymer.dom(div).appendChild(link);
+                            var f = folder[i];
+                            if (f.url == null) { // Only folders, not URLs
+                                if (i > 0) {
+                                    Polymer.dom(div).appendChild(document.createElement('hr'));
+                                }
+                                var title = f.title;
+                                var links = f.children;
+                                var h = document.createElement('h5');
+                                h.appendChild(document.createTextNode(title));
+                                Polymer.dom(div).appendChild(h);
+                                for (var j = 0; j < links.length; j++) {
+                                    var l = links[j];
+                                    if (l.url) {
+                                        var favicon = document.createElement('img');
+                                        favicon.setAttribute('src', 'chrome://favicon/' + l.url);
+                                        var span = document.createElement('span');
+                                        span.appendChild(document.createTextNode(l.title));
+                                        var link = document.createElement('a');
+                                        link.setAttribute('target', '_blank');
+                                        link.setAttribute('href', l.url);
+                                        link.appendChild(favicon);
+                                        link.appendChild(span);
+                                        Polymer.dom(div).appendChild(link);
+                                    }
+                                }
                             }
                         }
-                    } else {
-                        throw "Folder 'Other bookmarks' is missing in root folder!";
-                    }
+                        */
+
                 }.bind(this));
             },
 
@@ -120,7 +182,43 @@
             /* ------------------------------------------------------------------------------------------------------ */
             /* Event handlers */
 
-            // ...
+            createLink: function (entry) {
+                var favicon = document.createElement('img');
+                favicon.setAttribute('src', 'chrome://favicon/' + entry.url);
+                var span = document.createElement('span');
+                span.appendChild(document.createTextNode(entry.title));
+                var link = document.createElement('a');
+                link.setAttribute('href', entry.url);
+                link.setAttribute('target', '_blank');
+                link.appendChild(favicon);
+                link.appendChild(span);
+                return link;
+            },
+
+            createFolder: function (entry) {
+                var favicon = document.createElement('img');
+                favicon.setAttribute('src', '../images/folder.png');
+                var span = document.createElement('span');
+                span.appendChild(document.createTextNode(entry.title));
+                var folder = document.createElement('a');
+                folder.appendChild(favicon);
+                folder.appendChild(span);
+                folder.addEventListener('click', function () {
+                    chrome.tabs.create({
+                        url: 'chrome://bookmarks/#' + entry.id
+                    });
+                }.bind(this));
+                return folder;
+            },
+
+            /**
+             * Opens bookmarks manager.
+             */
+            openBookmarks: function () {
+                chrome.tabs.create({
+                    url: 'chrome://bookmarks'
+                });
+            }
 
             /* ------------------------------------------------------------------------------------------------------ */
             /* Helper functions */

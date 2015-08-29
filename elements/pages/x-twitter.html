@@ -25,9 +25,9 @@
         paper-material.tweet div.content div.details a iron-icon { height: 16px; vertical-align: top; }
 
         paper-dialog#colsDialog {}
-        paper-dialog#colsDialog div.content { min-height: 200px; }
+        paper-dialog#colsDialog div.content { min-height: 180px; }
         paper-dialog#colsDialog div.content paper-drowdown-menu {}
-        paper-dialog#colsDialog div.content paper-drowdown-menu paper-menu { background: white; }
+        paper-dialog#colsDialog div.content paper-drowdown-menu paper-menu { background: white !important; }
 
     </style>
 
@@ -96,7 +96,7 @@
                 <br>
             </div>
             <div class="buttons">
-                <!--<paper-button class="primary" dialog-confirm>Reload tweets</paper-button>-->
+                <paper-button class="primary" on-click="getTwitterHomeTimeline" dialog-confirm>Reload tweets</paper-button>
                 <paper-button dialog-dismiss>Close</paper-button>
             </div>
         </paper-dialog>
@@ -285,9 +285,11 @@
              */
             attached: function () {
                 this.cryptoJs = this.getCryptoJs();
-                this.$.tweetsRepeatTemplate.addEventListener('dom-change', function () {
+                this.$.tweetsRepeatTemplate.addEventListener('dom-change', function (event) {
                     this.setTweetWidth(this.cols);
-                    this.replaceTweetContents();
+                    if (this.tweets) {
+                        this.replaceTweetContents();
+                    }
                 }.bind(this));
                 window.setInterval(function () {
                     if (this.tweets) {
@@ -493,11 +495,11 @@
             },
 
             getTwitterHomeTimelineRequestResponse: function (event) {
-                this.tweets = [];
+                this.set('tweets', []);
                 var tweets = event.detail.response;
                 for (var i = 0; i < tweets.length; i++) {
                     var t = tweets[i];
-                    this.push('tweets', new Tweet(t.id, t.user.id, t.user.name, t.user.screen_name, t.user.profile_image_url, t.text, t.created_at));
+                    this.push('tweets', new Tweet(t.id_str, t.user.id, t.user.name, t.user.screen_name, t.user.profile_image_url, t.text, t.created_at));
                 }
                 this.$.tweetsLocalstorage.save();
                 this.lastUpdate = moment().unix();
@@ -564,7 +566,7 @@
                 for (var i = 0; i < tweetTexts.length; i++) {
                     var tweetText = tweetTexts[i];
                     tweetText.innerHTML = tweetText.innerHTML
-                            .replace(/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig,' <a href="$1" target="_blank">$1</a>')
+                            .replace(/(http|https):\/\/[\S]+(\b|$)/gim,' <a href="$&" target="_blank">$&</a>')
                             .replace(/(^|\s)#(\w+)/g,' <a href="https://twitter.com/hashtag/$2" target="_blank" class="demo">#$2</a>')
                             .replace(/(^|\s)@(\w+)/g,' <a href="https://twitter.com/$2" target="_blank">@$2</a>')
                     ;
