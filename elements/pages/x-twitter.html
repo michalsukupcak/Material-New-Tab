@@ -561,11 +561,15 @@
                 }
             },
 
+            /**
+             * Replaces tweet content (plaintext) with clickable hashtags, mentions an links.
+             */
+            // @TODO This is a workaround! Polymer doesn't allow for HTML to be added through databound properties. HTML code needs to be added through native Javascript.
             replaceTweetContents: function () {
                 var tweetTexts = document.querySelectorAll('div.__tweetText');
                 for (var i = 0; i < tweetTexts.length; i++) {
                     var tweetText = tweetTexts[i];
-                    tweetText.innerHTML = tweetText.innerHTML
+                    tweetText.innerHTML = this.tweets[i].text
                             .replace(/(http|https):\/\/[\S]+(\b|$)/gim,' <a href="$&" target="_blank">$&</a>')
                             .replace(/(^|\s)#(\w+)/g,' <a href="https://twitter.com/hashtag/$2" target="_blank" class="demo">#$2</a>')
                             .replace(/(^|\s)@(\w+)/g,' <a href="https://twitter.com/$2" target="_blank">@$2</a>')
