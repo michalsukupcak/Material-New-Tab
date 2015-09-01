@@ -3,7 +3,7 @@
  *
  * @type {string}
  */
-var APP_VERSION = '1.4.4';
+var APP_VERSION = '1.4.5';
 
 /**
  * Main application template companion script.

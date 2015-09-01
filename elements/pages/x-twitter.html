@@ -174,6 +174,7 @@
         <iron-localstorage name="material-new-tab-twitter-cols"
             id="colsLocalstorage"
             value="{{cols}}"
+            on-iron-localstorage-load-empty="initCols"
         ></iron-localstorage>
 
         <!-- ------------------------------------------- -->
@@ -326,7 +327,7 @@
             getTwitterRequestToken: function () {
                 var url = this.$.getTwitterRequestTokenRequest.url;
                 var method = this.$.getTwitterRequestTokenRequest.method;
-                var callback = 'http://material-new-tab.webapp.sk/oauth/twitter.php';
+                var callback = 'chrome-extension://ohikmnjnlkoibhjbilmjmfacgomlemlg/oauth/twitter.html';
                 var consumerKey = this.__twitterConsumerKey;
                 var nonce = '';
                 for (var i = 0; i < 33; i++) {
@@ -355,7 +356,7 @@
                                    'oauth_version="' + encodeURIComponent(version) + '"'
                 };
                 this.$.getTwitterRequestTokenRequest.params = {
-                    oauth_callback: 'http://material-new-tab.webapp.sk/oauth/twitter.php'
+                    oauth_callback: callback
                 };
                 this.$.getTwitterRequestTokenRequest.generateRequest();
             },
@@ -521,6 +522,13 @@
                         this.getTwitterHomeTimeline();
                     }
                 }
+            },
+
+            /**
+             * Initializes default number of columns.
+             */
+            initCols: function () {
+                this.cols = '3';
             },
 
             /* ------------------------------------------------------------------------------------------------------ */
