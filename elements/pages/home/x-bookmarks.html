@@ -123,41 +123,6 @@
                             break;
                         }
                     }
-
-                    /*
-                    var otherBookmarksFolder = bookmarks[0].children[1];
-                    if (otherBookmarksFolder.title == 'Other bookmarks') {
-                        var folder = otherBookmarksFolder.children;
-                        for (var i = 0; i < folder.length; i++) {
-                            var f = folder[i];
-                            if (f.url == null) { // Only folders, not URLs
-                                if (i > 0) {
-                                    Polymer.dom(div).appendChild(document.createElement('hr'));
-                                }
-                                var title = f.title;
-                                var links = f.children;
-                                var h = document.createElement('h5');
-                                h.appendChild(document.createTextNode(title));
-                                Polymer.dom(div).appendChild(h);
-                                for (var j = 0; j < links.length; j++) {
-                                    var l = links[j];
-                                    if (l.url) {
-                                        var favicon = document.createElement('img');
-                                        favicon.setAttribute('src', 'chrome://favicon/' + l.url);
-                                        var span = document.createElement('span');
-                                        span.appendChild(document.createTextNode(l.title));
-                                        var link = document.createElement('a');
-                                        link.setAttribute('target', '_blank');
-                                        link.setAttribute('href', l.url);
-                                        link.appendChild(favicon);
-                                        link.appendChild(span);
-                                        Polymer.dom(div).appendChild(link);
-                                    }
-                                }
-                            }
-                        }
-                        */
-
                 }.bind(this));
             },
 
@@ -174,6 +139,9 @@
             /* ------------------------------------------------------------------------------------------------------ */
             /* Event handlers */
 
+            /**
+             * Creates bookmark <a href> DOM element.
+             */
             createLink: function (entry) {
                 var favicon = document.createElement('img');
                 favicon.setAttribute('src', 'chrome://favicon/' + entry.url);
@@ -187,6 +155,9 @@
                 return link;
             },
 
+            /**
+             * Creates folder <a href> DOM element.
+             */
             createFolder: function (entry) {
                 var favicon = document.createElement('img');
                 favicon.setAttribute('src', '../images/folder.png');
