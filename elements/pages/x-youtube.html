@@ -6,22 +6,12 @@
     <style include="youtube-colors"></style>
     <style>
 
+        paper-fab.fab { background: #CC181E; bottom: 20px; position: fixed; right: 20px; }
+
         paper-material { background: white; display: block; margin: 10px; position: relative; width: 320px; }
         paper-material div.type { background: rgba(0, 0, 0, .5); color: white; font-size: .8em; padding: 5px; position: absolute; right: 0; top: 0; }
         paper-material a.open { background: rgba(0, 0, 0, .5); color: white; font-size: .8em; padding: 5px; position: absolute; right: 0; top: 25px; }
-        paper-material div.play {
-            background: rgba(0, 0, 0, .7);
-            border-radius: 5px;
-            color: white;
-            cursor: pointer;
-            margin: 0 0 0 -25px;
-            padding: 10px 0;
-            position: absolute;
-            left: 50%;
-            text-align: center;
-            top: 80px;
-            width: 50px;
-        }
+        paper-material div.play { background: rgba(0, 0, 0, .7); border-radius: 5px; color: white; cursor: pointer; margin: 0 0 0 -25px; padding: 10px 0; position: absolute; left: 50%; text-align: center; top: 80px; width: 50px; }
         paper-material img { background: white; cursor: pointer; height: 180px; width: 320px; }
         paper-material div.title { font-weight: bold; padding: 10px 10px 5px 10px; }
         paper-material div.published { color: #666; font-size: .8em; padding: 0 10px 2px 10px; }
@@ -30,15 +20,7 @@
         paper-material div.channel a:hover { text-decoration: none; }
 
         div.search { margin: 20px auto; }
-        div.search input {
-            background: white;
-            border: 1px solid white;
-            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
-            font-size: 1.1em;
-            margin: 0 4px;
-            padding: 0 20px;
-            width: 500px;
-        }
+        div.search input { background: white; border: 1px solid white; box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2); font-size: 1.1em; margin: 0 4px; padding: 0 20px; width: 500px; }
 
         paper-dialog#videoPlayerDialog { background: black !important; min-width: 850px !important; }
         paper-dialog#videoPlayerDialog div#player {}
@@ -51,6 +33,10 @@
     <!-- ----------------------------------------------------------------------------------------------------------- -->
     <!-- HTML -->
     <template>
+
+        <!-- ------------------------------------------- -->
+        <!-- Reload FAB -->
+        <paper-fab icon="refresh" class="fab" on-click="reloadYoutube"></paper-fab>
 
         <!-- ------------------------------------------- -->
         <!-- Title -->
@@ -68,7 +54,7 @@
         <!-- ------------------------------------------- -->
         <!-- Youtube videos container -->
         <div class="horizontal center-justified wrap layout">
-            <template is="dom-repeat" items="{{videos}}" as="video">
+            <template is="dom-repeat" items="[[videos]]" as="video">
                 <paper-material elevation="2" class="vertical layout">
                     <div class="type">[[video.type]]</div>
                     <a class="open" href="[[__getVideoUrl(video.id)]]" target="_blank" title="Open on Youtube"><iron-icon icon="open-in-new"></iron-icon></a>
@@ -223,6 +209,14 @@
 
             /* ------------------------------------------------------------------------------------------------------ */
             /* Event handlers */
+
+            /**
+             * Forces reload of stored youtube videos.
+             */
+            reloadYoutube: function () {
+                this.lastUpdate = 0;
+                this.initYoutube();
+            },
 
             /**
              * Opens youtube homepage.

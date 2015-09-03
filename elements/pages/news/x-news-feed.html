@@ -96,7 +96,12 @@
             /**
              * Called when element is attached to DOM.
              */
-            attached: function () {},
+            attached: function () {
+                window.onresize = this.setCardHeight();
+                window.addEventListener('resize', function () {
+                    this.setCardHeight();
+                }.bind(this));
+            },
 
             /**
              * Called when element is detached from DOM.

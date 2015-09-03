@@ -9,6 +9,8 @@
         h1 {}
         h1 iron-icon { cursor: pointer; padding: 0 0 4px 0; }
 
+        paper-fab.fab { background: #4099FF; bottom: 20px; position: fixed; right: 20px; }
+
         paper-material.tweet { background: white; padding: 15px; margin: 0 10px 20px 10px; }
         paper-material.tweet div.user { width: 20%;}
         paper-material.tweet div.user div.image {}
@@ -34,6 +36,12 @@
     <!-- ----------------------------------------------------------------------------------------------------------- -->
     <!-- HTML -->
     <template>
+
+        <!-- ------------------------------------------- -->
+        <!-- Reload FAB -->
+        <template is="dom-if" if="[[twitterAccessToken]]">
+            <paper-fab icon="refresh" class="fab" on-click="getTwitterHomeTimeline"></paper-fab>
+        </template>
 
         <!-- ------------------------------------------- -->
         <!-- Title -->
