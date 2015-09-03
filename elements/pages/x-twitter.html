@@ -26,10 +26,8 @@
         paper-material.tweet div.content div.details a { color: #999; vertical-align: top; }
         paper-material.tweet div.content div.details a iron-icon { height: 16px; vertical-align: top; }
 
-        paper-dialog#colsDialog {}
-        paper-dialog#colsDialog div.content { min-height: 180px; }
-        paper-dialog#colsDialog div.content paper-drowdown-menu {}
-        paper-dialog#colsDialog div.content paper-drowdown-menu paper-menu { background: white !important; }
+        paper-dialog#customizeDialog { width: 300px; }
+        paper-dialog#customizeDialog p { text-align: justify; }
 
     </style>
 
@@ -40,12 +38,12 @@
         <!-- ------------------------------------------- -->
         <!-- Reload FAB -->
         <template is="dom-if" if="[[twitterAccessToken]]">
-            <paper-fab icon="refresh" class="fab" on-click="getTwitterHomeTimeline"></paper-fab>
+            <paper-fab icon="refresh" class="fab" on-click="reloadTweets"></paper-fab>
         </template>
 
         <!-- ------------------------------------------- -->
         <!-- Title -->
-        <h1>Latest tweets <iron-icon icon="settings" title="Customize" on-click="openColsDialog"></iron-icon></h1>
+        <h1>Latest tweets <iron-icon icon="settings" title="Customize" on-click="openCustomizeDialog"></iron-icon></h1>
 
         <!-- ------------------------------------------- -->
         <!-- Request for authentication -->
@@ -57,6 +55,14 @@
                 <paper-button on-click="getTwitterRequestToken" class="primary" raised>Authorize</paper-button>
             </div>
         </template>
+
+        <!-- ------------------------------------------- -->
+        <!-- Loading spinner while loading tweets -->
+        <div hidden$="[[!loading]]" class="horizontal center-justified layout">
+            <paper-spinner active></paper-spinner>
+            <br>
+            <br>
+        </div>
 
         <!-- ------------------------------------------- -->
         <!-- List of tweets -->
@@ -90,10 +96,23 @@
         </div>
 
         <!-- ------------------------------------------- -->
-        <!-- Cols selector dialog -->
-        <paper-dialog id="colsDialog" entry-animation="scale-up-animation" exit-animation="scale-down-animation" modal>
-            <h2>Number of columns for tweets</h2>
-            <div class="content">
+        <!-- Customize dialog -->
+        <paper-dialog id="customizeDialog" entry-animation="scale-up-animation" exit-animation="scale-down-animation" modal>
+            <h2>Customize Twitter feed</h2>
+            <paper-dialog-scrollable>
+
+                <!-- Number of tweets -->
+                <paper-dropdown-menu label="Number of tweets to load:">
+                    <paper-menu selected="{{count}}" attr-for-selected="data-count" class="dropdown-content">
+                        <paper-item data-count="10">10 tweets</paper-item>
+                        <paper-item data-count="20">20 tweets</paper-item>
+                        <paper-item data-count="30">30 tweets</paper-item>
+                        <paper-item data-count="50">50 tweets</paper-item>
+                        <paper-item data-count="100">100 tweets</paper-item>
+                    </paper-menu>
+                </paper-dropdown-menu>
+
+                <!-- Number of columns -->
                 <paper-dropdown-menu label="Number of columns:">
                     <paper-menu selected="{{cols}}" on-iron-select="setTweetWidth" attr-for-selected="data-cols" class="dropdown-content">
                         <paper-item data-cols="1">1 column</paper-item>
@@ -101,10 +120,15 @@
                         <paper-item data-cols="3">3 columns</paper-item>
                     </paper-menu>
                 </paper-dropdown-menu>
-                <br>
-            </div>
+
+                <!-- Warning -->
+                <p>
+                    Warning! Loading too many tweets too often may cause Twitter to temporarily block your access to its
+                    API due to request abuse. Reload responsibly. :)
+                </p>
+
+            </paper-dialog-scrollable>
             <div class="buttons">
-                <paper-button class="primary" on-click="getTwitterHomeTimeline" dialog-confirm>Reload tweets</paper-button>
                 <paper-button dialog-dismiss>Close</paper-button>
             </div>
         </paper-dialog>
@@ -186,6 +210,14 @@
         ></iron-localstorage>
 
         <!-- ------------------------------------------- -->
+        <!-- Localstorage for number of tweets -->
+        <iron-localstorage name="material-new-tab-twitter-tweet-count"
+            id="countLocalstorage"
+            value="{{count}}"
+            on-iron-localstorage-load-empty="initCount"
+        ></iron-localstorage>
+
+        <!-- ------------------------------------------- -->
         <!-- Localstorage for videos -->
         <iron-localstorage name="material-new-tab-twitter-tweets"
             id="tweetsLocalstorage"
@@ -262,6 +294,14 @@
                     type: String,
                     value: '3'
                 },
+                count: {
+                    type: String,
+                    value: '30'
+                },
+                loading: {
+                    type: Boolean,
+                    value: false
+                },
                 tweets: {
                     type: Array,
                     value: []
@@ -323,10 +363,19 @@
             /* Event handlers */
 
             /**
-             * Opens cols picker dialog.
+             * Forces reload of stored tweets.
              */
-            openColsDialog: function () {
-                this.$.colsDialog.open();
+            reloadTweets: function () {
+                this.lastUpdate = 0;
+                this.tweets = [];
+                this.initTwitter();
+            },
+
+            /**
+             * Opens customize dialog.
+             */
+            openCustomizeDialog: function () {
+                this.$.customizeDialog.open();
             },
 
             /**
@@ -391,6 +440,7 @@
              * Display error if failed to retrieve request token.
              */
             getTwitterRequestTokenRequestError: function (event) {
+                this.removeTokens();
                 __error('Failed to retrieve Twitter request token!', event);
             },
 
@@ -460,15 +510,19 @@
              * Display error if failed to retrieve access token.
              */
             getTwitterAccessTokenRequestError: function (event) {
+                this.removeTokens();
                 __error('Failed to retrieve Twitter access token!', event);
             },
 
+            /**
+             * When app recieves access token for Twitter, initializes load of tweets from the Twitter API.
+             */
             getTwitterHomeTimeline: function () {
                 var url = this.$.getTwitterHomeTimelineRequest.url;
                 var method = this.$.getTwitterHomeTimelineRequest.method;
                 var token = this.twitterAccessToken;
                 var consumerKey = this.__twitterConsumerKey;
-                var count = '30';
+                var count = this.count;
                 var nonce = '';
                 for (var i = 0; i < 33; i++) {
                     nonce += Math.floor((Math.random() * 100) % 10);
@@ -512,12 +566,15 @@
                 }
                 this.$.tweetsLocalstorage.save();
                 this.lastUpdate = moment().unix();
+                this.loading = false;
             },
 
             /**
              * Display error if failed to retrieve list of tweets.
              */
             getTwitterHomeTimelineRequestError: function (event) {
+                this.removeTokens();
+                this.loading = false;
                 __error('Unable to retrieve Twitter timeline!', event);
             },
 
@@ -527,6 +584,7 @@
             initTwitter: function () {
                 if (this.twitterAccessToken) {
                     if (this.lastUpdate < moment().unix() - 300 || !this.tweets) {
+                        this.loading = true;
                         this.getTwitterHomeTimeline();
                     }
                 }
@@ -537,6 +595,13 @@
              */
             initCols: function () {
                 this.cols = '3';
+            },
+
+            /**
+             * Initializes default number of tweets on page.
+             */
+            initCount: function () {
+                this.count = '30';
             },
 
             /* ------------------------------------------------------------------------------------------------------ */
@@ -592,6 +657,19 @@
                     ;
 
                 }
+            },
+
+            /**
+             * Removes Twitter tokens, forces user to re-authorize.
+             */
+            removeTokens: function () {
+                this.twitterRequestToken = null;
+                this.twitterRequestTokenSecret = null;
+                this.twitterRequestTokenVerifier = null;
+                this.twitterAccessToken = null;
+                this.twitterAccessTokenSecret = null;
+                this.tweets = [];
+                this.lastUpdate = 0;
             },
 
             /**

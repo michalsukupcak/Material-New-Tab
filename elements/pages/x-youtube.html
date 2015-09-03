@@ -6,6 +6,9 @@
     <style include="youtube-colors"></style>
     <style>
 
+        h1 {}
+        h1 iron-icon { cursor: pointer; padding: 0 0 4px 0; }
+
         paper-fab.fab { background: #CC181E; bottom: 20px; position: fixed; right: 20px; }
 
         paper-material { background: white; display: block; margin: 10px; position: relative; width: 320px; }
@@ -28,6 +31,9 @@
         paper-dialog#videoPlayerDialog div.buttons paper-button { color: #EEE; }
         paper-dialog#videoPlayerDialog div.buttons paper-button.primary { color: #CC181E; }
 
+        paper-dialog#customizeDialog { width: 300px; }
+        paper-dialog#customizeDialog p { text-align: justify; }
+
     </style>
 
     <!-- ----------------------------------------------------------------------------------------------------------- -->
@@ -40,7 +46,7 @@
 
         <!-- ------------------------------------------- -->
         <!-- Title -->
-        <h1>New videos</h1>
+        <h1>New videos <iron-icon icon="settings" title="Customize" on-click="openCustomizeDialog"></iron-icon></h1>
 
         <!-- ------------------------------------------- -->
         <!-- Youtube links -->
@@ -48,7 +54,14 @@
             <paper-button on-click="openYoutube" raised><iron-icon icon="home"></iron-icon></paper-button>
             <input is="iron-input" id="search" placeholder="Search Youtube" on-keyup="keyUpHandler">
             <paper-button on-click="openSearch" raised><iron-icon icon="search"></iron-icon></paper-button>
-            <!--<paper-button raised><iron-icon icon="av:video-library"></iron-icon></paper-button>-->
+        </div>
+
+        <!-- ------------------------------------------- -->
+        <!-- Loading spinner while loading videos -->
+        <div hidden$="[[!loading]]" class="horizontal center-justified layout">
+            <paper-spinner active></paper-spinner>
+            <br>
+            <br>
         </div>
 
         <!-- ------------------------------------------- -->
@@ -78,11 +91,47 @@
         </paper-dialog>
 
         <!-- ------------------------------------------- -->
+        <!-- Customize dialog -->
+        <paper-dialog id="customizeDialog" entry-animation="scale-up-animation" exit-animation="scale-down-animation" modal>
+            <h2>Customize Youtube feed</h2>
+            <paper-dialog-scrollable>
+
+                <!-- Number of videos -->
+                <paper-dropdown-menu label="Number of videos to load:">
+                    <paper-menu selected="{{count}}" attr-for-selected="data-count" class="dropdown-content">
+                        <paper-item data-count="8">8 videos</paper-item>
+                        <paper-item data-count="16">16 videos</paper-item>
+                        <paper-item data-count="32">32 videos</paper-item>
+                        <paper-item data-count="48">48 videos</paper-item>
+                    </paper-menu>
+                </paper-dropdown-menu>
+
+                <!-- Warning -->
+                <p>
+                    Warning! Loading too many videos too often may cause Google to temporarily block your access to its
+                    Youtube API due to request abuse. Reload responsibly. :)
+                </p>
+
+            </paper-dialog-scrollable>
+            <div class="buttons">
+                <paper-button dialog-dismiss>Close</paper-button>
+            </div>
+        </paper-dialog>
+
+        <!-- ------------------------------------------- -->
         <!-- Youtube videos subscriptions API call -->
         <iron-ajax id="getSubscriptionVideosRequest"
             on-response="getSubscriptionVideosRequestResponse"
             on-error="getSubscriptionVideosRequestError"
         ></iron-ajax>
+
+        <!-- ------------------------------------------- -->
+        <!-- Localstorage for number of tweets -->
+        <iron-localstorage name="material-new-tab-youtube-video-count"
+            id="countLocalstorage"
+            value="{{count}}"
+            on-iron-localstorage-load-empty="initCount"
+        ></iron-localstorage>
 
         <!-- ------------------------------------------- -->
         <!-- Localstorage for videos -->
@@ -161,6 +210,14 @@
                     type: Array,
                     value: []
                 },
+                count: {
+                    type: String,
+                    value: '32'
+                },
+                loading: {
+                    type: Boolean,
+                    value: false
+                },
                 lastUpdate: {
                     type: Number,
                     value: 0
@@ -215,6 +272,7 @@
              */
             reloadYoutube: function () {
                 this.lastUpdate = 0;
+                this.videos = [];
                 this.initYoutube();
             },
 
@@ -234,6 +292,13 @@
                 chrome.tabs.create({
                     url: 'https://www.youtube.com/results?search_query=' + encodeURIComponent(this.$.search.value)
                 });
+            },
+
+            /**
+             * Opens customize dialog.
+             */
+            openCustomizeDialog: function () {
+                this.$.customizeDialog.open();
             },
 
             /**
@@ -294,13 +359,40 @@
                 this.videos = this.videos.slice();
                 this.$.videosLocalstorage.save();
                 this.lastUpdate = moment().unix();
+                this.loading = false;
             },
 
             /**
              * Youtube video load request error handler.
              */
             getSubscriptionVideosRequestError: function (event) {
+                this.loading = false;
                 __error('Failed to load videos!', event);
+            },
+
+            /**
+             * Initializes youtube videos (no sooner than every 15 minutes).
+             */
+            initYoutube: function () {
+                if (this.lastUpdate < moment().unix() - 900) {
+                    this.loading = true;
+                    chrome.identity.getAuthToken({ 'interactive': true }, function (token) {
+                        this.$.getSubscriptionVideosRequest.url =
+                                'https://www.googleapis.com/youtube/v3/activities' +
+                                '?part=snippet,contentDetails' +
+                                '&home=true' +
+                                '&maxResults=' + encodeURIComponent(this.count) +
+                                '&access_token=' + encodeURIComponent(token);
+                        this.$.getSubscriptionVideosRequest.generateRequest();
+                    }.bind(this));
+                }
+            },
+
+            /**
+             * Initializes default number of tweets on page.
+             */
+            initCount: function () {
+                this.count = '32';
             },
 
             openVideoPlayerDialog: function (event) {
@@ -336,23 +428,6 @@
 
             /* ------------------------------------------------------------------------------------------------------ */
             /* Helper functions */
-
-            /**
-             * Initializes youtube videos (no sooner than every 15 minutes).
-             */
-            initYoutube: function () {
-                if (this.lastUpdate < moment().unix() - 900) {
-                    chrome.identity.getAuthToken({ 'interactive': true }, function (token) {
-                        this.$.getSubscriptionVideosRequest.url =
-                                'https://www.googleapis.com/youtube/v3/activities' +
-                                '?part=snippet,contentDetails' +
-                                '&home=true' +
-                                '&maxResults=32' +
-                                '&access_token=' + encodeURIComponent(token);
-                        this.$.getSubscriptionVideosRequest.generateRequest();
-                    }.bind(this));
-                }
-            },
 
             __getVideoUrl: function (id) {
                 return 'https://youtube.com/watch?v=' + id;
