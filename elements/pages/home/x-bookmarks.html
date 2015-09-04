@@ -15,8 +15,14 @@
 
         div#bookmarks a span { font-size: .8em; vertical-align: middle; }
 
-        paper-dialog {}
-        paper-dialog div { text-align: justify; }
+        paper-dialog { width: 400px; }
+        paper-dialog h2 {}
+        paper-dialog h2 paper-icon-button {}
+        paper-dialog h2 span { padding: 3px 0 0 5px; }
+        paper-dialog paper-dialog-scrollable {}
+        paper-dialog paper-dialog-scrollable a { border-radius: 3px; color: #333; cursor: pointer; display: block; padding: 5px 10px; text-decoration: none; transition: .2s ease; }
+        paper-dialog paper-dialog-scrollable a:hover { background: #F2F2F2; font-weight: bold; }
+        paper-dialog paper-dialog-scrollable a img { margin: 0 7px 0 0; vertical-align: middle; }
 
     </style>
 
@@ -44,6 +50,43 @@
             </div>
         </paper-material>
 
+        <!-- ------------------------------------------- -->
+        <!-- Folder contents -->
+        <paper-dialog id="folderDialog" entry-animation="scale-up-animation" exit-animation="scale-down-animation" modal>
+            <h2 class="horizontal start center layout">
+
+                <!-- Back button -->
+                <paper-icon-button icon="arrow-back" on-click="backFolderDialog" hidden$="[[!folderTitle]]"></paper-icon-button>
+
+                <!-- Title -->
+                <span>[[folderTitle]]</span>
+
+            </h2>
+            <paper-dialog-scrollable>
+
+                <!-- Links -->
+                <template is="dom-repeat" items="[[folderLinks]]" as="link">
+                    <a href="[[link.url]]">
+                        <img src="[[__favicon(link.url)]]">
+                        <span>[[link.title]]</span>
+                    </a>
+                </template>
+
+                <!-- Folders -->
+                <template is="dom-repeat" items="[[folderFolders]]" as="folder">
+                    <a on-click="replaceFolderDialog" data-id="[[folder.id]]">
+                        <img src="../../../images/folder.png">
+                        <span>[[folder.title]]</span>
+                    </a>
+                </template>
+
+            </paper-dialog-scrollable>
+            <div class="buttons">
+                <paper-button on-click="editFolder" hidden$="[[!folderTitle]]" dialog-confirm>Edit folder</paper-button>
+                <paper-button dialog-dismiss>Close</paper-button>
+            </div>
+        </paper-dialog>
+
     </template>
 
     <!-- ----------------------------------------------------------------------------------------------------------- -->
@@ -58,7 +101,28 @@
              * Element initialization and properties definition.
              */
             is: 'x-bookmarks',
-            properties: {},
+            properties: {
+                folderTitle: {
+                    type: String,
+                    value: ''
+                },
+                folderId: {
+                    type: Number,
+                    value: 0
+                },
+                folderParent: {
+                    type: Number,
+                    value: 0
+                },
+                folderLinks: {
+                    type: Array,
+                    value: []
+                },
+                folderFolders: {
+                    type: Array,
+                    value: []
+                }
+            },
 
             /* ------------------------------------------------------------------------------------------------------ */
             /* Lifecycle callbacks */
@@ -167,9 +231,7 @@
                 folder.appendChild(favicon);
                 folder.appendChild(span);
                 folder.addEventListener('click', function () {
-                    chrome.tabs.create({
-                        url: 'chrome://bookmarks/#' + entry.id
-                    });
+                    this.openFolderDialog(entry.id);
                 }.bind(this));
                 return folder;
             },
@@ -181,12 +243,69 @@
                 chrome.tabs.create({
                     url: 'chrome://bookmarks'
                 });
-            }
+            },
+
+            /**
+             * Loads data into folder dialog by folder ID and opens folder dialog (if not already open).
+             */
+            openFolderDialog: function (id) {
+                chrome.bookmarks.get(id, function (entry) {
+                    var folder = entry[0];
+                    if (folder.url != null) {
+                        throw "Error: Tried to open a bookmark as a folder!";
+                    } else {
+                        this.folderTitle = folder.title;
+                        this.folderId = folder.id;
+                        this.folderParent = folder.parentId;
+                        this.folderFolders = [];
+                        this.folderLinks = [];
+                        chrome.bookmarks.getChildren(id, function (children) {
+                            for (var i = 0; i < children.length; i++) {
+                                var entry = children[i];
+                                if (entry.url == null) { // Folder
+                                    this.push('folderFolders', entry);
+                                } else { // URL
+                                    this.push('folderLinks', entry);
+                                }
+                            }
+                        }.bind(this));
+                        if (!this.$.folderDialog.opened) {
+                            this.$.folderDialog.open();
+                        }
+                    }
+                }.bind(this));
+            },
+
+            /**
+             * Replaces current folder in folder dialog with new folder.
+             */
+            replaceFolderDialog: function (event) {
+                this.openFolderDialog(event.model.folder.id);
+            },
+
+            /**
+             * Opens folder from folder dialog parent folder.
+             */
+            backFolderDialog: function () {
+                console.log(this.folder);
+                this.openFolderDialog(this.folderParent);
+            },
+
+            /**
+             * Opens current folder from folder dialog in bookmarks manager.
+             */
+            editFolder: function () {
+                chrome.tabs.create({
+                    url: 'chrome://bookmarks/#' + this.folderId
+                });
+            },
 
             /* ------------------------------------------------------------------------------------------------------ */
             /* Helper functions */
 
-            // ...
+            __favicon: function (url) {
+                return 'chrome://favicon/' + url;
+            }
 
         });
     </script>
