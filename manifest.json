@@ -1,6 +1,6 @@
 {
     "manifest_version": 2,
-    "version": "1.4.8",
+    "version": "1.4.9",
     "name": "Material New Tab",
     "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjZzykoaucLJIdZrvPOhHSJDu6unMCnFAXwASXvTW/cyloeTlj7Xb7j9u91OPOATqm4DuCz4jET1+wXCQHrwuR9w0JycjEokxV7MDlqgw9jrgmmGzUSMW/1h4VFs8+5JmJ+FkPTP0woiDwudcZtNw2hSy23UPgPq5gf/u9O1IOmgWH441Y16REt3YPK2OgEX07SO03srrBpvhB+z8p9qg10Fio+927/ITg8KqSVA1/oRnqvy2w2CLZq9TVwFxG5RbDMMP6lyUqnJRmDZFOchcNFfRIxWv3eYxUqLngLWCep3Lv3R6u+oREzVWJmCvOJx4FUQnDeGqrBCmWxvryYZR0wIDAQAB",
     "content_security_policy": "script-src 'self' 'unsafe-eval' https://www.google.com/ https://apis.google.com/ https://cdn.firebase.com/ https://*.firebaseio.com/ https://www.youtube.com/ https://s.ytimg.com/; object-src 'self'",

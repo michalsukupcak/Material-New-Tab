@@ -8,7 +8,8 @@
 
         div.event { border-bottom: 1px solid #DDD; margin: 0 0 15px 0; padding: 0 0 10px 0; }
         div.event div.name { font-weight: bold; }
-        div.event div.date { font-size: .8em; margin: 5px 0 0 0; }
+        div.event div.fromNow { font-size: .8em; font-weight: bold; margin: 5px 0 0 0; }
+        div.event div.date { font-size: .8em; }
         div.event div.calendar { font-size: .8em; margin: 0 0 5px 0; }
         div.event div.link { font-size: .8em; margin: 0 0 5px 0; }
         div.event div.link a { color: #1E86BD; }
@@ -49,9 +50,11 @@
                 <template is="dom-repeat" items="[[events]]" as="event">
                     <div class="event">
                         <div class="name">[[event.name]]</div>
-                        <div class="date">Date: <span>[[event.date]]</span> (<span>[[event.fromNow]]</span>)</div>
+                        <!--<div class="date">Date: <span>[[event.date]]</span> (<span>[[event.fromNow]]</span>)</div>-->
+                        <div class="fromNow">Starts <span>[[event.fromNow]]</span></div>
+                        <div class="date">Date: <span>[[event.date]]</span></div>
                         <div class="calendar">Calendar: <span>[[event.calendar]]</span></div>
-                        <div class="link"><a href="[[event.link]]">Open event</a></div>
+                        <div class="link"><a href="[[event.link]]" target="_blank">Open event</a></div>
                     </div>
                 </template>
 
@@ -111,7 +114,7 @@
                 m.add(yearDiff, 'years');
             }
             if (m.format('HH:mm') == '00:00') {
-                d = m.format('DD.MM.YYYY');
+                d = m.format('DD.MM.YYYY') + ', all day';
             } else {
                 d = m.format('DD.MM.YYYY @ HH:mm');
             }
