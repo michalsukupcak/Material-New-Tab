@@ -3,6 +3,8 @@ Material New Tab is my take on new tab page in Google Chrome inspired by Google'
 
 ![Material New Tab](https://lh3.googleusercontent.com/f_pzq1ZHbDSSGe5kEwXgygS8Z861aRP1eN-oUqBNXRTRfjN-biM3gNT3qvxe4jWNtLdx1POMXw=s640-h400-e365-rw "Material New Tab")
 
+Download extension via the Chrome Web Store: https://chrome.google.com/webstore/detail/material-new-tab/ohikmnjnlkoibhjbilmjmfacgomlemlg
+
 ## Build instructions
 * Requires **bower**, **gulp** and plugins **gulp-vulcanize** and **gulp-crisper**.
 
