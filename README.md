@@ -1,17 +1,19 @@
 # Material-New-Tab
-Custom New Tab page for Google Chrome browser in material design style.
+Material New Tab is my take on new tab page in Google Chrome inspired by Google's Material Design and built using the Polymer framework.
 
-## Build
-Requires npm, bower, gulp, vulcanize and crisper to work.
-* install NPM (instalation process depends on your system, use Goole for that)
-* install bower: ```sudo npm install bower```
-* switch to project directory
-* install gulp (locally): ``` npm install gulp ``` 
-* install gulp-vulcanize plugin: ``` npm install gulp-vulcanize ```
-* install gulp-crisper plugin: ``` npm install gulp-crisper ```
-* if all gulp installs were successful, you should have ```node_modules/.bin```, ```node_modules/gulp```, ```node_modules/gulp-vulcanize``` and ```node_modules/gulp-crisper``` folders in project's root directory
-* run ```bower install```
-* if bower install was successful, you should have ```bower_components``` folder full of Polymer elements in project's root directory
-* run ```gulp``` to execute gulp tasks
-* that's it, you can load the unpacked extension into Chrome
-* yes, this is too complicated, I will simplify the build process later
+![Material New Tab](https://lh3.googleusercontent.com/f_pzq1ZHbDSSGe5kEwXgygS8Z861aRP1eN-oUqBNXRTRfjN-biM3gNT3qvxe4jWNtLdx1POMXw=s640-h400-e365-rw "Material New Tab")
+
+## Build instructions
+* Requires **bower**, **gulp** and plugins **gulp-vulcanize** and **gulp-crisper**.
+
+1. Fist install required plugins: ```npm install bower gulp gulp-vulcanize gulp-crisper```
+2. Download bower dependencies: ```bower install```
+3. Run gulp tasks: ```gulp```
+
+## Directory structure
+* /bower_components_build - Contains required Polymer elements dependencies that are required to run, but are ignored during vulcanization.
+* /elements - Polymer elements used in application.
+* /images - Self-explanatory.
+* /oauth - Redirect handlers for Twitter OAuth dance.
+* /scripts - Javascript files.
+* /styles - CSS and Polymer styles.
