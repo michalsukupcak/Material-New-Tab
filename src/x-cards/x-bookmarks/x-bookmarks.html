@@ -75,6 +75,9 @@
 
         },
 
+        /**
+         * Read "Other bookmarks" from Chrome and set top-level folders to this.folders.
+         */
         ready: function () {
           var self = this;
           chrome.bookmarks.getTree(function (chromeBookmarksTree) {
@@ -94,14 +97,33 @@
           });
         },
 
+        /**
+         * Tests if entry is a folder.
+         *
+         * @param entry
+         * @returns {boolean}
+         * @private
+         */
         _isFolder: function (entry) {
           return entry.children !== undefined;
         },
 
+        /**
+         * Tests if entry is a link.
+         *
+         * @param entry
+         * @returns {boolean}
+         * @private
+         */
         _isLink: function (entry) {
           return entry.children === undefined;
         },
 
+        /**
+         * Opens bookmarks folder.
+         *
+         * @private
+         */
         _openFolder: function (event) {
           this.$.bookmarksFolder.openFolder(event.currentTarget.dataset.folderId);
         }

@@ -90,16 +90,25 @@
         is: 'x-bookmarks-folder',
         properties: {
 
+          /**
+           * Folder's entries (links and other (sub)folders).
+           */
           entries: {
             type: Array,
             value: []
           },
 
+          /**
+           * ID of parent's folder (or null of root folder is currently opened).
+           */
           parentId: {
             type: Number,
             value: null
           },
 
+          /**
+           * Folder title.
+           */
           title: {
             type: String,
             value: ''
@@ -107,14 +116,22 @@
 
         },
 
+        /**
+         * Opens given folder's subtree.
+         *
+         * @param folderId
+         */
         openFolder: function (folderId) {
 
+          // Open dialog if not already opened.
           if (!this.$.dialog.opened) {
             this.$.dialog.open();
           }
 
+          // Clear entries
           this.set('entries', []);
 
+          // Read folder's subtree and load it into entries
           var self = this;
           chrome.bookmarks.getSubTree(folderId, function (chromeBookmarksTree) {
             self.set('title', chromeBookmarksTree[0].title ? chromeBookmarksTree[0].title : 'Root');
@@ -126,18 +143,42 @@
 
         },
 
+        /**
+         * Tests if entry is a folder.
+         *
+         * @param entry
+         * @returns {boolean}
+         * @private
+         */
         _isFolder: function (entry) {
           return entry.children !== undefined;
         },
 
+        /**
+         * Tests if entry is a link.
+         *
+         * @param entry
+         * @returns {boolean}
+         * @private
+         */
         _isLink: function (entry) {
           return entry.children === undefined;
         },
 
+        /**
+         * Opens parent's folder.
+         *
+         * @private
+         */
         _openParentFolder: function () {
           this.openFolder(this.parentId);
         },
 
+        /**
+         * Opens bookmarks folder.
+         *
+         * @private
+         */
         _openFolder: function () {
           this.openFolder(event.currentTarget.dataset.folderId);
         }

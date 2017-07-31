@@ -39,6 +39,9 @@
 
         },
 
+        /**
+         * Read "Other bookmarks" from Chrome and set top-level links to this.favorites.
+         */
         ready: function () {
           var self = this;
           chrome.bookmarks.getTree(function (chromeBookmarksTree) {
