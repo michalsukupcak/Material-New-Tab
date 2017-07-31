@@ -1,0 +1,148 @@
+<!-- Element -->
+<dom-module id="x-bookmarks-folder">
+  <template>
+
+    <!-- CSS -->
+    <style include="x-cards-link-styles"></style>
+    <style>
+
+      paper-dialog { max-width: 512px; width: 100%; }
+
+      div.content { height: 480px; overflow: auto; }
+
+      h2 span { font-weight: 300; }
+
+      .rotate90 { transform: rotate(90deg); }
+
+      hr { border: none; border-top: 1px solid var(--border-color); }
+
+    </style>
+
+    <paper-dialog id="dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation">
+
+      <!-- Title -->
+      <h2>Bookmarks Folder: <span>[[title]]</span></h2>
+
+      <!-- Content -->
+      <paper-dialog-scrollable>
+
+        <!-- Back button -->
+        <template is="dom-if" if="[[parentId]]">
+
+          <!-- Button -->
+          <div class="folder" on-tap="_openParentFolder">
+           <iron-icon icon="icons:subdirectory-arrow-left" class="rotate90"></iron-icon>
+           <span>Back</span>
+           <paper-ripple></paper-ripple>
+          </div>
+
+          <!-- Separator -->
+          <hr>
+
+        </template>
+
+        <!-- Content scroller/wrapper -->
+        <div class="content">
+
+          <!-- Entries -->
+          <template is="dom-repeat" items="[[entries]]" as="entry">
+
+            <!-- Folder -->
+            <template is="dom-if" if="[[_isFolder(entry)]]">
+              <div class="folder" on-tap="_openFolder" data-folder-id$="[[entry.id]]">
+                <iron-icon icon="icons:folder"></iron-icon>
+                <span>[[entry.title]]</span>
+                <paper-ripple></paper-ripple>
+              </div>
+            </template>
+
+            <!-- Link -->
+            <template is="dom-if" if="[[_isLink(entry)]]">
+              <a href="[[entry.url]]">
+                <img src="chrome://favicon/[[entry.url]]">
+                <span>[[entry.title]]</span>
+                <paper-ripple></paper-ripple>
+              </a>
+            </template>
+
+          </template>
+
+        </div>
+
+      </paper-dialog-scrollable>
+
+      <!-- Close button -->
+      <div class="buttons">
+        <paper-button dialog-dismiss>Close</paper-button>
+      </div>
+
+    </paper-dialog>
+
+  </template>
+  <script>
+    (function () {
+      'use strict';
+      Polymer({
+
+        /**
+         * Element configuration (is, behaviors, properties, observers).
+         */
+        is: 'x-bookmarks-folder',
+        properties: {
+
+          entries: {
+            type: Array,
+            value: []
+          },
+
+          parentId: {
+            type: Number,
+            value: null
+          },
+
+          title: {
+            type: String,
+            value: ''
+          }
+
+        },
+
+        openFolder: function (folderId) {
+
+          if (!this.$.dialog.opened) {
+            this.$.dialog.open();
+          }
+
+          this.set('entries', []);
+
+          var self = this;
+          chrome.bookmarks.getSubTree(folderId, function (chromeBookmarksTree) {
+            self.set('title', chromeBookmarksTree[0].title ? chromeBookmarksTree[0].title : 'Root');
+            self.set('parentId', chromeBookmarksTree[0].parentId);
+            chromeBookmarksTree[0].children.forEach(function (bookmarkEntry) {
+              self.push('entries', bookmarkEntry);
+            });
+          });
+
+        },
+
+        _isFolder: function (entry) {
+          return entry.children !== undefined;
+        },
+
+        _isLink: function (entry) {
+          return entry.children === undefined;
+        },
+
+        _openParentFolder: function () {
+          this.openFolder(this.parentId);
+        },
+
+        _openFolder: function () {
+          this.openFolder(event.currentTarget.dataset.folderId);
+        }
+
+      });
+    })();
+  </script>
+</dom-module>

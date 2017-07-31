@@ -1,0 +1,20 @@
+<!-- Bookmark link styles -->
+<dom-module id="x-cards-link-styles">
+  <template>
+    <style>
+
+      a { @apply(--layout-horizontal); border-radius: 3px; color: #333; margin: 0 0 3px 0; padding: 3px 6px; position: relative; text-decoration: none; transition: .2s ease; }
+      a:hover { background: #CCC; }
+      a img { display: block; height: 16px; margin: 0 6px 0 0; }
+      a span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      a paper-ripple {}
+
+      div.folder { @apply(--layout-horizontal); @apply(--layout-center); color: #333; cursor: pointer; margin: 0 0 3px 0; padding: 3px 6px; position: relative; transition: .2s ease; }
+      div.folder:hover { background: #CCC }
+      div.folder iron-icon { color: #666; height: 16px; margin: 0 6px 0 0; width: 16px; }
+      div.folder span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      div.folder paper-ripple {}
+
+    </style>
+  </template>
+</dom-module>

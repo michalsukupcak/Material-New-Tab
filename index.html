@@ -1,43 +1,48 @@
 <!DOCTYPE html>
-    <html lang="en">
-    <head>
+<html lang="en">
+  <head>
 
-        <!-- ------------------------------------------- -->
-        <!-- Meta tags -->
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>New Tab</title>
+    <!-- Meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <meta name="theme-color" content="#EEE">
+    <title>Material New Tab</title>
 
-        <!-- ------------------------------------------- -->
-        <!-- File imports -->
-        <link rel="shortcut icon" href="./images/icon/icon16.png">
-        <link rel="stylesheet" href="./styles/main.css">
-        <link rel="import" href="./build/elements.html">
-        <script src="./bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <!-- Favicon -->
+    <link rel="shortcut icon" sizes="32x32" href="/images/g-suite-icon-16.png">
 
-    </head>
-    <body unresolved class="fullbleed layout vertical">
+    <!-- Manifest -->
+    <link rel="manifest" href="/manifest.json">
 
-        <!-- ------------------------------------------- -->
-        <!-- Application template -->
-        <span id="browser-sync-binding"></span>
-        <template is="dom-bind" id="app">
-            <div id="container"></div>
-        </template>
+    <!-- Polymer init -->
+    <script>
+      window.Polymer = { lazyRegister: true, dom: 'shadow' };
+      (function() {
+        if ('registerElement' in document
+            && 'import' in document.createElement('link')
+            && 'content' in document.createElement('template')) {
+        } else {
+          var e = document.createElement('script');
+          e.src = '/bower_components/webcomponentsjs/webcomponents-lite.min.js';
+          document.head.appendChild(e);
+        }
+      })();
+    </script>
 
-        <!-- ------------------------------------------- -->
-        <!-- Libraries -->
-        <script src="./scripts/lib-firebase.js"></script>
-        <script src="./scripts/lib-youtube-iframe.js"></script>
+    <!-- Import main app element -->
+    <link rel="import" href="./src/x-app.html">
 
-        <!-- ------------------------------------------- -->
-        <!-- Application scripts -->
-        <script src="./scripts/sha256.js"></script>
-        <script src="./scripts/base64.js"></script>
-        <script src="./scripts/moment.js"></script>
-        <script src="./scripts/functions.js"></script>
-        <script src="./scripts/firebase.js"></script>
-        <script src="./scripts/app.js"></script>
+    <!-- Main styles -->
+    <style>
+      body { background-color: #FEFEFE; font-family: 'Roboto', 'Noto', sans-serif; line-height: 1.5; margin: 0; }
+      ::-webkit-scrollbar { display: none; }
+    </style>
 
-    </body>
+  </head>
+  <body>
+
+    <!-- App -->
+    <x-app></x-app>
+
+  </body>
 </html>

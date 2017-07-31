@@ -1,0 +1,112 @@
+<!-- Element -->
+<dom-module id="x-bookmarks">
+  <template>
+
+    <!-- CSS -->
+    <style include="x-cards-link-styles"></style>
+    <style>
+
+      /* Element */
+      :host {
+        display: block;
+      }
+
+      div.title { font-size: 1.6em; font-weight: 300; margin: 0 0 6px 0; }
+
+      div.content { @apply(--layout-horizontal); @apply(--layout-wrap); margin: 0 0 18px 0; }
+
+      div.content a,
+      div.content div.folder { width: calc(20% - 3px - 3px - 6px - 6px); }
+
+    </style>
+
+    <!-- Folders -->
+    <template is="dom-repeat" items="[[folders]]" as="folder">
+
+      <!-- Title -->
+      <div class="title">[[folder.title]]</div>
+
+      <!-- Content -->
+      <div class="content">
+        <template is="dom-repeat" items="[[folder.children]]" as="entry">
+
+          <!-- Folder -->
+          <template is="dom-if" if="[[_isFolder(entry)]]">
+            <div class="folder" on-tap="_openFolder" data-folder-id$="[[entry.id]]">
+              <iron-icon icon="icons:folder"></iron-icon>
+              <span>[[entry.title]]</span>
+              <paper-ripple></paper-ripple>
+            </div>
+          </template>
+
+          <!-- Link -->
+          <template is="dom-if" if="[[_isLink(entry)]]">
+            <a href="[[entry.url]]">
+              <img src="chrome://favicon/[[entry.url]]">
+              <span>[[entry.title]]</span>
+              <paper-ripple></paper-ripple>
+            </a>
+          </template>
+
+        </template>
+      </div>
+
+    </template>
+
+    <!-- Folder dialog -->
+    <x-bookmarks-folder id="bookmarksFolder"></x-bookmarks-folder>
+
+  </template>
+  <script>
+    (function () {
+      'use strict';
+      Polymer({
+
+        /**
+         * Element configuration (is, behaviors, properties, observers).
+         */
+        is: 'x-bookmarks',
+        properties: {
+
+          folders: {
+            type: Array,
+            value: []
+          }
+
+        },
+
+        ready: function () {
+          var self = this;
+          chrome.bookmarks.getTree(function (chromeBookmarksTree) {
+            chromeBookmarksTree[0].children.forEach(function (rootBookmarkFolders) {
+              if (parseInt(rootBookmarkFolders.id) === 2) { // "Other bookmarks" folder has ID = 2
+                rootBookmarkFolders.children.forEach(function (bookmarkEntry) {
+                  if (bookmarkEntry.children && bookmarkEntry.children.length > 0) { // Filter only folders from "Other bookmarks"
+                    self.push('folders', {
+                      title: bookmarkEntry.title,
+                      id: bookmarkEntry.id,
+                      children: bookmarkEntry.children
+                    });
+                  }
+                });
+              }
+            });
+          });
+        },
+
+        _isFolder: function (entry) {
+          return entry.children !== undefined;
+        },
+
+        _isLink: function (entry) {
+          return entry.children === undefined;
+        },
+
+        _openFolder: function (event) {
+          this.$.bookmarksFolder.openFolder(event.currentTarget.dataset.folderId);
+        }
+
+      });
+    })();
+  </script>
+</dom-module>

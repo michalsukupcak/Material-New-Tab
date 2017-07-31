@@ -1,0 +1,397 @@
+<!-- Imports -->
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-localstorage/iron-localstorage.html">
+<link rel="import" href="../bower_components/iron-signals/iron-signals.html">
+<link rel="import" href="../bower_components/neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="../bower_components/neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="../bower_components/neon-animation/web-animations.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../bower_components/paper-ripple/paper-ripple.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="x-cards/x-bookmarks/x-bookmarks.html">
+<link rel="import" href="x-cards/x-bookmarks/x-bookmarks-folder.html">
+<link rel="import" href="x-cards/x-cards-link-styles.html">
+<link rel="import" href="x-cards/x-favorites/x-favorites.html">
+<link rel="import" href="x-cards/x-cards.html">
+<link rel="import" href="x-drawer/x-drawer.html">
+<link rel="import" href="x-search/x-search.html">
+<link rel="import" href="x-toolbar/x-toolbar.html">
+
+<!-- Element -->
+<dom-module id="x-app">
+  <template>
+
+    <!-- CSS -->
+    <style>
+
+      /* App theme */
+      :root {
+        --primary-color: #009688;
+        --main-background-color: #EEE;
+        --light-gray-text-color: #AAA;
+        --gray-text-color: #777;
+        --darker-gray-text-color: #666;
+        --dark-gray-text-color: #333;
+        --border-color: #DDD;
+      }
+
+      /* Element */
+      :host { display: block; }
+
+      /* App panel */
+      app-drawer-layout {}
+
+      /* App panel - Drawer */
+      app-drawer-layout app-drawer { --app-drawer-width: 264px; }
+      app-drawer-layout app-drawer.fixed { border: 1px solid #CCC; }
+
+      /* App panel - Drawer - Drawer content */
+      app-drawer-layout app-drawer x-drawer {}
+
+      /* App panel - Content wrapper */
+      app-drawer-layout app-header-layout {}
+
+      /* App panel - Content wrapper - Header */
+      app-drawer-layout app-header-layout app-header {}
+
+      /* App panel - Content wrapper - Header - Toolbar */
+      app-drawer-layout app-header-layout app-header app-toolbar { color: var(--gray-text-color); }
+
+      /* App panel - Content wrapper - Header - Toolbar - Drawer toggle */
+      app-drawer-layout app-header-layout app-header app-toolbar paper-icon-button {}
+
+      /* App panel - Content wrapper - Header - Toolbar - App title */
+      app-drawer-layout app-header-layout app-header app-toolbar div[main-title] { padding: 0 0 0 12px; }
+
+      /* App panel - Content wrapper - Header - Toolbar - Toolbar controls */
+      app-drawer-layout app-header-layout app-header app-toolbar x-toolbar {}
+
+      /* App panel - Content wrapper - Content */
+      app-drawer-layout app-header-layout main {}
+
+      /* App panel - Content wrapper - Content - Cards */
+      app-drawer-layout app-header-layout main x-cards {}
+
+      /* Changelog dialog */
+      paper-dialog {}
+      paper-dialog#customizeDialog { width: 512px; }
+      paper-dialog h2 {}
+      paper-dialog paper-dialog-scrollable {}
+      paper-dialog paper-dialog-scrollable a { color: var(--primary-color)}
+      paper-dialog paper-dialog-scrollable h3 { display: block; margin-bottom: 2px; }
+      paper-dialog paper-dialog-scrollable div.description { color: var(--dark-gray-text-color); font-style: italic; }
+      paper-dialog paper-dialog-scrollable div.columns { @apply(--layout-horizontal); @apply(--layout-wrap); }
+      paper-dialog paper-dialog-scrollable div.columns paper-checkbox { box-sizing: border-box; width: 30%; }
+      paper-dialog paper-dialog-scrollable p { color: #999; font-size: .8em; line-height: 1em; margin: 0 0 0 30px; padding: 0; }
+      paper-dialog paper-dialog-scrollable paper-checkbox { display: block; margin: 3px; }
+      paper-dialog div.buttons {}
+      paper-dialog div.buttons paper-button {}
+
+    </style>
+
+    <!-- ----------------------------------------------------------------------------------------------------------- -->
+    <!-- App layout -->
+
+    <!-- Wrapper -->
+    <app-drawer-layout force-narrow="[[!useFixedDrawer]]">
+
+      <!-- Drawer panel -->
+      <app-drawer slot="drawer" class$="[[_getDrawerClass(useFixedDrawer)]]" swipe-open="[[!useFixedDrawer]]" persistent="[[useFixedDrawer]]">
+        <x-drawer tabs="{{tabs}}"></x-drawer>
+      </app-drawer>
+
+      <!-- Main panel -->
+      <app-header-layout id="headerPanel">
+
+        <!-- Header -->
+        <app-header slot="header" effects="waterfall" fixed>
+          <app-toolbar id="toolbar">
+
+            <!-- Drawer toggle button -->
+            <div hidden$="[[useFixedDrawer]]">
+              <paper-icon-button icon="icons:menu" drawer-toggle></paper-icon-button>
+            </div>
+
+            <!-- App title (empty) -->
+            <div main-title></div>
+
+            <!-- Chrome:// controls -->
+            <x-toolbar tabs="{{tabs}}" on-open-customize-dialog="_openCustomizeDialog">
+            </x-toolbar>
+
+          </app-toolbar>
+        </app-header>
+
+        <!-- Content -->
+        <main id="content">
+
+          <!-- Search bar -->
+          <template is="dom-if" if="[[showSearch]]">
+            <x-search></x-search>
+          </template>
+
+          <!-- Cards -->
+          <x-cards></x-cards>
+
+        </main>
+
+      </app-header-layout>
+
+    </app-drawer-layout>
+
+    <!-- ----------------------------------------------------------------------------------------------------------- -->
+    <!-- Customization dialog -->
+
+    <!-- Dialog -->
+    <paper-dialog id="customizeDialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" modal>
+
+      <!-- Title -->
+      <h2>Customization</h2>
+
+      <!-- Content -->
+      <paper-dialog-scrollable>
+
+        <!-- Description -->
+        <div class="description">Customize settings of the extension to match your needs and preferences.</div>
+
+        <!-- Search box -->
+        <h3>Logo</h3>
+        <paper-checkbox checked="{{showSearch}}">Show Google logo.</paper-checkbox>
+
+        <!-- Search box -->
+        <h3>Menu drawer</h3>
+        <paper-checkbox checked="{{useFixedDrawer}}">Set menu drawer to always visible.</paper-checkbox>
+
+        <!-- Tabs buttons -->
+        <h3>Chrome tabs:</h3>
+        <div class="columns">
+          <template is="dom-repeat" items="{{tabs}}" as="tab">
+            <paper-checkbox checked="{{tab.visible}}">[[tab.title]]</paper-checkbox>
+          </template>
+        </div>
+
+      </paper-dialog-scrollable>
+
+      <!-- Buttons -->
+      <div class="buttons">
+        <paper-button dialog-dismiss>Close</paper-button>
+      </div>
+
+    </paper-dialog>
+
+    <!-- ----------------------------------------------------------------------------------------------------------- -->
+    <!-- What's new dialog -->
+
+    <!-- Dialog -->
+    <paper-dialog id="changelog" modal>
+      <h2>What's New</h2>
+      <paper-dialog-scrollable>
+        Material New Tab extension just got updated! Highlights:<br>
+        <br>
+        * [New] Brand new redesign!<br>
+        * [New] Added Favorites panel with links from "Other Bookmarks" section.<br>
+        * [New] New folder browser, folders inside top level folders can now be opened and viewed.<br>
+        * [New] Drawer can now be set as always visible.<br>
+        * [New] Removed "Search" bar as it was not widely used.<br>
+        * [New] Removed "Apps" section. Unfortunately Chrome is dropping Apps support on PC, Mac and Linux from early 2018, no reason to maintain the feature any longer.<br>
+        <br>
+        Full changelog: <a href="https://chrome.google.com/webstore/detail/material-new-tab/ipenfbpnekpojbhhgkpchnomcmbblbda">Webstore</a><br>
+        Source code: <a href="https://github.com/michalsukupcak/Material-New-Tab" target="_blank">Github</a><br>
+      </paper-dialog-scrollable>
+      <div class="buttons">
+       <paper-button dialog-dismiss>Close</paper-button>
+      </div>
+    </paper-dialog>
+
+    <!-- ----------------------------------------------------------------------------------------------------------- -->
+    <!-- Other elements -->
+
+    <!-- Toast -->
+    <paper-toast id="toast"></paper-toast>
+
+    <!-- Signals event bus -->
+    <iron-signals
+      on-iron-signal-toast="_openToast">
+    </iron-signals>
+
+    <!-- Browser local storage -->
+    <iron-localstorage name="__materialnewtab_showsearch" value="{{showSearch}}"></iron-localstorage>
+    <iron-localstorage name="__materialnewtab_tabs" value="{{tabs}}"></iron-localstorage>
+    <iron-localstorage name="__materialnewtab_usefixeddrawer" value="{{useFixedDrawer}}"></iron-localstorage>
+
+  </template>
+  <script>
+    (function () {
+      'use strict';
+      Polymer({
+
+        /**
+         * Element configuration (is, behaviors, properties, observers).
+         */
+        is: 'x-app',
+        properties: {
+
+          /**
+           * Current application version.
+           */
+          APP_VERSION: {
+            type: Number,
+            value: 2
+          },
+
+          /**
+           * Search box visibility toggle.
+           */
+          showSearch: {
+            type: Boolean
+          },
+
+          /**
+           * List of chrome://.. tabs used in drawer and toolbar.
+           */
+          tabs: {
+            type: Array
+          },
+
+          /**
+           * Enable fixed (true) or swipe-able drawer (false).
+           */
+          useFixedDrawer: {
+            type: Boolean,
+            value: false
+          }
+
+        },
+        observers: [
+          '_setDefaultValues(' +
+            'showSearch,' +
+            'tabs,' +
+            'useFixedDrawer' +
+          ')'
+        ],
+
+        /**
+         * Check app version and clear storage if new version is detected.
+         *
+         * Attach scroll observer on document when element is ready, monitor scrollTop value and change toolbar
+         * background (default color when scrollTop is 0, lighter (closed to white) when scrollTop is more than 0).
+         */
+        ready: function () {
+
+          // Reset extension if new version is detected
+          var version = '__materialnewtab_version_check_' + this.APP_VERSION;
+          if (!window.localStorage.getItem(version)) {
+            /* No need to clear localStorage this version
+            window.localStorage.clear();
+            */
+            window.localStorage.setItem(version, true);
+            this.$.changelog.open();
+          }
+
+          // Register scroll listener
+          var that = this;
+          document.addEventListener('scroll', function () {
+            if (document.body.scrollTop > 0) {
+              if (that.$.toolbar.style.backgroundColor !== '#FAFAFA') {
+                that.$.toolbar.style.backgroundColor = '#FAFAFA';
+              }
+            } else {
+              if (that.$.toolbar.style.backgroundColor !== '') {
+                that.$.toolbar.style.backgroundColor = '';
+              }
+            }
+          });
+
+        },
+
+        /**
+         * Return drawer .fixed class (if useFixedDrawer is enabled).
+         *
+         * @private
+         */
+        _getDrawerClass: function (useFixedDrawer) {
+          return useFixedDrawer ? 'fixed' : '';
+        },
+
+        /**
+         * Opens #customizeDialog.
+         *
+         * @private
+         */
+        _openCustomizeDialog: function () {
+          this.$.customizeDialog.open();
+        },
+
+        /**
+         * Handler for iron-signal-toast event, opens paper-toast with a message from event.
+         *
+         * @param event
+         * @private
+         */
+        _openToast: function (event) {
+          if (this.$.toast.opened) {
+            this.$.toast.hide();
+          }
+          this.$.toast.text = event.detail;
+          this.$.toast.show();
+        },
+
+        /**
+         * Observer for default configuration values.
+         *
+         * @param showSearch
+         * @param tabs
+         * @param useFixedDrawer
+         * @private
+         */
+        _setDefaultValues: function (
+            showSearch,
+            tabs,
+            useFixedDrawer
+        ) {
+          this.debounce('_setDefaultValues', function () {
+
+            // Search is visible by default
+            if (showSearch === null) {
+              this.set('showSearch', true);
+            }
+
+            // Create initial tabs config (if empty)
+            if (!tabs) {
+              this.set('tabs', [
+                { page: 'apps', icon: 'icons:apps', title: 'Apps', visible: true },
+                { page: 'bookmarks', icon: 'icons:star', title: 'Bookmarks', visible: true },
+                { page: 'downloads', icon: 'icons:file-download', title: 'Downloads', visible: true },
+                { page: 'history', icon: 'icons:history', title: 'History', visible: true },
+                { page: 'extensions', icon: 'icons:extension', title: 'Extensions', visible: true },
+                { page: 'flags', icon: 'icons:flag', title: 'Flags', visible: true }
+              ]);
+            }
+
+            // Drawer is swipe-able by default
+            if (useFixedDrawer === null) {
+              this.set('useFixedDrawer', false);
+            }
+
+          });
+        }
+
+      });
+    })();
+  </script>
+</dom-module>

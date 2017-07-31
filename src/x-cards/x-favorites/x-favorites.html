@@ -1,0 +1,63 @@
+<!-- Element -->
+<dom-module id="x-favorites">
+  <template>
+
+    <!-- CSS -->
+    <style include="x-cards-link-styles"></style>
+    <style>
+
+      /* Element */
+      :host { display: block; }
+
+    </style>
+
+    <!-- Links -->
+    <template is="dom-repeat" items="[[favorites]]" as="favorite">
+      <a href="[[favorite.url]]">
+        <img src="chrome://favicon/[[favorite.url]]">
+        <span>[[favorite.title]]</span>
+        <paper-ripple></paper-ripple>
+      </a>
+    </template>
+
+  </template>
+  <script>
+    (function () {
+      'use strict';
+      Polymer({
+
+        /**
+         * Element configuration (is, behaviors, properties, observers).
+         */
+        is: 'x-favorites',
+        properties: {
+
+          favorites: {
+            type: Array,
+            value: []
+          }
+
+        },
+
+        ready: function () {
+          var self = this;
+          chrome.bookmarks.getTree(function (chromeBookmarksTree) {
+            chromeBookmarksTree[0].children.forEach(function (rootBookmarkFolders) {
+              if (parseInt(rootBookmarkFolders.id) === 2) { // "Other bookmarks" folder has ID = 2
+                rootBookmarkFolders.children.forEach(function (bookmarkEntry) {
+                  if (bookmarkEntry.children === undefined) { // Filter only links from "Other bookmarks"
+                    self.push('favorites', {
+                      title: bookmarkEntry.title,
+                      url: bookmarkEntry.url
+                    });
+                  }
+                });
+              }
+            });
+          });
+        }
+
+      });
+    })();
+  </script>
+</dom-module>

@@ -1,0 +1,90 @@
+<!-- Element -->
+<dom-module id="x-toolbar">
+  <template>
+
+    <!-- CSS -->
+    <style>
+
+      /* Element */
+      :host { @apply(--layout-horizontal); color: var(--gray-text-color); transition: .2s ease; }
+
+      /* Link */
+      div { @apply(--layout-horizontal); @apply(--layout-center); border-radius: 3px; cursor: pointer; font-size: .8em; font-weight: 300; padding: 9px 9px; position: relative; transition: .2s ease; }
+      div:hover { color: #111; }
+      div:hover > iron-icon { color: #444; }
+      div iron-icon { color: #999; margin: 0 9px 0 0; transition: .2s ease; }
+
+      /* Link - Text */
+      div span {}
+
+      /* Overflow menu */
+      paper-menu-button { padding: 0; }
+      paper-menu-button paper-icon-button.dropdown-trigger {}
+      paper-menu-button paper-menu.dropdown-content {}
+      paper-menu-button paper-menu paper-item { cursor: pointer; }
+
+    </style>
+
+    <!-- Chrome tabs -->
+    <template is="dom-repeat" items="[[tabs]]" as="tab">
+      <span hidden$="[[!tab.visible]]">
+        <div on-tap="_openTab">
+          <paper-ripple></paper-ripple>
+          <iron-icon icon="icons:[[tab.icon]]"></iron-icon>
+          <span>[[tab.title]]</span>
+        </div>
+      </span>
+    </template>
+
+    <!-- Customize extension -->
+    <paper-menu-button horizontal-align="right">
+      <paper-icon-button icon="icons:more-vert" class="dropdown-trigger"></paper-icon-button>
+      <paper-menu class="dropdown-content">
+        <paper-item on-tap="_openCustomizeDialog">Customize Extension</paper-item>
+      </paper-menu>
+    </paper-menu-button>
+
+  </template>
+  <script>
+    (function () {
+      'use strict';
+      Polymer({
+
+        /**
+         * Element configuration (is, behaviors, properties, observers).
+         */
+        is: 'x-toolbar',
+        properties: {
+
+          /**
+           * List of chrome://.. tabs used in drawer and toolbar.
+           */
+          tabs: {
+            type: Array,
+            notify: true
+          }
+
+        },
+
+        /**
+         * Opens chrome://... page.
+         *
+         * @private
+         */
+        _openTab: function (event) {
+          chrome.tabs.create({ url: 'chrome://' + event.model.tab.page });
+        },
+
+        /**
+         * Opens paper-dialog inside x-toolbar-customize-dialog.
+         *
+         * @private
+         */
+        _openCustomizeDialog: function () {
+          this.dispatchEvent(new Event('open-customize-dialog'));
+        }
+
+      });
+    })();
+  </script>
+</dom-module>

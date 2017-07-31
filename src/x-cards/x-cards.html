@@ -1,0 +1,112 @@
+<!-- Element -->
+<dom-module id="x-cards">
+  <template>
+
+    <!-- CSS -->
+    <style>
+
+      /* Element */
+      :host {}
+
+      /* Wrapper */
+      div.wrapper { @apply(--layout-horizontal); @apply(--layout-center-justified); @apply(--layout-wrap); margin: auto; padding: 16px 0; width: 100%; }
+
+      /* Card */
+      div.wrapper div.card { box-sizing: border-box; color: var(--darker-gray-text-color); margin: 12px; width: 100%; }
+      div.wrapper div.card.favorites { margin-left: 24px; max-width: 244px; }
+      div.wrapper div.card.bookmarks { margin-right: 24px; max-width: 688px; }
+      div.wrapper div.card div.title { @apply(--layout-horizontal); border-bottom: 1px solid var(--border-color); font-size: 2.2em; font-weight: 300; margin: 0 0 18px 0; padding: 0 0 6px 0; }
+      div.wrapper div.card div.title span { @apply(--layout-flex); }
+      div.wrapper div.card div.title paper-icon-button { @apply(--layout-flex-none); color: white; margin: -3px 0 0 0; transition: .2s ease; }
+      div.wrapper div.card div.title:hover > paper-icon-button { color: var(--border-color); }
+      div.wrapper div.card div.title paper-icon-button:hover { color: var(--darker-gray-text-color); }
+      div.wrapper div.card div.content {}
+
+      /* Help image */
+      img { max-width: 100%; }
+
+      /* Responsive layout */
+      @media (max-width: 1024px) {
+        div.card.favorites { margin: 12px; max-width: 100%; }
+        div.card.bookmarks { margin: 12px; max-width: 100%; }
+      }
+
+    </style>
+
+    <!-- Wrapper -->
+    <div class="wrapper">
+
+      <!-- Dashboard -->
+      <div class="card favorites">
+        <div class="title">
+          <span>Favorites</span>
+          <paper-icon-button icon="icons:help-outline" on-tap="_openHelpDialog"></paper-icon-button>
+        </div>
+        <div class="content">
+          <x-favorites></x-favorites>
+        </div>
+      </div>
+
+      <!-- Bookmarks -->
+      <div class="card bookmarks">
+        <div class="title">
+          <span>Bookmarks</span>
+          <paper-icon-button icon="icons:help-outline" on-tap="_openHelpDialog"></paper-icon-button>
+        </div>
+        <div class="content">
+          <x-bookmarks></x-bookmarks>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Help dialog -->
+    <paper-dialog id="dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation">
+
+      <!-- Title -->
+      <h2>Help</h2>
+
+      <!-- Content -->
+      <paper-dialog-scrollable>
+
+        <!-- Description -->
+        <div>
+          Extension displays <i>your Chrome bookmarks</i> from the "Other bookmarks" root folder in its "Favorites" and
+          "Bookmarks" sections.
+          <ul>
+            <li><strong>Favorites</strong> - All top-level links in your "Other bookmarks" are organized into the "Favorites" section.</li>
+            <li><strong>Bookmarks</strong> - All top-level folders are loaded into "Bookmarks" section.</li>
+          </ul>
+        </div>
+
+
+        <!-- Image -->
+        <img src="/images/help.png">
+      </paper-dialog-scrollable>
+
+      <!-- Close button -->
+      <div class="buttons">
+        <paper-button dialog-dismiss>Close</paper-button>
+      </div>
+
+    </paper-dialog>
+
+  </template>
+  <script>
+    (function () {
+      'use strict';
+      Polymer({
+
+        /**
+         * Element configuration (is, behaviors, properties, observers).
+         */
+        is: 'x-cards',
+
+        _openHelpDialog: function () {
+          this.$.dialog.open();
+        }
+
+      });
+    })();
+  </script>
+</dom-module>
