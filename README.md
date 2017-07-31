@@ -1,10 +1,10 @@
-# G Suite New Tab Page
+# Material New Tab Page
 
-Chrome New Tab Page replacement for G Suite users inspired by Material Design.
+Chrome New Tab Page replacement inspired by Material Design.
 
-![G Suite New Tab](https://cloud.githubusercontent.com/assets/5606432/17082398/f41f13aa-517c-11e6-81fe-10ae55964c0c.png)
+![G Suite New Tab](https://lh3.googleusercontent.com/kGegnIGdu7_VlCbJMqDtQDx9EbHWJJd73Ig3VnC8GkUuwgJDwrnY6f8Bs0yhvmuzMKC4xYis=w640-h400-e365)
 
-You can install the final product for free from the [Chrome Web Store](https://chrome.google.com/webstore/detail/apps-for-work-new-tab/ehpgcagmhpndkmglombjndkdmggkgnge).
+You can install the final product for free from the [Chrome Web Store](https://chrome.google.com/webstore/detail/material-new-tab/ipenfbpnekpojbhhgkpchnomcmbblbda).
 
 ### Requirements
 
